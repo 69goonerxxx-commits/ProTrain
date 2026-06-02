@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>ProTrain Program v2.5.3</title>
+<title>ProTrain Program v3.0</title>
 <link rel="manifest" href="manifest.json"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -512,7 +512,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 <!-- ONBOARDING -->
 <div class="ob-overlay" id="obOverlay">
   <div class="ob-logo">⚡</div>
-  <div class="ob-title">ProTrain Program <span style="font-size:14px;opacity:.6">v2.0</span></div>
+  <div class="ob-title">ProTrain Program <span style="font-size:14px;opacity:.6">v3.0</span></div>
   <div class="ob-sub">Your personal PPL workout tracker.<br>Built around your home gym setup.</div>
   <div class="ob-section">
     <div class="ob-section-title">What is PPL?</div>
@@ -596,30 +596,33 @@ var DAY_SUBTITLES={morning:'Daily Activation',d1:'Push — Chest',d2:'Pull — B
 
 var EX={
   morning:[
+    {id:'m_dh',name:'Dead Hang',type:'time',target:'1x60s',sets:1,tag:'Spine',muscles:{primary:'Lats',secondary:'Shoulders, Forearms'},
+      steps:['Jump or step up and grip the pull-up bar, hands shoulder-width apart.','Let your body hang completely relaxed — no pulling, no tension.','Breathe steadily and let gravity decompress your spine.','If 60s is too much at first, do 2x30s with a short break.'],
+      tip:'Your spine compresses overnight. This reverses it. Do this first, before anything else. One of the highest-value habits you can build.'},
     {id:'m_nr',name:'Neck Rolls',type:'time',target:'1x30s',sets:1,tag:'Mobility',muscles:{primary:'Neck',secondary:'Upper Traps'},
-      steps:['Stand tall, chin to chest.','Slowly roll your head to the right, back, left and back to start.','Keep the movement slow and controlled — never forced.','Switch direction halfway through.'],
-      tip:'Do this gently. You are decompressing after sleep, not stretching aggressively.'},
-    {id:'m_sc',name:'Shoulder Circles',type:'time',target:'1x30s',sets:1,tag:'Mobility',muscles:{primary:'Shoulders',secondary:'Upper Back'},
-      steps:['Stand with arms relaxed at your sides.','Roll both shoulders forward in large slow circles for 15 seconds.','Then reverse direction for 15 seconds.','Keep your neck relaxed throughout.'],
-      tip:'Wake up the shoulder joint before anything else. Sets the tone for the whole session.'},
-    {id:'m_hc',name:'Hip Circles',type:'time',target:'1x30s each',sets:1,tag:'Mobility',muscles:{primary:'Hip Flexors',secondary:'Glutes, Lower Back'},
-      steps:['Stand with hands on hips, feet shoulder-width apart.','Draw large circles with your hips — 30 sec clockwise.','Then 30 sec counter-clockwise.','Keep your upper body relatively still.'],
-      tip:'Hips tighten up overnight. This simple move makes a big difference in how your lower body feels all day.'},
-    {id:'m_cc',name:'Cat-Cow',type:'reps',target:'1x10',sets:1,tag:'Spine',muscles:{primary:'Spine',secondary:'Core, Hip Flexors'},
-      steps:['Start on all fours — wrists under shoulders, knees under hips.','Inhale: drop belly, lift chest and tailbone (Cow).','Exhale: round spine toward ceiling, tuck chin and pelvis (Cat).','Move slowly and breathe through each rep.'],
-      tip:'The single best thing you can do for your spine every morning. 10 reps takes 30 seconds.'},
-    {id:'m_bpa',isBand:true,name:'Band Pull-Aparts',type:'reps',target:'1x15',sets:1,tag:'Posture',muscles:{primary:'Rear Delts',secondary:'Traps, Rhomboids'},
-      steps:['Hold a resistance band in front of you at chest height, hands shoulder-width apart.','Pull the band apart by driving your arms out to the sides.','Squeeze your shoulder blades together at the end.','Slowly return to start and repeat.'],
-      tip:'Counteracts rounded posture from sleeping. Sets your shoulders back where they belong for the day.'},
-    {id:'m_dh',name:'Dead Hang',type:'time',target:'1x45s',sets:1,tag:'Spine',muscles:{primary:'Lats',secondary:'Shoulders, Forearms'},
-      steps:['Jump or step up and grip the pull-up bar, hands shoulder-width apart.','Let your body hang completely relaxed — no pulling, no tension.','Breathe steadily and let gravity decompress your spine.','If 45s is too much at first, do 2x20s with a short break.'],
-      tip:'Your spine compresses overnight. This reverses it. One of the highest-value habits you can build.'},
-    {id:'m_gb',name:'Glute Bridges',type:'reps',target:'1x20',sets:1,tag:'Glutes',muscles:{primary:'Glutes',secondary:'Hamstrings, Lower Back'},
-      steps:['Lie on back, knees bent, feet flat on floor hip-width apart.','Drive hips up toward ceiling by squeezing glutes hard.','Hold at the top for 1-2 seconds.','Lower back down slowly without fully relaxing at the bottom.'],
-      tip:'Glutes switch off after hours of inactivity or sleep. Waking them up here improves everything you do all day.'},
-    {id:'m_db',name:'Dead Bugs',type:'reps',target:'1x10',sets:1,tag:'Core',muscles:{primary:'Deep Core',secondary:'Hip Flexors'},
-      steps:['Lie on back, arms pointing straight up, knees bent at 90 degrees in the air.','Slowly lower RIGHT arm overhead and LEFT leg toward the floor at the same time.','Stop just before they touch, then return to start.','Repeat with LEFT arm and RIGHT leg. That is 1 rep.'],
-      tip:'Low impact, deep core activation. Pairs perfectly with the glute bridges before your day starts.'},
+      steps:['Stand tall, chin to chest.','Slowly roll your head in a half circle from left shoulder to right shoulder.','Keep the movement slow and controlled — never force it back.','Alternate direction each sweep for 30 seconds total.'],
+      tip:'Half circles only — avoid full backward rolls. You are decompressing after sleep, not stretching aggressively.'},
+    {id:'m_co',name:'Chest Opener',type:'time',target:'1x15-20s',sets:1,tag:'Mobility',muscles:{primary:'Chest',secondary:'Front Delts, Biceps'},
+      steps:['Stand tall and interlace your fingers behind your back.','Squeeze your shoulder blades together and lift your hands slightly away from your body.','Open your chest forward and upward — feel the stretch across the front.','Hold for 15-20 seconds, breathing steadily.'],
+      tip:'Reverses the hunched position your upper body defaults to after sleep. Sets your posture up right for the day.'},
+    {id:'m_tr',name:'Thoracic Rotations',type:'reps',target:'1x10 each side',sets:1,tag:'Mobility',muscles:{primary:'Thoracic Spine',secondary:'Obliques, Lats'},
+      steps:['Stand or sit tall with arms crossed over your chest or hands at your temples.','Rotate your upper body slowly to the right as far as comfortable.','Pause briefly at the end range, then rotate back through center to the left.','Keep hips and lower body as still as possible — the rotation comes from the mid-back.'],
+      tip:'Most people have stiff thoracic spines from sitting and slouching. This wakes up the segment between your neck and lower back where rotation should actually come from.'},
+    {id:'m_ss',name:'Standing Side Stretch',type:'time',target:'1x15s each side',sets:1,tag:'Mobility',muscles:{primary:'Obliques',secondary:'Lats, Intercostals'},
+      steps:['Stand tall with feet hip-width apart.','Raise your right arm overhead and lean to the left, reaching your hand across.','Keep both feet planted and hips square — do not let the hip pop out.','Hold 15 seconds, then switch sides.'],
+      tip:'Lengthens the lateral line — the side of your torso that gets compressed sitting. Breathe into the stretch.'},
+    {id:'m_hc',name:'Hip Circles',type:'reps',target:'1x5 each direction',sets:1,tag:'Mobility',muscles:{primary:'Hip Flexors',secondary:'Glutes, Lower Back'},
+      steps:['Stand with hands on hips, feet shoulder-width apart.','Draw large, slow circles with your hips — 5 reps clockwise.','Then 5 reps counter-clockwise.','Keep your upper body relatively still and make the circles as wide as comfortable.'],
+      tip:'Hips lock up overnight. Five deliberate circles each direction is enough to restore the range you need for the day.'},
+    {id:'m_hfs',name:'Standing Hip Flexor Stretch',type:'time',target:'1x30s each side',sets:1,tag:'Mobility',muscles:{primary:'Hip Flexors',secondary:'Quads, Lower Back'},
+      steps:['Step one foot forward into a lunge position, back knee on or just above the floor.','Keep your torso upright and push your hips gently forward and down.','You should feel a deep stretch at the front of the back leg\'s hip.','Hold 30 seconds, then switch sides.'],
+      tip:'Hip flexors are chronically shortened from sitting and sleeping in a curled position. This is one of the most important stretches in the routine.'},
+    {id:'m_ff',name:'Standing Forward Fold',type:'time',target:'1x20-30s',sets:1,tag:'Mobility',muscles:{primary:'Hamstrings',secondary:'Lower Back, Calves'},
+      steps:['Stand with feet hip-width apart, slight bend in the knees.','Hinge at the hips and let your upper body hang down toward the floor.','Let your head, neck, and arms hang completely — no tension.','Breathe slowly and let gravity do the work. Do not bounce.'],
+      tip:'Decompresses the lower spine and wakes up the posterior chain. Bend the knees as much as needed — the goal is to let go, not to touch your toes.'},
+    {id:'m_cs',name:'Calf Stretch',type:'time',target:'1x20s each side',sets:1,tag:'Mobility',muscles:{primary:'Calves',secondary:'Achilles, Plantar Fascia'},
+      steps:['Face a wall and place both hands against it for support.','Step one foot back, keeping that heel firmly on the ground and leg straight.','Lean your body gently forward until you feel the stretch through the calf.','Hold 20 seconds, then switch sides.'],
+      tip:'Calves and the plantar fascia tighten significantly overnight — especially if you walk a lot. This prevents morning foot and ankle stiffness.'},
   ],
   d1:[
     {id:'d1_fdp',name:'Floor DB Press',type:'weighted',target:'3x12',sets:3,tag:'Compound',rest:'2-3 min',muscles:{primary:'Chest',secondary:'Triceps, Front Delts'},
@@ -724,7 +727,7 @@ var EX={
 };
 
 var WARMUPS={
-  morning:['Neck rolls — 30 sec slow each direction','Shoulder circles — 30 sec forward, 30 sec back','Hip circles — 30 sec each direction','No rest between items — flow straight through'],
+  morning:['Dead hang first — decompresses the spine before anything else','Flow through each stretch slowly — this is mobility, not a workout','Hold each stretch the full duration — do not rush','No rest needed between items — move straight through'],
   d1:['Arm circles forward and back — 30 sec each','Band pull-aparts — 15 reps','Scapular push-ups — 10 reps (hands on floor, retract and protract shoulder blades)','Wall slides — 10 reps (arms against wall, slide up and down)','Dead hang — 30 sec','1 light warm-up set of your first exercise at 50% effort'],
   d2:['Thoracic rotations — 10 each side (on all fours, thread one arm under and rotate)','Band face pulls — 15 reps','Dead hang — 30 sec','Cat-cow into thread the needle — 8 each side','1 light warm-up set of your first exercise at 50% effort'],
   d3:['Hip circles — 30 sec each direction','Leg swings front and back — 10 each leg','Leg swings side to side — 10 each leg','Glute bridges — 15 reps','Hip flexor stretch (kneeling lunge) — 30 sec each side','Bodyweight squats — 10 slow reps (groove the pattern, not a workout)','1 light warm-up set of your first exercise at 50% effort'],
@@ -2587,7 +2590,7 @@ function rProg(){
   h+='</div></div>';
 
   h+='<div class="sec-title">Data</div>';
-  h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v2.5.3</span></div>';
+  h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v3.0</span></div>';
   h+='<div style="display:flex;gap:10px;padding:0 20px">';
   h+='<button onclick="exportData()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">&#11014; Export</button>';
   h+='<button onclick="document.getElementById(\'importFile\').click()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">&#11015; Import</button>';
