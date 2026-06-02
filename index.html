@@ -3,18 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>ProTrain Program v2.2</title>
-<meta name="theme-color" content="#0c0c0e"/>
-<meta name="mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="ProTrain"/>
-<link rel="manifest" href="manifest.json"/>
-<link rel="apple-touch-icon" href="icon-192.png"/>
-<script>
-if('serviceWorker' in navigator)
-  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
-</script>
+<title>ProTrain Program v2.5.2</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -23,7 +12,7 @@ if('serviceWorker' in navigator)
   --push:#f97316;--pull:#22d3ee;--legs:#84cc16;
   --morning:#fbbf24;--rest:#818cf8;--success:#22c55e;--danger:#ef4444;
   --accent:#fbbf24;
-})
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;display:flex;flex-direction:column}
@@ -122,6 +111,35 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .wdetail-val{font-size:12px;font-weight:600}
 .exlog-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
 .exlog-row:last-child{border-bottom:none}
+/* Body metrics */
+.body-sheet{padding:16px 20px 8px}
+.body-sheet-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.body-metric-row{display:flex;gap:8px;margin-bottom:10px}
+.body-metric-group{flex:1;display:flex;flex-direction:column;gap:4px}
+.body-metric-lbl{font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase}
+.body-metric-inp{width:100%;padding:9px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:15px;text-align:center;outline:none;font-family:'Barlow',sans-serif}
+.body-metric-inp:focus{border-color:var(--accent)}
+.body-bmi-result{padding:10px 12px;background:color-mix(in srgb,var(--pull) 10%,transparent);border:1px solid color-mix(in srgb,var(--pull) 30%,transparent);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--pull);text-align:center;margin-bottom:10px;display:none}
+.body-note-area{width:100%;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;resize:none;outline:none;line-height:1.5;min-height:72px}
+.body-note-area:focus{border-color:var(--accent)}
+.body-note-count{font-size:10px;color:var(--muted);text-align:right;margin-top:2px;margin-bottom:10px}
+/* Cal day action sheet */
+.cal-action-sheet{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;display:flex;align-items:flex-end;animation:fadein .15s}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.cal-action-inner{background:var(--surface);border-radius:20px 20px 0 0;width:100%;padding:16px 20px 40px;animation:sup .25s cubic-bezier(.4,0,.2,1)}
+.cal-action-date{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;text-align:center}
+.cal-action-btn{display:block;width:100%;padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-align:center;cursor:pointer;margin-bottom:8px;transition:opacity .15s}
+.cal-action-btn:active{opacity:.7}
+.cal-action-btn.accent{background:color-mix(in srgb,var(--accent) 15%,transparent);border-color:color-mix(in srgb,var(--accent) 40%,transparent);color:var(--accent)}
+.cal-action-cancel{display:block;width:100%;padding:13px;border-radius:10px;border:none;background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;margin-top:4px}
+/* BMI dot on cal day */
+.cday-bmi{width:5px;height:5px;border-radius:50%;background:var(--pull);margin-top:2px}
+/* Body inline view in weekly */
+.body-inline{margin-top:10px;padding:10px 12px;background:color-mix(in srgb,var(--pull) 8%,transparent);border:1px solid color-mix(in srgb,var(--pull) 25%,transparent);border-radius:8px}
+.body-inline-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.body-inline-stat{text-align:center}
+.body-inline-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--pull)}
+.body-inline-lbl{font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px}
 
 /* CALENDAR */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0}
@@ -1443,19 +1461,28 @@ function loadCustomExercises(){
 }
 function saveCustomExercises(arr){localStorage.setItem('pt_custom_ex',JSON.stringify(arr));}
 function getSwappedExercise(exId){
-  try{return JSON.parse(sessionStorage.getItem('pt_swap_'+exId)||'null');}catch(e){return null;}
+  try{return JSON.parse(localStorage.getItem('pt_swap_'+exId)||'null');}catch(e){return null;}
 }
 function clearSwaps(){
-  Object.keys(sessionStorage).forEach(function(k){if(k.startsWith('pt_swap_'))sessionStorage.removeItem(k);});
+  Object.keys(localStorage).forEach(function(k){if(k.startsWith('pt_swap_'))localStorage.removeItem(k);});
 }
-function swapExercise(exId,subOrIdx){
-  var sub=typeof subOrIdx==='number'?SUBS[exId][subOrIdx]:subOrIdx;
-  sessionStorage.setItem('pt_swap_'+exId,JSON.stringify(sub));
+function resetSwapToOriginal(exId){
+  localStorage.removeItem('pt_swap_'+exId);
   if(mKey&&mType){
     var date=new Date(mKey+'T00:00:00'),pd=pplDay(date);
     var baseList=mType==='morning'?EX.morning:(EX[pd]||[]);
-  var customForDay=loadCustomExercises().filter(function(ex){return ex.day===(mType==='morning'?'morning':pd);});
-  var exList=baseList.concat(customForDay);
+    var customForDay=loadCustomExercises().filter(function(ex){return ex.day===(mType==='morning'?'morning':pd);});
+    buildModal(baseList.concat(customForDay),mType);
+  }
+}
+function swapExercise(exId,subOrIdx){
+  var sub=typeof subOrIdx==='number'?SUBS[exId][subOrIdx]:subOrIdx;
+  localStorage.setItem('pt_swap_'+exId,JSON.stringify(sub));
+  if(mKey&&mType){
+    var date=new Date(mKey+'T00:00:00'),pd=pplDay(date);
+    var baseList=mType==='morning'?EX.morning:(EX[pd]||[]);
+    var customForDay=loadCustomExercises().filter(function(ex){return ex.day===(mType==='morning'?'morning':pd);});
+    var exList=baseList.concat(customForDay);
     buildModal(exList,mType);
   }
 }
@@ -1545,9 +1572,9 @@ function showToast(msg,borderColor){
 // ── REST TIMER ─────────────────────────────────────────────────
 function parseRestSecs(restStr){
   if(!restStr)return 60;
-  if(restStr.indexOf('3-5')>-1)return 180;
-  if(restStr.indexOf('2-3')>-1)return 120;
-  if(restStr.indexOf('60-90')>-1)return 60;
+  if(restStr.indexOf('3-5')>-1)return 240;
+  if(restStr.indexOf('2-3')>-1)return 150;
+  if(restStr.indexOf('60-90')>-1)return 75;
   var m=restStr.match(/(\d+)\s*min/);if(m)return parseInt(m[1])*60;
   var s=restStr.match(/(\d+)\s*sec/);if(s)return parseInt(s[1]);
   return 60;
@@ -1868,7 +1895,6 @@ function rWeek(){
   h+='<button class="week-nav-btn" onclick="changeWeekOffset(1)">&#8250;</button>';
   h+='</div>';
   h+='<div class="ph" style="padding-top:10px"><div class="ph-sub" style="margin:0">'+fmtShort(days[0])+' - '+fmtShort(days[6])+'</div></div>';
-  h+='<div class="ph-sub">'+fmtShort(days[0])+' - '+fmtShort(days[6])+'</div></div>';
   h+='<div class="week-strip">';
   days.forEach(function(d,i){
     var key=toKey(d),st=dayStatus(key,d);
@@ -1906,11 +1932,17 @@ function rWeek(){
     h+='<div class="wdetail-row"><span class="wdetail-lbl" style="color:'+info.color+'">'+DAY_ICONS[spd]+' '+info.name+'</span>';
     h+='<span class="wdetail-val" style="color:'+(slog.ppl&&slog.ppl.done?'var(--success)':isFut?'var(--muted)':'var(--danger)')+'">'+
       (slog.ppl&&slog.ppl.done?'✓ Complete':isFut?'—':(slog.ppl&&slog.ppl.exercises&&Object.keys(slog.ppl.exercises).length)?'⚠️ Incomplete':'❌ Not logged')+'</span></div>';
-    var dayNotes=(slog.morning&&slog.morning.notes)||(slog.ppl&&slog.ppl.notes)||null;
-    var dayDur=(slog.morning&&slog.morning.duration)||(slog.ppl&&slog.ppl.duration)||0;
-    if(dayDur>0){h+='<div style="font-size:11px;color:var(--muted);padding:6px 0;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px">⏱️ Session duration: '+dayDur+' min</div>';}
-    if(dayNotes){
-      h+='<div style="margin-top:8px;padding:8px 10px;background:color-mix(in srgb,var(--morning) 6%,transparent);border-left:3px solid var(--morning);border-radius:0 6px 6px 0;font-size:12px;color:#a0a0b0;line-height:1.5">&#128221; '+dayNotes+'</div>';
+    var mNotesTxt=(slog.morning&&slog.morning.notes)||null;
+    var pNotesTxt=(slog.ppl&&slog.ppl.notes)||null;
+    var mDurTxt=(slog.morning&&slog.morning.duration)||0;
+    var pDurTxt=(slog.ppl&&slog.ppl.duration)||0;
+    var totalDur=(mDurTxt||0)+(pDurTxt||0);
+    if(totalDur>0){h+='<div style="font-size:11px;color:var(--muted);padding:6px 0;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px">⏱️ Session duration: '+totalDur+' min</div>';}
+    if(mNotesTxt){
+      h+='<div style="margin-top:8px;padding:8px 10px;background:color-mix(in srgb,var(--morning) 6%,transparent);border-left:3px solid var(--morning);border-radius:0 6px 6px 0;font-size:12px;color:#a0a0b0;line-height:1.5">&#128221; Morning: '+mNotesTxt+'</div>';
+    }
+    if(pNotesTxt){
+      h+='<div style="margin-top:6px;padding:8px 10px;background:color-mix(in srgb,var(--push) 6%,transparent);border-left:3px solid var(--push);border-radius:0 6px 6px 0;font-size:12px;color:#a0a0b0;line-height:1.5">&#128221; PPL: '+pNotesTxt+'</div>';
     }
     if(slog.ppl&&slog.ppl.done&&slog.ppl.exercises){
       h+='<div style="margin-top:10px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Logged Sets</div>';
@@ -1921,6 +1953,19 @@ function rWeek(){
         h+='<div class="exlog-row"><span>'+ex.name+'</span><span style="color:var(--muted);font-size:11px">'+sv+'</span></div>';
       });
     }
+  }
+  // Body metrics
+  var bodyData=loadBody(sk);
+  if(bodyData&&(bodyData.weight||bodyData.height)){
+    h+='<div class="body-inline">';
+    h+='<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--pull);margin-bottom:8px">⚖️ Body Metrics</div>';
+    h+='<div class="body-inline-row">';
+    if(bodyData.weight)h+='<div class="body-inline-stat"><div class="body-inline-val">'+bodyData.weight+'</div><div class="body-inline-lbl">kg</div></div>';
+    if(bodyData.height)h+='<div class="body-inline-stat"><div class="body-inline-val">'+bodyData.height+'</div><div class="body-inline-lbl">cm</div></div>';
+    if(bodyData.bmi)h+='<div class="body-inline-stat"><div class="body-inline-val">'+bodyData.bmi+'</div><div class="body-inline-lbl">BMI · '+bmiLabel(bodyData.bmi)+'</div></div>';
+    h+='</div>';
+    if(bodyData.note)h+='<div style="font-size:12px;color:#a0a0b0;line-height:1.5;margin-top:6px;border-top:1px solid color-mix(in srgb,var(--pull) 20%,transparent);padding-top:6px">'+bodyData.note+'</div>';
+    h+='</div>';
   }
   h+='</div>';
   // Missed reason
@@ -1958,7 +2003,134 @@ function changeWeekOffset(dir){
   rWeek();
 }
 
-// ── CALENDAR ───────────────────────────────────────────────────
+// ── BODY METRICS ──────────────────────────────────────────────
+function loadBody(key){var d=load();return(d.logs[key]&&d.logs[key].body)||null;}
+function saveBody(key,obj){
+  var d=load();
+  if(!d.logs[key])d.logs[key]={};
+  d.logs[key].body=obj;
+  save(d);
+}
+function calcBMI(weightKg,heightCm){
+  if(!weightKg||!heightCm||heightCm<=0)return null;
+  var h=heightCm/100;
+  return Math.round((weightKg/(h*h))*10)/10;
+}
+function bmiLabel(bmi){
+  if(!bmi)return'';
+  if(bmi<18.5)return'Underweight';
+  if(bmi<25)return'Normal';
+  if(bmi<30)return'Overweight';
+  return'Obese';
+}
+
+// ── CALENDAR DAY ACTION SHEET ──────────────────────────────────
+function tapCalDay(key){
+  // Remove existing sheet if any
+  var ex=document.getElementById('calActionSheet');if(ex)ex.remove();
+  var date=new Date(key+'T00:00:00');
+  var data=load();
+  var log=data.logs[key];
+  var hasLog=log&&(log.morning||log.ppl);
+  var hasBody=!!(log&&log.body&&(log.body.weight||log.body.height));
+  var label=date.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  var sheet=document.createElement('div');
+  sheet.id='calActionSheet';
+  sheet.className='cal-action-sheet';
+  var viewLabel=hasLog?'📋 View Day Data':'📅 View Day';
+  var viewSub=hasLog?'':'<div style="font-size:11px;color:var(--muted);margin-top:2px">No session logged yet</div>';
+  sheet.innerHTML='<div class="cal-action-inner">'
+    +'<div class="cal-action-date">'+label+'</div>'
+    +'<button class="cal-action-btn" onclick="calGoToDay(\''+key+'\')">'
+      +viewLabel+viewSub
+    +'</button>'
+    +'<button class="cal-action-btn accent" onclick="openBodySheet(\''+key+'\')">'
+      +(hasBody?'⚖️ Edit Body Metrics':'⚖️ Log Body Metrics')
+    +'</button>'
+    +'<button class="cal-action-cancel" onclick="this.closest(\'.cal-action-sheet\').remove()">Cancel</button>'
+    +'</div>';
+  sheet.addEventListener('click',function(e){if(e.target===sheet)sheet.remove();});
+  document.body.appendChild(sheet);
+}
+function calGoToDay(key){
+  var sheet=document.getElementById('calActionSheet');if(sheet)sheet.remove();
+  // Navigate to week tab, set correct week offset and day
+  var date=new Date(key+'T00:00:00');
+  var today=now();today.setHours(0,0,0,0);
+  var todayMon=getMondayOf(today);
+  var dateMon=getMondayOf(date);
+  var diff=Math.round((dateMon-todayMon)/(7*86400000));
+  weekOffset=diff;
+  var dow=date.getDay();
+  selWDay=dow===0?6:dow-1;
+  go('week',document.querySelectorAll('.nbtn')[1]);
+}
+function openBodySheet(key){
+  var sheet=document.getElementById('calActionSheet');if(sheet)sheet.remove();
+  var ex2=document.getElementById('bodySheet');if(ex2)ex2.remove();
+  var date=new Date(key+'T00:00:00');
+  var label=date.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  var existing=loadBody(key)||{};
+  var w=existing.weight||'',h=existing.height||'',note=existing.note||'';
+  var bmi=existing.bmi||'';
+  var wrap=document.createElement('div');
+  wrap.id='bodySheet';
+  wrap.className='cal-action-sheet';
+  wrap.innerHTML='<div class="cal-action-inner">'
+    +'<div class="cal-action-date">'+label+' — Body Metrics</div>'
+    +'<div class="body-sheet">'
+    +'<div class="body-metric-row">'
+    +'<div class="body-metric-group"><div class="body-metric-lbl">Weight (kg)</div>'
+    +'<input class="body-metric-inp" id="bsWeight" type="number" inputmode="decimal" placeholder="e.g. 72.5" value="'+w+'" oninput="updBodyBMI()"></div>'
+    +'<div class="body-metric-group"><div class="body-metric-lbl">Height (cm)</div>'
+    +'<input class="body-metric-inp" id="bsHeight" type="number" inputmode="decimal" placeholder="e.g. 170" value="'+h+'" oninput="updBodyBMI()"></div>'
+    +'</div>'
+    +'<div class="body-bmi-result" id="bsBMIResult">'+(bmi?'BMI '+bmi+' — '+bmiLabel(bmi):'')+'</div>'
+    +'<textarea class="body-note-area" id="bsNote" maxlength="500" placeholder="Any notes... (optional)" oninput="this.value=this.value.slice(0,500);this.nextElementSibling.textContent=this.value.length+\'/500\'">'+note+'</textarea>'
+    +'<div class="body-note-count">'+(note?note.length:0)+'/500</div>'
+    +'</div>'
+    +'<button class="save-btn" style="margin:0 20px 8px;width:calc(100% - 40px)" onclick="saveBodySheet(\''+key+'\')">Save ✓</button>'
+    +'<button class="cal-action-cancel" onclick="this.closest(\'#bodySheet\').remove()">Cancel</button>'
+    +'</div>';
+  wrap.addEventListener('click',function(e){if(e.target===wrap)wrap.remove();});
+  document.body.appendChild(wrap);
+  // Show BMI if existing values
+  if(w&&h)updBodyBMI();
+}
+function updBodyBMI(){
+  var wEl=document.getElementById('bsWeight'),hEl=document.getElementById('bsHeight');
+  var res=document.getElementById('bsBMIResult');
+  if(!wEl||!hEl||!res)return;
+  var w=parseFloat(wEl.value),h=parseFloat(hEl.value);
+  var bmi=calcBMI(w,h);
+  if(bmi){
+    res.style.display='block';
+    res.textContent='BMI '+bmi+' — '+bmiLabel(bmi);
+  }else{
+    res.style.display='none';
+  }
+}
+function saveBodySheet(key){
+  var wEl=document.getElementById('bsWeight'),hEl=document.getElementById('bsHeight');
+  var noteEl=document.getElementById('bsNote');
+  var w=wEl?parseFloat(wEl.value)||null:null;
+  var h=hEl?parseFloat(hEl.value)||null:null;
+  var bmi=calcBMI(w,h);
+  var note=noteEl?noteEl.value.slice(0,500):'';
+  var obj={};
+  if(w)obj.weight=w;
+  if(h)obj.height=h;
+  if(bmi)obj.bmi=bmi;
+  if(note)obj.note=note;
+  if(!Object.keys(obj).length){showToast('Nothing to save — enter at least weight or height','var(--muted)');return;}
+  saveBody(key,obj);
+  var wrap=document.getElementById('bodySheet');if(wrap)wrap.remove();
+  rCal();
+  showToast('⚖️ Body metrics saved','var(--pull)');
+}
+
+// ── CALENDAR ──────────────────────────────────────────────────
+
 function rCal(){
   var yr=calDate.getFullYear(),mo=calDate.getMonth();
   var first=new Date(yr,mo,1),last=new Date(yr,mo+1,0);
@@ -1974,6 +2146,7 @@ function rCal(){
   h+='<div class="cal-grid">';
   ['M','T','W','T','F','S','S'].forEach(function(d){h+='<div class="cal-dn">'+d+'</div>';});
   for(var i=0;i<offset;i++)h+='<div class="cday"></div>';
+  var calLogs=load().logs;
   for(var d=1;d<=last.getDate();d++){
     var date=new Date(yr,mo,d),key=toKey(date);
     var st=dayStatus(key,date);
@@ -1988,9 +2161,12 @@ function rCal(){
       else if(st==='rest-miss'){cls='rest-miss';dotC='var(--muted)';}
       else if(st==='missed'){cls='missed';dotC='var(--danger)';}
     }
-    h+='<div class="cday '+cls+(isT?' today':'')+'">';
+    var hasBody=!!(calLogs[key]&&calLogs[key].body&&(calLogs[key].body.weight||calLogs[key].body.height));
+    h+='<div class="cday '+cls+(isT?' today':'')+'" onclick="tapCalDay(\''+key+'\')">';
     h+='<div class="cday-num">'+d+'</div>';
-    h+='<div class="cday-dot" style="background:'+dotC+'"></div></div>';
+    h+='<div class="cday-dot" style="background:'+dotC+'"></div>';
+    if(hasBody)h+='<div class="cday-bmi"></div>';
+    h+='</div>';
   }
   h+='</div>';
   h+='<div class="legend">';
@@ -2226,7 +2402,7 @@ function rProg(){
   h+='</div></div>';
 
   h+='<div class="sec-title">Data</div>';
-  h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v2.2</span></div>';
+  h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v2.5.2</span></div>';
   h+='<div style="display:flex;gap:10px;padding:0 20px">';
   h+='<button onclick="exportData()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">&#11014; Export</button>';
   h+='<button onclick="document.getElementById(\'importFile\').click()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">&#11015; Import</button>';
@@ -2529,7 +2705,10 @@ function openModal(type,key){
   mType=type;mKey=key;
   var date=new Date(key+'T00:00:00');
   var pd=pplDay(date);
-  var exList=type==='morning'?EX.morning:EX[pd];
+  var dayKey=type==='morning'?'morning':pd;
+  var baseList=type==='morning'?EX.morning:EX[pd];
+  var customForDay=loadCustomExercises().filter(function(ex){return ex.day===dayKey;});
+  var exList=baseList.concat(customForDay);
   var log=load().logs[key]||{};
   var existing=(type==='morning'?log.morning:log.ppl)||{};
   mState={};
@@ -2538,15 +2717,19 @@ function openModal(type,key){
     mState[ex.id]={
       done:!!(prev&&prev.done),
       sets:prev&&prev.sets&&prev.sets.length?prev.sets:
-        Array.from({length:ex.sets},function(){return ex.type==='time'?{time:''}:ex.type==='weighted'?{reps:'',weight:''}:{reps:''};})
+        Array.from({length:ex.sets||3},function(){return ex.type==='time'?{time:''}:ex.type==='weighted'?{reps:'',weight:''}:{reps:''};})
     };
   });
   var accent=type==='morning'?'#fbbf24':(pd?PPL[pd].color:'#fbbf24');
   document.getElementById('modal').style.setProperty('--accent',accent);
   document.getElementById('mTitle').textContent=type==='morning'?'Morning Routine':(pd?PPL[pd].name:'');
   mNotes=(existing&&existing.notes)||'';
-  var nowT=new Date();
-  mStartHHMM=(nowT.getHours()<10?'0':'')+nowT.getHours()+':'+(nowT.getMinutes()<10?'0':'')+nowT.getMinutes();
+  if(existing&&existing.startTime){
+    mStartHHMM=existing.startTime;
+  }else{
+    var nowT=new Date();
+    mStartHHMM=(nowT.getHours()<10?'0':'')+nowT.getHours()+':'+(nowT.getMinutes()<10?'0':'')+nowT.getMinutes();
+  }
   var wuItems=type==='morning'?[]:WARMUPS[pd]||[];
   var cdItems=type==='morning'?[]:COOLDOWNS[pd]||[];
   var exWu=(existing&&existing.warmup&&existing.warmup.items)||[];
@@ -2555,7 +2738,7 @@ function openModal(type,key){
   mCooldown=cdItems.map(function(_,i){return !!(exCd[i]);});
   mWarmupOpen=mWarmup.some(function(x){return x;});
   mCooldownOpen=mCooldown.some(function(x){return x;});
-  mStartTime=Date.now();
+  if(!existing||!existing.done)mStartTime=Date.now();
   buildModal(exList,type);
   document.getElementById('overlay').classList.add('open');
 }
@@ -2603,7 +2786,7 @@ function buildModal(exList,type){
     h+='<button id="exchk_'+ex.id+'" class="lex-chk'+(st.done?' done':'')+'" onclick="togEx(\''+ex.id+'\',this)">&#10003;</button>';
     var bl=bestLabel(ex.id,ex);
     var ph=getProgHint(ex.id,ex);
-    h+='<div style="flex:1"><div class="lex-name">'+ex.name+'</div>';
+    h+='<div style="flex:1"><div class="lex-name">'+displayEx.name+'</div>';
     if(ex.muscles)h+='<div style="font-size:10px;color:var(--muted);margin-top:1px"><span style="color:var(--accent)">&#9679;</span> '+ex.muscles.primary+' <span style="opacity:.4">·</span> '+ex.muscles.secondary+'</div>';
     if(bl)h+='<div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px">'+bl+'</div>';
     h+='</div>';
@@ -2612,14 +2795,14 @@ function buildModal(exList,type){
     h+='<button class="lex-info-btn" onclick="togInfo(\''+ex.id+'\',this)" title="How to do it">?</button>';
     h+='</div>';
     if(warmW>0&&mType!=='morning')h+='<div class="warmup-hint">🔥 Warm-up set: '+warmW+'kg × 10 reps before working sets</div>';
-    if(swapped)h+='<div style="font-size:10px;padding:0 20px 6px;color:var(--legs)">🔄 Swapped to: '+swapped.name+'</div>';
-    var activeEx=getActiveExercise(ex);
-    if(activeEx._isAlt)h+='<div style="font-size:10px;padding:0 20px 4px;color:var(--accent);font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px">📋 How-to: '+activeEx.name+'</div>';
+    if(swapped)h+='<div style="font-size:10px;padding:0 20px 6px;color:var(--legs)">🔄 Swapped from: '+ex.name+'</div>';
+    var howToEx=swapped?{steps:swapped.steps||[],tip:swapped.tip||null}:getActiveExercise(ex);
+    if(!swapped&&howToEx._isAlt)h+='<div style="font-size:10px;padding:0 20px 4px;color:var(--accent);font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px">📋 How-to: '+howToEx.name+'</div>';
     h+='<div class="lex-howto" id="info_'+ex.id+'">';
     h+='<ul class="lex-steps">';
-    activeEx.steps.forEach(function(s){h+='<li>'+s+'</li>';});
+    howToEx.steps.forEach(function(s){h+='<li>'+s+'</li>';});
     h+='</ul>';
-    if(activeEx.tip)h+='<div class="lex-tip">'+activeEx.tip+'</div>';
+    if(howToEx.tip)h+='<div class="lex-tip">'+howToEx.tip+'</div>';
     h+='</div>';
     var dl=isDeloadWeek();
     h+='<button class="autofill-btn" onclick="fillRec(\''+ex.id+'\')">'+(dl?'⚠️ Auto-fill (Deload 60%)':'✨ Auto-fill Recommendation')+'</button>';
@@ -2627,19 +2810,17 @@ function buildModal(exList,type){
     st.sets.forEach(function(s,si){
       var lbl=ex.sets>1?'S'+(si+1):'x';
       h+='<div class="set-row"><button id="setchk_'+ex.id+'_'+si+'" class="set-chk'+(st.sets[si].done?' done':'')+'" onclick="togSet(\''+ex.id+'\','+si+',this)">&#10003;</button><div class="set-lbl">'+lbl+'</div>';
-      if(true){
-        if(ex.type==='time'){
-          h+='<input id="inp_'+ex.id+'_'+si+'_time" class="sinput" type="number" inputmode="numeric" placeholder="sec" value="'+(s.time||'')+'" oninput="updSet(\''+ex.id+'\','+si+',\'time\',this.value)">';
-          h+='<div class="sinput-lbl">sec</div>';
-        } else if(ex.type==='weighted'){
-          h+='<input id="inp_'+ex.id+'_'+si+'_reps" class="sinput" type="number" inputmode="decimal" placeholder="reps" value="'+(s.reps||'')+'" oninput="updSet(\''+ex.id+'\','+si+',\'reps\',this.value)">';
-          h+='<div class="sinput-lbl">reps</div>';
-          h+='<input id="inp_'+ex.id+'_'+si+'_weight" class="sinput" type="number" inputmode="decimal" placeholder="kg" value="'+(s.weight||'')+'" oninput="updSet(\''+ex.id+'\','+si+',\'weight\',this.value)">';
-          h+='<div class="sinput-lbl">kg</div>';
-        } else {
-          h+='<input id="inp_'+ex.id+'_'+si+'_reps" class="sinput" type="number" inputmode="numeric" placeholder="reps" value="'+(s.reps||'')+'" oninput="updSet(\''+ex.id+'\','+si+',\'reps\',this.value)">';
-          h+='<div class="sinput-lbl">reps</div>';
-        }
+      if(ex.type==='time'){
+        h+='<input id="inp_'+ex.id+'_'+si+'_time" class="sinput" type="number" inputmode="numeric" placeholder="sec" value="'+(s.time||'')+'" oninput="updSet(\''+ex.id+'\','+si+',\'time\',this.value)">';
+        h+='<div class="sinput-lbl">sec</div>';
+      } else if(ex.type==='weighted'){
+        h+='<input id="inp_'+ex.id+'_'+si+'_reps" class="sinput" type="number" inputmode="decimal" placeholder="reps" value="'+(s.reps||'')+'" oninput="updSet(\''+ex.id+'\','+si+',\'reps\',this.value)">';
+        h+='<div class="sinput-lbl">reps</div>';
+        h+='<input id="inp_'+ex.id+'_'+si+'_weight" class="sinput" type="number" inputmode="decimal" placeholder="kg" value="'+(s.weight||'')+'" oninput="updSet(\''+ex.id+'\','+si+',\'weight\',this.value)">';
+        h+='<div class="sinput-lbl">kg</div>';
+      } else {
+        h+='<input id="inp_'+ex.id+'_'+si+'_reps" class="sinput" type="number" inputmode="numeric" placeholder="reps" value="'+(s.reps||'')+'" oninput="updSet(\''+ex.id+'\','+si+',\'reps\',this.value)">';
+        h+='<div class="sinput-lbl">reps</div>';
       }
       h+='<input id="inp_'+ex.id+'_'+si+'_rpe" class="sinput rpe-inp" type="number" inputmode="numeric" placeholder="RPE" min="1" max="10" value="'+(s.rpe||'')+'" oninput="updSet(\''+ex.id+'\','+si+',\'rpe\',this.value)">';
       h+='<div class="rpe-lbl">rpe</div>';
@@ -2655,10 +2836,12 @@ function buildModal(exList,type){
     if(SUBS[ex.id]){
       h+='<div class="sub-panel" id="submodal_'+ex.id+'">';
       h+='<div class="sub-panel-title">Swap this exercise</div>';
-      h+='<div class="miss-btns">'+renderSubButtons(ex,'modal')+'</div>';
+      if(swapped)h+='<button class="miss-btn sel" style="margin-bottom:8px" onclick="resetSwapToOriginal(\''+ex.id+'\')" >↩ Use Original: '+ex.name+'</button>';
       SUBS[ex.id].forEach(function(s,si){
-        h+='<div class="sub-item"><div><div style="font-size:13px">'+s.name+'</div><div style="font-size:11px;color:var(--muted)">'+s.muscles+'</div></div>';
-        h+='<button class="sub-use-btn" onclick="swapExercise(\''+ex.id+'\','+si+')">Use</button></div>';
+        var isCurrent=swapped&&swapped.name===s.name;
+        h+='<div class="sub-item"><div><div style="font-size:13px">'+(isCurrent?'✓ ':'')+s.name+'</div><div style="font-size:11px;color:var(--muted)">'+s.muscles+'</div></div>';
+        if(!isCurrent)h+='<button class="sub-use-btn" onclick="swapExercise(\''+ex.id+'\','+si+')">Use</button>';
+        h+='</div>';
       });
       h+='</div>';
     }
@@ -2688,8 +2871,8 @@ function buildModal(exList,type){
   }
   h+='<div class="rpe-help">&#128161; <strong>RPE</strong> (Rate of Perceived Exertion): 1=very easy, 5=moderate, 8=hard, 10=max effort. Optional per set.</div>';
   h+='<div class="notes-lbl">Session Notes</div>';
-  h+='<textarea class="notes-area" id="sessionNotes" placeholder="How did it feel? Anything to note..." maxlength="300" oninput="mNotes=this.value.slice(0,300);this.value=mNotes;updNotesCount()" onchange="mNotes=this.value.slice(0,300)">'+mNotes+'</textarea>';
-  h+='<div class="notes-count" id="notesCount">'+(mNotes?mNotes.length:0)+'/300</div>';
+  h+='<textarea class="notes-area" id="sessionNotes" placeholder="How did it feel? Anything to note..." maxlength="500" oninput="mNotes=this.value.slice(0,500);this.value=mNotes;updNotesCount()" onchange="mNotes=this.value.slice(0,500)">'+mNotes+'</textarea>';
+  h+='<div class="notes-count" id="notesCount">'+(mNotes?mNotes.length:0)+'/500</div>';
   // ── Session time inputs ──
   h+='<div class="session-time-row">';
   h+='<div class="stime-group"><div class="stime-lbl">Started</div><input class="stime-inp" type="time" id="stimeStart" value="'+mStartHHMM+'" onchange="calcManualDuration()"></div>';
@@ -2702,7 +2885,7 @@ function buildModal(exList,type){
 function updNotesCount(){
   var ta=document.getElementById('sessionNotes');
   var ct=document.getElementById('notesCount');
-  if(ta&&ct)ct.textContent=(ta.value?ta.value.length:0)+'/300';
+  if(ta&&ct)ct.textContent=(ta.value?ta.value.length:0)+'/500';
 }
 function togSubModal(exId){
   var panel=document.getElementById('submodal_'+exId);
@@ -2733,12 +2916,6 @@ function togEx(id,btn){
 function updSet(id,si,field,val){
   if(mState[id]&&mState[id].sets&&mState[id].sets[si]!=null){
     mState[id].sets[si][field]=val===''?'':parseFloat(val);
-    var hasData=mState[id].sets.some(function(s){return Object.entries(s).some(function(e){return e[0]!=='done'&&e[1]!==''&&e[1]!=null;});});
-    if(hasData&&!mState[id].done){
-      mState[id].done=true;
-      var mc=document.getElementById('exchk_'+id);
-      if(mc)mc.classList.add('done');
-    }
   }
 }
 function saveSession(){
@@ -2767,6 +2944,7 @@ function saveSession(){
     if(manDur>0)duration=manDur;
   }
   data.logs[mKey][mType].notes=mNotes;
+  if(stEl&&stEl.value)data.logs[mKey][mType].startTime=stEl.value;
   if(duration>0)data.logs[mKey][mType].duration=duration;
   // Save warmup/cooldown
   if(mWarmup.length){data.logs[mKey][mType].warmup={items:mWarmup.slice(),done:mWarmup.every(function(x){return x;})};}
@@ -2784,8 +2962,26 @@ function saveSession(){
 }
 function togSet(id,si,btn){
   if(!mState[id]||!mState[id].sets[si])return;
-  mState[id].sets[si].done=!mState[id].sets[si].done;
-  btn.classList.toggle('done',mState[id].sets[si].done);
+  var nowDone=!mState[id].sets[si].done;
+  // Copy from previous set when ticking ON (not unticking), for sets after the first
+  if(nowDone&&si>0){
+    var prev=mState[id].sets[si-1];
+    var curr=mState[id].sets[si];
+    var prevHasData=(prev.reps!=null&&prev.reps!=='')||(prev.weight!=null&&prev.weight!=='')||(prev.time!=null&&prev.time!=='');
+    var currHasData=(curr.reps!=null&&curr.reps!=='')||(curr.weight!=null&&curr.weight!=='')||(curr.time!=null&&curr.time!=='');
+    if(prevHasData){
+      var doCopy=true;
+      if(currHasData)doCopy=confirm('Copy Set '+(si)+' values to Set '+(si+1)+'?');
+      if(doCopy){
+        if(prev.reps!=null){curr.reps=prev.reps;var er=document.getElementById('inp_'+id+'_'+si+'_reps');if(er)er.value=prev.reps;}
+        if(prev.weight!=null){curr.weight=prev.weight;var ew=document.getElementById('inp_'+id+'_'+si+'_weight');if(ew)ew.value=prev.weight;}
+        if(prev.time!=null){curr.time=prev.time;var et=document.getElementById('inp_'+id+'_'+si+'_time');if(et)et.value=prev.time;}
+        if(prev.rpe!=null&&prev.rpe!==''){curr.rpe=prev.rpe;var ep=document.getElementById('inp_'+id+'_'+si+'_rpe');if(ep)ep.value=prev.rpe;}
+      }
+    }
+  }
+  mState[id].sets[si].done=nowDone;
+  btn.classList.toggle('done',nowDone);
   btn.classList.add('popped');
   setTimeout(function(){btn.classList.remove('popped');},300);
   var allDone=mState[id].sets.every(function(s){return !!s.done;});
@@ -2793,7 +2989,6 @@ function togSet(id,si,btn){
   var mainChk=document.getElementById('exchk_'+id);
   if(mainChk)mainChk.classList.toggle('done',allDone);
   if(allDone){
-    // haptic flash
     var lexDiv=mainChk&&mainChk.closest?mainChk.closest('.lex'):null;
     if(lexDiv){lexDiv.classList.add('flash-done');setTimeout(function(){lexDiv.classList.remove('flash-done');},600);}
   }
@@ -2903,7 +3098,7 @@ function setReason(key,reason){
 }
 function closeModal(){
   document.getElementById('overlay').classList.remove('open');
-  mType=null;mKey=null;mState={};mNotes='';
+  mType=null;mKey=null;mState={};mNotes='';mStartHHMM='';
   stopRestTimer();
   mWarmup=[];mCooldown=[];mWarmupOpen=false;mCooldownOpen=false;
   // Don't clear swaps here - keep them for session
@@ -2916,8 +3111,8 @@ function toggleProgSec(id){
   progSections[id]=!progSections[id];
   var body=document.getElementById('ps_'+id);
   var arrow=document.getElementById('pa_'+id);
-  if(body)body.style.maxHeight=progSections[id]?'0':'2000px';
-  if(arrow)arrow.classList.toggle('open',!progSections[id]);
+  if(body)body.style.maxHeight=progSections[id]?'2000px':'0';
+  if(arrow)arrow.classList.toggle('open',progSections[id]);
 }
 function render1RM(){
   var sel=document.getElementById('rmSel');
