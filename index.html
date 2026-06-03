@@ -1796,7 +1796,7 @@ var mCooldown=[];
 var mWarmupOpen=false;
 var mCooldownOpen=false;
 // Session time
-var mStartHHMM='';
+var mStartHHMM='',mStartConfirmed=false,mPrevNotes='';
 
 // Navigation
 function go(name,btn){
@@ -1971,27 +1971,27 @@ function rWeek(){
     h+='<div class="wdetail-row"><span class="wdetail-lbl" style="color:'+info.color+'">'+DAY_ICONS[spd]+' '+info.name+'</span>';
     h+='<span class="wdetail-val" style="color:'+(slog.ppl&&slog.ppl.done?'var(--success)':isFut?'var(--muted)':'var(--danger)')+'">'+
       (slog.ppl&&slog.ppl.done?'✓ Complete':isFut?'—':(slog.ppl&&slog.ppl.exercises&&Object.keys(slog.ppl.exercises).length)?'⚠️ Incomplete':'❌ Not logged')+'</span></div>';
-    var mNotesTxt=(slog.morning&&slog.morning.notes)||null;
-    var pNotesTxt=(slog.ppl&&slog.ppl.notes)||null;
-    var mDurTxt=(slog.morning&&slog.morning.duration)||0;
-    var pDurTxt=(slog.ppl&&slog.ppl.duration)||0;
-    var totalDur=(mDurTxt||0)+(pDurTxt||0);
-    if(totalDur>0){h+='<div style="font-size:11px;color:var(--muted);padding:6px 0;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px">⏱️ Session duration: '+totalDur+' min</div>';}
-    if(mNotesTxt){
-      h+='<div style="margin-top:8px;padding:8px 10px;background:color-mix(in srgb,var(--morning) 6%,transparent);border-left:3px solid var(--morning);border-radius:0 6px 6px 0;font-size:12px;color:#a0a0b0;line-height:1.5">&#128221; Morning: '+mNotesTxt+'</div>';
-    }
-    if(pNotesTxt){
-      h+='<div style="margin-top:6px;padding:8px 10px;background:color-mix(in srgb,var(--push) 6%,transparent);border-left:3px solid var(--push);border-radius:0 6px 6px 0;font-size:12px;color:#a0a0b0;line-height:1.5">&#128221; PPL: '+pNotesTxt+'</div>';
-    }
-    if(slog.ppl&&slog.ppl.done&&slog.ppl.exercises){
-      h+='<div style="margin-top:10px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Logged Sets</div>';
-      EX[spd].forEach(function(ex){
-        var el=slog.ppl.exercises[ex.id];
-        if(!el||!el.sets||!el.sets.length)return;
-        var sv=el.sets.map(function(s){return s.time?s.time+'s':s.weight?s.reps+'r x '+s.weight+'kg':s.bands&&s.bands.length?((s.reps||'?')+'r '+getBandDisplayText(s.bands)):(s.reps||'?')+'r';}).join(' | ');
-        h+='<div class="exlog-row"><span>'+ex.name+'</span><span style="color:var(--muted);font-size:11px">'+sv+'</span></div>';
-      });
-    }
+  }
+  var mNotesTxt=(slog.morning&&slog.morning.notes)||null;
+  var pNotesTxt=(!srest&&slog.ppl&&slog.ppl.notes)||null;
+  var mDurTxt=(slog.morning&&slog.morning.duration)||0;
+  var pDurTxt=(!srest&&slog.ppl&&slog.ppl.duration)||0;
+  var totalDur=(mDurTxt||0)+(pDurTxt||0);
+  if(totalDur>0){h+='<div style="font-size:11px;color:var(--muted);padding:6px 0;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px">⏱️ Session duration: '+totalDur+' min</div>';}
+  if(mNotesTxt){
+    h+='<div style="margin-top:8px;padding:8px 10px;background:color-mix(in srgb,var(--morning) 6%,transparent);border-left:3px solid var(--morning);border-radius:0 6px 6px 0;font-size:12px;color:#a0a0b0;line-height:1.5">&#128221; Morning: '+mNotesTxt+'</div>';
+  }
+  if(pNotesTxt){
+    h+='<div style="margin-top:6px;padding:8px 10px;background:color-mix(in srgb,var(--push) 6%,transparent);border-left:3px solid var(--push);border-radius:0 6px 6px 0;font-size:12px;color:#a0a0b0;line-height:1.5">&#128221; PPL: '+pNotesTxt+'</div>';
+  }
+  if(!srest&&slog.ppl&&slog.ppl.done&&slog.ppl.exercises){
+    h+='<div style="margin-top:10px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Logged Sets</div>';
+    EX[spd].forEach(function(ex){
+      var el=slog.ppl.exercises[ex.id];
+      if(!el||!el.sets||!el.sets.length)return;
+      var sv=el.sets.map(function(s){return s.time?s.time+'s':s.weight?s.reps+'r x '+s.weight+'kg':s.bands&&s.bands.length?((s.reps||'?')+'r '+getBandDisplayText(s.bands)):(s.reps||'?')+'r';}).join(' | ');
+      h+='<div class="exlog-row"><span>'+ex.name+'</span><span style="color:var(--muted);font-size:11px">'+sv+'</span></div>';
+    });
   }
   // Body metrics
   var bodyData=loadBody(sk);
@@ -2213,6 +2213,7 @@ function rCal(){
   h+='<div class="leg-item"><div class="leg-dot" style="background:var(--morning)"></div>Partial</div>';
   h+='<div class="leg-item"><div class="leg-dot" style="background:#f97316"></div>Incomplete</div>';
   h+='<div class="leg-item"><div class="leg-dot" style="background:var(--rest)"></div>Rest done</div>';
+  h+='<div class="leg-item"><div class="leg-dot" style="background:color-mix(in srgb,var(--rest) 60%,transparent)"></div>Rest + morning</div>';
   h+='<div class="leg-item"><div class="leg-dot" style="background:var(--danger)"></div>Missed</div>';
   h+='<div class="leg-item"><div class="leg-dot" style="background:var(--muted)"></div>Rest skipped</div>';
   h+='</div>';
@@ -2602,7 +2603,6 @@ function rProg(){
   h+='</div>';
   h+='<div style="padding:4px 20px 10px;font-size:11px;color:var(--muted);text-align:center">This clears all logs, streaks, and PRs. Export first if you want a backup.</div>';
   if(!total){
-    h='<div class="ph"><div class="ph-tag" style="color:var(--morning)">ProTrain Program</div><div class="ph-title">Progress</div></div>';
     h+='<div class="empty-state"><div class="empty-icon">📊</div>';
     h+='<div class="empty-title">No Data Yet</div>';
     h+='<div class="empty-desc">Start logging sessions to see your streaks, volume charts, plateau detection, 1RM estimates and more.</div>';
@@ -2912,11 +2912,31 @@ function openModal(type,key){
   document.getElementById('modal').style.setProperty('--accent',accent);
   document.getElementById('mTitle').textContent=type==='morning'?'Morning Routine':(pd?PPL[pd].name:'');
   mNotes=(existing&&existing.notes)||'';
+  // Find most recent prior session of same type with notes
+  mPrevNotes='';
+  if(!mNotes){
+    var allLogs=load().logs;
+    var pastKeys=Object.keys(allLogs).filter(function(k){return k<key;}).sort().reverse();
+    for(var pi=0;pi<pastKeys.length;pi++){
+      var pl=allLogs[pastKeys[pi]];
+      var ps=type==='morning'?pl.morning:pl.ppl;
+      if(ps&&ps.notes){mPrevNotes=ps.notes;break;}
+    }
+  }
   if(existing&&existing.startTime){
     mStartHHMM=existing.startTime;
+    mStartConfirmed=true;
   }else{
-    var nowT=new Date();
-    mStartHHMM=(nowT.getHours()<10?'0':'')+nowT.getHours()+':'+(nowT.getMinutes()<10?'0':'')+nowT.getMinutes();
+    var ssKey='pt_s_'+key+'_'+type;
+    var stored=sessionStorage.getItem(ssKey);
+    if(stored){
+      mStartHHMM=stored;
+    }else{
+      var nowT=new Date();
+      mStartHHMM=(nowT.getHours()<10?'0':'')+nowT.getHours()+':'+(nowT.getMinutes()<10?'0':'')+nowT.getMinutes();
+      sessionStorage.setItem(ssKey,mStartHHMM);
+    }
+    mStartConfirmed=false;
   }
   var wuItems=type==='morning'?[]:WARMUPS[pd]||[];
   var cdItems=type==='morning'?[]:COOLDOWNS[pd]||[];
@@ -3059,12 +3079,13 @@ function buildModal(exList,type){
   }
   h+='<div class="rpe-help">&#128161; <strong>RPE</strong> (Rate of Perceived Exertion): 1=very easy, 5=moderate, 8=hard, 10=max effort. Optional per set.</div>';
   h+='<div class="notes-lbl">Session Notes</div>';
-  h+='<textarea class="notes-area" id="sessionNotes" placeholder="How did it feel? Anything to note..." maxlength="500" oninput="mNotes=this.value.slice(0,500);this.value=mNotes;updNotesCount()" onchange="mNotes=this.value.slice(0,500)">'+mNotes+'</textarea>';
+  var notesPH=mPrevNotes?'Last time: '+mPrevNotes.slice(0,60)+(mPrevNotes.length>60?'…':''):'How did it feel? Anything to note...';
+  h+='<textarea class="notes-area" id="sessionNotes" placeholder="'+notesPH.replace(/"/g,'&quot;')+'" maxlength="500" oninput="mNotes=this.value.slice(0,500);this.value=mNotes;updNotesCount()" onchange="mNotes=this.value.slice(0,500)">'+mNotes+'</textarea>';
   h+='<div class="notes-count" id="notesCount">'+(mNotes?mNotes.length:0)+'/500</div>';
   // ── Session time inputs ──
   h+='<div class="session-time-row">';
-  h+='<div class="stime-group"><div class="stime-lbl">Started</div><input class="stime-inp" type="time" id="stimeStart" value="'+mStartHHMM+'" onchange="calcManualDuration()"></div>';
-  h+='<div class="stime-group"><div class="stime-lbl">Ended</div><input class="stime-inp" type="time" id="stimeEnd" onchange="calcManualDuration()"></div>';
+  h+='<div class="stime-group"><div class="stime-lbl">Started</div><input class="stime-inp" type="time" id="stimeStart" value="'+mStartHHMM+'" onchange="mStartConfirmed=true;calcManualDuration()"></div>';
+  h+='<div class="stime-group"><div class="stime-lbl">Ended</div><input class="stime-inp" type="time" id="stimeEnd" onchange="mStartConfirmed=true;calcManualDuration()"></div>';
   h+='</div>';
   h+='<div class="stime-calc" id="stimeDur"></div>';
   h+='<button class="save-btn" onclick="saveSession()">Save Session &#10003;</button>';
@@ -3132,11 +3153,12 @@ function saveSession(){
     if(manDur>0)duration=manDur;
   }
   data.logs[mKey][mType].notes=mNotes;
-  if(stEl&&stEl.value)data.logs[mKey][mType].startTime=stEl.value;
+  if(stEl&&stEl.value&&mStartConfirmed)data.logs[mKey][mType].startTime=stEl.value;
   if(duration>0)data.logs[mKey][mType].duration=duration;
   // Save warmup/cooldown
   if(mWarmup.length){data.logs[mKey][mType].warmup={items:mWarmup.slice(),done:mWarmup.every(function(x){return x;})};}
   if(mCooldown.length){data.logs[mKey][mType].cooldown={items:mCooldown.slice(),done:mCooldown.every(function(x){return x;})};}
+  sessionStorage.removeItem('pt_s_'+mKey+'_'+mType);
   save(data);
   closeModal();
   try{render(curScreen);}catch(re){console.warn('render error',re);}
@@ -3145,6 +3167,9 @@ function saveSession(){
     var prCount=parseInt(localStorage.getItem('ppl_pr_count4')||'0')+prNames.length;
     localStorage.setItem('ppl_pr_count4',prCount);
     showToast('🏆 New PR! '+prNames.slice(0,2).join(', ')+(prNames.length>2?' +more':''),'#facc15');
+  } else if(!allDone){
+    var undone=Object.values(mState).filter(function(s){return !s.done;}).length;
+    showToast('Saved as incomplete — '+undone+' exercise'+(undone!==1?'s':'')+' left','#f97316');
   }
   }catch(err){showToast('Error saving: '+err.message,'var(--danger)');console.error('saveSession error:',err);}
 }
@@ -3286,7 +3311,7 @@ function setReason(key,reason){
 }
 function closeModal(){
   document.getElementById('overlay').classList.remove('open');
-  mType=null;mKey=null;mState={};mNotes='';mStartHHMM='';
+  mType=null;mKey=null;mState={};mNotes='';mPrevNotes='';mStartHHMM='';mStartConfirmed=false;
   stopRestTimer();
   mWarmup=[];mCooldown=[];mWarmupOpen=false;mCooldownOpen=false;
   // Don't clear swaps here - keep them for session
@@ -3366,6 +3391,7 @@ function exportData(){
   var bands={};
   for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith('band_'))bands[k]=localStorage.getItem(k);}
   data._meta={
+    version:'v3.0',
     prCount:localStorage.getItem('ppl_pr_count4'),
     theme:localStorage.getItem('ppl_theme'),
     font:localStorage.getItem('ppl_font'),
@@ -3379,7 +3405,7 @@ function exportData(){
   var a=document.createElement('a');
   var d=new Date();
   a.href=url;
-  a.download='ppl-backup-'+d.toISOString().slice(0,10)+'.json';
+  a.download='protrain-backup-'+d.toISOString().slice(0,10)+'.json';
   a.click();
   URL.revokeObjectURL(url);
   var msg=document.getElementById('dataMsg');
@@ -3406,8 +3432,15 @@ function importData(e){
         delete existing._meta;
       }
       save(existing);
+      var fileVer=parsed._meta&&parsed._meta.version;
+      var curVer='v3.0';
       var msg=document.getElementById('dataMsg');
       if(msg){msg.style.color='var(--success)';msg.textContent='Data imported! '+Object.keys(parsed.logs).length+' days loaded.';}
+      if(!fileVer){
+        showToast('No version tag — older backup. Exercise history may not match current exercises.','#f97316');
+      } else if(fileVer!==curVer){
+        showToast('Imported from '+fileVer+' — some fields may differ from '+curVer+'.','#f97316');
+      }
       render(curScreen);
     }catch(err){
       var msg=document.getElementById('dataMsg');
