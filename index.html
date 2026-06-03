@@ -555,7 +555,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
     <div class="modal-handle"></div>
     <div class="modal-hdr">
       <div class="modal-title" id="mTitle">Log</div>
-      <button class="modal-x" onclick="closeModal()">x</button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button id="copyLastBtn" onclick="copyLastSession()" style="display:none;font-size:11px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;cursor:pointer">📋 COPY LAST</button>
+        <button class="modal-x" onclick="closeModal()">x</button>
+      </div>
     </div>
     <div id="mBody"></div>
   </div>
@@ -1073,9 +1076,10 @@ function getWeekDays(d){
 
 // Streak & status
 function dayComplete(key,date){
+  if(isRest(date))return true;
   var log=load().logs[key];
   if(!log)return false;
-  return isRest(date)?!!log.morning&&!!log.morning.done:!!log.morning&&!!log.morning.done&&!!log.ppl&&!!log.ppl.done;
+  return !!log.morning&&!!log.morning.done&&!!log.ppl&&!!log.ppl.done;
 }
 function dayStatus(key,date){
   var log=load().logs[key];
@@ -1102,7 +1106,7 @@ function calcStreak(){
   for(var i=0;i<365;i++){if(dayComplete(toKey(d),d))s++;else break;d.setDate(d.getDate()-1);}
   var prev=parseInt(localStorage.getItem('ppl_best4')||'0');
   var best=Math.max(prev,s);
-  localStorage.setItem('ppl_best4',best);
+  if(s>prev)localStorage.setItem('ppl_best4',best);
   return{streak:s,best:best};
 }
 
@@ -1729,8 +1733,38 @@ function togRestBtn(exId,setIdx,secs){
 }
 
 // ── SESSION TIME ───────────────────────────────────────────────
+function copyLastSession(){
+  var allLogs=load().logs;
+  var date=new Date(mKey+'T00:00:00');
+  var pd=pplDay(date);
+  var pastKeys=Object.keys(allLogs).filter(function(k){return k<mKey;}).sort().reverse();
+  var found=null;
+  for(var i=0;i<pastKeys.length;i++){
+    var pl=allLogs[pastKeys[i]];
+    var ps=mType==='morning'?pl.morning:pl.ppl;
+    if(!ps||!ps.exercises)continue;
+    if(mType==='ppl'){
+      var pastDate=new Date(pastKeys[i]+'T00:00:00');
+      if(pplDay(pastDate)!==pd)continue;
+    }
+    if(Object.keys(ps.exercises).length){found=ps;break;}
+  }
+  if(!found){showToast('No previous session found to copy.','var(--muted)');return;}
+  Object.keys(mState).forEach(function(id){
+    var prev=found.exercises[id];
+    if(!prev||!prev.sets||!prev.sets.length)return;
+    mState[id].sets=prev.sets.map(function(s){return Object.assign({},s,{done:false});});
+    mState[id].done=false;
+    mState[id].sets.forEach(function(s,si){
+      ['reps','weight','time','rpe'].forEach(function(field){
+        var el=document.getElementById('inp_'+id+'_'+si+'_'+field);
+        if(el&&s[field]!=null&&s[field]!=='')el.value=s[field];
+      });
+    });
+  });
+  showToast('Copied sets from last session — adjust as needed.','var(--success)');
+}
 function calcManualDuration(){
-  var s=document.getElementById('stimeStart');
   var e=document.getElementById('stimeEnd');
   var d=document.getElementById('stimeDur');
   if(!s||!e||!d)return;
@@ -1984,13 +2018,18 @@ function rWeek(){
   if(pNotesTxt){
     h+='<div style="margin-top:6px;padding:8px 10px;background:color-mix(in srgb,var(--push) 6%,transparent);border-left:3px solid var(--push);border-radius:0 6px 6px 0;font-size:12px;color:#a0a0b0;line-height:1.5">&#128221; PPL: '+pNotesTxt+'</div>';
   }
-  if(!srest&&slog.ppl&&slog.ppl.done&&slog.ppl.exercises){
+  if(!srest&&slog.ppl&&slog.ppl.exercises&&Object.keys(slog.ppl.exercises).length){
     h+='<div style="margin-top:10px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Logged Sets</div>';
-    EX[spd].forEach(function(ex){
-      var el=slog.ppl.exercises[ex.id];
+    var curIds=EX[spd].map(function(e){return e.id;});
+    var loggedIds=Object.keys(slog.ppl.exercises);
+    var allIds=curIds.concat(loggedIds.filter(function(id){return curIds.indexOf(id)===-1;}));
+    allIds.forEach(function(id){
+      var el=slog.ppl.exercises[id];
       if(!el||!el.sets||!el.sets.length)return;
+      var curEx=EX[spd].find(function(e){return e.id===id;});
+      var exName=curEx?curEx.name:(el.name?el.name+' (legacy)':id);
       var sv=el.sets.map(function(s){return s.time?s.time+'s':s.weight?s.reps+'r x '+s.weight+'kg':s.bands&&s.bands.length?((s.reps||'?')+'r '+getBandDisplayText(s.bands)):(s.reps||'?')+'r';}).join(' | ');
-      h+='<div class="exlog-row"><span>'+ex.name+'</span><span style="color:var(--muted);font-size:11px">'+sv+'</span></div>';
+      h+='<div class="exlog-row"><span>'+exName+'</span><span style="color:var(--muted);font-size:11px">'+sv+'</span></div>';
     });
   }
   // Body metrics
@@ -2021,8 +2060,8 @@ function rWeek(){
   }
   if(!isFut){
     // Delete buttons for logged sessions
-    if(slog.morning&&slog.morning.done){h+='<button class="delete-session-btn" onclick="deleteSession(\''+sk+'\',\'morning\')">🗑️ Delete Morning Session</button>';}
-    if(slog.ppl&&slog.ppl.done&&!srest){h+='<button class="delete-session-btn" style="margin-top:6px" onclick="deleteSession(\''+sk+'\',\'ppl\')">🗑️ Delete PPL Session</button>';}
+    if(slog.morning&&slog.morning.exercises&&Object.keys(slog.morning.exercises).length){h+='<button class="delete-session-btn" onclick="deleteSession(\''+sk+'\',\'morning\')">🗑️ Delete Morning Session</button>';}
+    if(!srest&&slog.ppl&&slog.ppl.exercises&&Object.keys(slog.ppl.exercises).length){h+='<button class="delete-session-btn" style="margin-top:6px" onclick="deleteSession(\''+sk+'\',\'ppl\')">🗑️ Delete PPL Session</button>';}
     var mDoneW=!!(slog.morning&&slog.morning.done);
     h+='<button class="save-btn" style="--accent:var(--morning);margin-top:10px" onclick="openModal(\'morning\',\''+sk+'\')">'+(mDoneW?'✏️ Edit':'📝 Log')+' Morning Routine</button>';
     if(!srest){
@@ -2255,10 +2294,21 @@ function rProg(){
   }
   var maxP=Math.max.apply(null,weeks.map(function(w){return w.pct;}).concat([1]));
   var h='<div class="ph"><div class="ph-tag">Your Progress</div><div class="ph-title">Stats</div></div>';
+  if(total>0){
+  var durVals=[];
+  Object.values(data.logs).forEach(function(log){
+    if(log.ppl&&log.ppl.duration)durVals.push(log.ppl.duration);
+  });
+  var avgDur=durVals.length?Math.round(durVals.reduce(function(a,b){return a+b;},0)/durVals.length):0;
   h+='<div class="stat-row">';
   h+='<div class="stat-card"><div class="stat-num" style="color:var(--morning)">'+sb.streak+'</div><div class="stat-lbl">Streak</div></div>';
   h+='<div class="stat-card"><div class="stat-num" style="color:var(--pull)">'+sb.best+'</div><div class="stat-lbl">Best</div></div>';
   h+='<div class="stat-card"><div class="stat-num" style="color:var(--legs)">'+total+'</div><div class="stat-lbl">Days Logged</div></div>';
+  h+='</div>';
+  h+='<div class="stat-row" style="margin-top:10px">';
+  h+='<div class="stat-card"><div class="stat-num" style="color:var(--push)">'+(avgDur?avgDur+'<span style="font-size:14px;font-weight:400">m</span>':'—')+'</div><div class="stat-lbl">Avg Duration</div></div>';
+  h+='<div class="stat-card"><div class="stat-num" style="color:var(--success)">'+getMilestoneStats().sessions+'</div><div class="stat-lbl">Sessions</div></div>';
+  h+='<div class="stat-card"><div class="stat-num" style="color:var(--morning)">'+getMilestoneStats().mornings+'</div><div class="stat-lbl">Mornings</div></div>';
   h+='</div>';
   h+='<div class="sec-title">Weekly Completion (Last 8 Weeks)</div>';
   h+='<div class="chart-box"><div class="bars">';
@@ -2285,6 +2335,29 @@ function rProg(){
     EX[g.key].forEach(function(ex){h+='<option value="'+ex.id+'">'+ex.name+'</option>';});
     h+='</optgroup>';
   });
+  // Legacy exercises — IDs in logs but no longer in ALL_EX
+  (function(){
+    var activeIds=ALL_EX.map(function(e){return e.id;});
+    var legacyMap={};
+    Object.values(load().logs).forEach(function(log){
+      ['morning','ppl'].forEach(function(type){
+        var sess=log[type];
+        if(!sess||!sess.exercises)return;
+        Object.entries(sess.exercises).forEach(function(e){
+          var id=e[0];
+          if(activeIds.indexOf(id)<0&&!legacyMap[id]){
+            legacyMap[id]=e[1].name||id;
+          }
+        });
+      });
+    });
+    var legacyKeys=Object.keys(legacyMap);
+    if(legacyKeys.length){
+      h+='<optgroup label="— Legacy (removed exercises) —">';
+      legacyKeys.forEach(function(id){h+='<option value="'+id+'">'+legacyMap[id]+'</option>';});
+      h+='</optgroup>';
+    }
+  })();
   h+='</select><div id="exChart"></div>';
   // Volume chart (last 10 PPL sessions)
   h+='<div class="sec-title">Session Volume (kg)</div>';
@@ -2557,6 +2630,36 @@ function rProg(){
   } else {h+='<div class="no-data">Log 4 weeks of sessions to see frequency data</div>';}
   h+='</div>';
 
+  // ── Missed Day Breakdown
+  var reasonLabels={'sick':'🤒 Sick','travel':'✈️ Travel','rest_swap':'😴 Rest Swap','life':'🙃 Life Happened'};
+  var reasonCounts={};var totalMissed=0;var untagged=0;
+  Object.entries(data.logs).forEach(function(e){
+    var key=e[0],log=e[1];
+    var d2=new Date(key+'T00:00:00');
+    if(d2>t)return;
+    var st=dayStatus(key,d2);
+    if(st==='missed'){
+      totalMissed++;
+      if(log.reason&&reasonLabels[log.reason])reasonCounts[log.reason]=(reasonCounts[log.reason]||0)+1;
+      else untagged++;
+    }
+  });
+  h+='<div class="sec-title">Missed Days '+(totalMissed?'('+totalMissed+' total)':'')+'</div>';
+  h+='<div class="anl-card">';
+  if(!totalMissed){
+    h+='<div class="no-data">No missed training days. Keep it up!</div>';
+  } else {
+    Object.entries(reasonLabels).forEach(function(e){
+      var count=reasonCounts[e[0]]||0;
+      var pct=Math.round(count/totalMissed*100);
+      h+='<div class="mvol-row"><div class="mvol-name">'+e[1]+'</div>';
+      h+='<div class="mvol-bg"><div class="mvol-fill" style="width:'+pct+'%;background:var(--danger)"></div></div>';
+      h+='<div class="mvol-num">'+count+'</div></div>';
+    });
+    if(untagged)h+='<div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center">'+untagged+' missed day'+(untagged!==1?'s':'')+' with no reason tagged</div>';
+  }
+  h+='</div>';
+
   // ── Before/After Comparison
   h+='<div class="sec-title">Before / After Comparison</div>';
   h+='<div class="anl-card">';
@@ -2589,7 +2692,13 @@ function rProg(){
   h+='<input class="form-inp" id="cexTarget" placeholder="Target (e.g. 3x12)">';
   h+='<button class="save-btn" style="margin:0" onclick="addCustomEx()">+ Add Exercise</button>';
   h+='</div></div>';
-
+  } // end if(total>0)
+  if(!total){
+    h+='<div class="empty-state"><div class="empty-icon">📊</div>';
+    h+='<div class="empty-title">No Data Yet</div>';
+    h+='<div class="empty-desc">Start logging sessions to see your streaks, volume charts, plateau detection, 1RM estimates and more.</div>';
+    h+='<button class="empty-btn" onclick="go(\'today\',document.querySelectorAll(\'.nbtn\')[0])">Log First Session</button></div>';
+  }
   h+='<div class="sec-title">Data</div>';
   h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v3.0</span></div>';
   h+='<div style="display:flex;gap:10px;padding:0 20px">';
@@ -2602,12 +2711,6 @@ function rProg(){
   h+='<button onclick="clearAllData()" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--danger);background:transparent;color:var(--danger);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">🗑 Start Fresh — Clear All Data</button>';
   h+='</div>';
   h+='<div style="padding:4px 20px 10px;font-size:11px;color:var(--muted);text-align:center">This clears all logs, streaks, and PRs. Export first if you want a backup.</div>';
-  if(!total){
-    h+='<div class="empty-state"><div class="empty-icon">📊</div>';
-    h+='<div class="empty-title">No Data Yet</div>';
-    h+='<div class="empty-desc">Start logging sessions to see your streaks, volume charts, plateau detection, 1RM estimates and more.</div>';
-    h+='<button class="empty-btn" onclick="go(\'today\',document.querySelectorAll(\'.nbtn\')[0])">Log First Session</button></div>';
-  }
   document.getElementById('sc-prog').innerHTML=h;
 }
 function rExChart(){
@@ -2618,9 +2721,19 @@ function rExChart(){
   if(!wrap)return;
   if(!exId){wrap.innerHTML='';return;}
   var ex=ALL_EX.find(function(e){return e.id===exId;});
-  if(!ex){wrap.innerHTML='';return;}
   var isMorn=exId.startsWith('m_');
   var data=load();
+  // For legacy exercises not in ALL_EX, derive name from stored log data
+  var exName=ex?ex.name:null;
+  if(!exName){
+    Object.values(data.logs).some(function(log){
+      var src=isMorn?log.morning:log.ppl;
+      if(src&&src.exercises&&src.exercises[exId]&&src.exercises[exId].name){
+        exName=src.exercises[exId].name;return true;
+      }
+    });
+    if(!exName){wrap.innerHTML='';return;}
+  }
   var sessions=[];
   Object.entries(data.logs).sort().forEach(function(entry){
     var key=entry[0],log=entry[1];
@@ -2640,7 +2753,7 @@ function rExChart(){
   }
   var recent=sessions.slice(-10);
   var maxV=Math.max.apply(null,recent.map(function(s){return s.val;}));
-  var h='<div class="ex-chart"><div class="ex-chart-title">'+ex.name+' · '+(recent[0]?recent[0].unit:'')+'</div><div class="xbars">';
+  var h='<div class="ex-chart"><div class="ex-chart-title">'+exName+' · '+(recent[0]?recent[0].unit:'')+'</div><div class="xbars">';
   recent.forEach(function(s){
     var bh=maxV>0?Math.max(s.val/maxV*70,4):4;
     h+='<div class="xbc"><div class="xval">'+s.val+'</div><div class="xbar" style="height:'+bh+'px;background:var(--pull)"></div><div class="xdate">'+s.date.slice(5)+'</div></div>';
@@ -2911,6 +3024,8 @@ function openModal(type,key){
   var accent=type==='morning'?'#fbbf24':(pd?PPL[pd].color:'#fbbf24');
   document.getElementById('modal').style.setProperty('--accent',accent);
   document.getElementById('mTitle').textContent=type==='morning'?'Morning Routine':(pd?PPL[pd].name:'');
+  var copyBtn=document.getElementById('copyLastBtn');
+  if(copyBtn)copyBtn.style.display=(!existing||!existing.exercises||!Object.keys(existing.exercises).length)?'block':'none';
   mNotes=(existing&&existing.notes)||'';
   // Find most recent prior session of same type with notes
   mPrevNotes='';
@@ -2927,15 +3042,7 @@ function openModal(type,key){
     mStartHHMM=existing.startTime;
     mStartConfirmed=true;
   }else{
-    var ssKey='pt_s_'+key+'_'+type;
-    var stored=sessionStorage.getItem(ssKey);
-    if(stored){
-      mStartHHMM=stored;
-    }else{
-      var nowT=new Date();
-      mStartHHMM=(nowT.getHours()<10?'0':'')+nowT.getHours()+':'+(nowT.getMinutes()<10?'0':'')+nowT.getMinutes();
-      sessionStorage.setItem(ssKey,mStartHHMM);
-    }
+    mStartHHMM='';
     mStartConfirmed=false;
   }
   var wuItems=type==='morning'?[]:WARMUPS[pd]||[];
@@ -3132,7 +3239,10 @@ function saveSession(){
   var data=load();
   if(!data.logs[mKey])data.logs[mKey]={};
   var exData={};
-  Object.entries(mState).forEach(function(entry){exData[entry[0]]={done:entry[1].done,sets:entry[1].sets};});
+  Object.entries(mState).forEach(function(entry){
+    var ex=ALL_EX.find(function(x){return x.id===entry[0];});
+    exData[entry[0]]={done:entry[1].done,sets:entry[1].sets,name:ex?ex.name:entry[0]};
+  });
   var allDone=Object.values(mState).every(function(st){return !!st.done;});
   data.logs[mKey][mType]={done:allDone,exercises:exData};
   // Detect PRs
@@ -3434,6 +3544,8 @@ function importData(e){
       save(existing);
       var fileVer=parsed._meta&&parsed._meta.version;
       var curVer='v3.0';
+      var themeChanged=parsed._meta&&parsed._meta.theme&&parsed._meta.theme!==localStorage.getItem('ppl_theme');
+      var fontChanged=parsed._meta&&parsed._meta.font&&parsed._meta.font!==localStorage.getItem('ppl_font');
       var msg=document.getElementById('dataMsg');
       if(msg){msg.style.color='var(--success)';msg.textContent='Data imported! '+Object.keys(parsed.logs).length+' days loaded.';}
       if(!fileVer){
@@ -3441,6 +3553,7 @@ function importData(e){
       } else if(fileVer!==curVer){
         showToast('Imported from '+fileVer+' — some fields may differ from '+curVer+'.','#f97316');
       }
+      if(themeChanged||fontChanged)showToast('Theme/font preferences restored from backup.','var(--muted)');
       render(curScreen);
     }catch(err){
       var msg=document.getElementById('dataMsg');
@@ -3501,6 +3614,29 @@ function setProgramStart(val){
 })();
 rToday();
 checkOnboarding();
+// One-time migration: backfill exercise names into existing logs
+(function migrateExNames(){
+  if(localStorage.getItem('pt_migrated_names')==='1')return;
+  try{
+    var data=load();
+    var changed=false;
+    Object.values(data.logs).forEach(function(log){
+      ['morning','ppl'].forEach(function(type){
+        var sess=log[type];
+        if(!sess||!sess.exercises)return;
+        Object.entries(sess.exercises).forEach(function(e){
+          var id=e[0],entry=e[1];
+          if(!entry.name){
+            var ex=ALL_EX.find(function(x){return x.id===id;});
+            if(ex){entry.name=ex.name;changed=true;}
+          }
+        });
+      });
+    });
+    if(changed){save(data);}
+    localStorage.setItem('pt_migrated_names','1');
+  }catch(e){}
+})();
 </script>
 <script>
   if ('serviceWorker' in navigator) {
