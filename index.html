@@ -577,10 +577,6 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 </nav>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────────
-var YOUTUBE_API_KEY = 'YOUR_YOUTUBE_API_KEY_HERE';
-// ────────────────────────────────────────────────────────────────────────────
-
 var SCHED_REENTRY={0:null,1:'d1',2:null,3:'d2',4:'d3',5:null,6:'d4'};
 var SCHED_FULL={0:null,1:'d1',2:'d2',3:'d3',4:null,5:'d4',6:'d5'};
 function getCurrentSchedule(){
@@ -2701,6 +2697,13 @@ function rProg(){
     h+='<div class="empty-desc">Start logging sessions to see your streaks, volume charts, plateau detection, 1RM estimates and more.</div>';
     h+='<button class="empty-btn" onclick="go(\'today\',document.querySelectorAll(\'.nbtn\')[0])">Log First Session</button></div>';
   }
+  h+='<div class="sec-title">Settings</div>';
+  h+='<div class="anl-card">';
+  h+='<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">YouTube API Key</div>';
+  h+='<input type="password" id="ytKeyInp" value="'+(localStorage.getItem('pt_yt_key')||'')+'" placeholder="Paste your YouTube Data API v3 key..." style="width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 12px;font-size:13px;outline:none;margin-bottom:8px">';
+  h+='<button class="save-btn" style="margin:0;width:100%" onclick="var k=document.getElementById(\'ytKeyInp\').value.trim();localStorage.setItem(\'pt_yt_key\',k);showToast(k?\'API key saved.\':\'API key cleared.\',\'var(--success)\')">Save Key</button>';
+  h+='<div style="font-size:11px;color:var(--muted);margin-top:8px">Used for video guides in exercise info panels. Never shared or sent anywhere except YouTube\'s API.</div>';
+  h+='</div>';
   h+='<div class="sec-title">Data</div>';
   h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v3.0</span></div>';
   h+='<div style="display:flex;gap:10px;padding:0 20px">';
@@ -3130,7 +3133,7 @@ function buildModal(exList,type){
     howToEx.steps.forEach(function(s){h+='<li>'+s+'</li>';});
     h+='</ul>';
     if(howToEx.tip)h+='<div class="lex-tip">'+howToEx.tip+'</div>';
-    h+='<div class="ex-vid-wrap" id="vid_'+ex.id+'"><div class="ex-vid-ph" onclick="fetchExVideo(\''+ex.id+'\',\''+ex.name.replace(/'/g,"\\'")+'\')" style="cursor:pointer">▶ Load video guide</div></div>';
+    h+='<div class="ex-vid-wrap" id="vid_'+ex.id+'" data-exid="'+ex.id+'" data-exname="'+encodeURIComponent(ex.name)+'"></div>';
     h+='</div>';
     var dl=isDeloadWeek();
     h+='<button class="autofill-btn" onclick="fillRec(\''+ex.id+'\')">'+(dl?'⚠️ Auto-fill (Deload 60%)':'✨ Auto-fill Recommendation')+'</button>';
@@ -3224,17 +3227,16 @@ var _vidCache={};
 function fetchExVideo(exId,exName){
   var wrap=document.getElementById('vid_'+exId);
   if(!wrap)return;
+  if(_vidCache[exId]==='none'){wrap.innerHTML='<div class="ex-vid-ph">No video found for this exercise.</div>';return;}
   if(_vidCache[exId]){
     wrap.innerHTML='<iframe class="ex-vid-iframe" src="https://www.youtube.com/embed/'+_vidCache[exId]+'?rel=0&modestbranding=1" allowfullscreen></iframe>';
     return;
   }
+  var key=localStorage.getItem('pt_yt_key')||'';
+  if(!key){wrap.innerHTML='<div class="ex-vid-ph">Add your YouTube API key in Progress → Settings to enable video guides.</div>';return;}
   wrap.innerHTML='<div class="ex-vid-ph">⏳ Loading...</div>';
-  if(!YOUTUBE_API_KEY||YOUTUBE_API_KEY==='YOUR_YOUTUBE_API_KEY_HERE'){
-    wrap.innerHTML='<div class="ex-vid-ph">Add your YouTube API key in the config to enable video guides.</div>';
-    return;
-  }
   var q=encodeURIComponent(exName+' proper form technique');
-  fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q='+q+'&key='+YOUTUBE_API_KEY)
+  fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q='+q+'&key='+key)
     .then(function(r){return r.json();})
     .then(function(d){
       if(d.items&&d.items.length){
@@ -3242,11 +3244,12 @@ function fetchExVideo(exId,exName){
         _vidCache[exId]=vid;
         wrap.innerHTML='<iframe class="ex-vid-iframe" src="https://www.youtube.com/embed/'+vid+'?rel=0&modestbranding=1" allowfullscreen></iframe>';
       } else {
+        _vidCache[exId]='none';
         wrap.innerHTML='<div class="ex-vid-ph">No video found for this exercise.</div>';
       }
     })
     .catch(function(){
-      wrap.innerHTML='<div class="ex-vid-ph" onclick="fetchExVideo(\''+exId+'\',\''+exName.replace(/'/g,"\\'")+'\')">Failed to load — tap to retry</div>';
+      wrap.innerHTML='<div class="ex-vid-ph" style="cursor:pointer" onclick="fetchExVideo(\''+exId+'\',decodeURIComponent(\''+encodeURIComponent(exName)+'\'))">⚠️ Failed to load — tap to retry</div>';
     });
 }
 function togInfo(exId,btn){
@@ -3254,6 +3257,15 @@ function togInfo(exId,btn){
   if(!panel)return;
   var open=panel.classList.toggle('open');
   btn.classList.toggle('open',open);
+  if(open){
+    var wrap=document.getElementById('vid_'+exId);
+    if(wrap&&!wrap.querySelector('iframe')&&!_vidCache[exId]){
+      var exName=wrap.dataset.exname?decodeURIComponent(wrap.dataset.exname):exId;
+      fetchExVideo(exId,exName);
+    } else if(wrap&&_vidCache[exId]&&!wrap.querySelector('iframe')){
+      fetchExVideo(exId,wrap.dataset.exname?decodeURIComponent(wrap.dataset.exname):exId);
+    }
+  }
 }
 function togEx(id,btn){
   mState[id].done=!mState[id].done;
