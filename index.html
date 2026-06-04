@@ -78,6 +78,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .lex-info-btn.open{border-color:var(--accent);color:var(--accent)}
 .lex-howto{padding:0 20px 12px;display:none}
 .lex-howto.open{display:block}
+.ex-vid-wrap{margin-top:12px;border-radius:10px;overflow:hidden;background:var(--surface2)}
+.ex-vid-ph{padding:14px;text-align:center;font-size:12px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;border:1px dashed var(--border);border-radius:10px}
+.ex-vid-ph:hover{color:var(--accent);border-color:var(--accent)}
+.ex-vid-iframe{width:100%;aspect-ratio:16/9;border:none;border-radius:10px;display:block}
 .lex-steps{list-style:none}
 .lex-steps li{display:flex;gap:8px;font-size:12px;color:#a0a0b0;line-height:1.5;margin-bottom:6px}
 .lex-steps li::before{content:'>';color:var(--accent);flex-shrink:0;font-weight:700}
@@ -573,6 +577,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 </nav>
 
 <script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+var YOUTUBE_API_KEY = 'YOUR_YOUTUBE_API_KEY_HERE';
+// ────────────────────────────────────────────────────────────────────────────
+
 var SCHED_REENTRY={0:null,1:'d1',2:null,3:'d2',4:'d3',5:null,6:'d4'};
 var SCHED_FULL={0:null,1:'d1',2:'d2',3:'d3',4:null,5:'d4',6:'d5'};
 function getCurrentSchedule(){
@@ -599,33 +607,27 @@ var DAY_SUBTITLES={morning:'Daily Activation',d1:'Push — Chest',d2:'Pull — B
 
 var EX={
   morning:[
-    {id:'m_dh',name:'Dead Hang',type:'time',target:'1x60s',sets:1,tag:'Spine',muscles:{primary:'Lats',secondary:'Shoulders, Forearms'},
-      steps:['Jump or step up and grip the pull-up bar, hands shoulder-width apart.','Let your body hang completely relaxed — no pulling, no tension.','Breathe steadily and let gravity decompress your spine.','If 60s is too much at first, do 2x30s with a short break.'],
-      tip:'Your spine compresses overnight. This reverses it. Do this first, before anything else. One of the highest-value habits you can build.'},
-    {id:'m_nr',name:'Neck Rolls',type:'time',target:'1x30s',sets:1,tag:'Mobility',muscles:{primary:'Neck',secondary:'Upper Traps'},
-      steps:['Stand tall, chin to chest.','Slowly roll your head in a half circle from left shoulder to right shoulder.','Keep the movement slow and controlled — never force it back.','Alternate direction each sweep for 30 seconds total.'],
-      tip:'Half circles only — avoid full backward rolls. You are decompressing after sleep, not stretching aggressively.'},
-    {id:'m_co',name:'Chest Opener',type:'time',target:'1x15-20s',sets:1,tag:'Mobility',muscles:{primary:'Chest',secondary:'Front Delts, Biceps'},
-      steps:['Stand tall and interlace your fingers behind your back.','Squeeze your shoulder blades together and lift your hands slightly away from your body.','Open your chest forward and upward — feel the stretch across the front.','Hold for 15-20 seconds, breathing steadily.'],
-      tip:'Reverses the hunched position your upper body defaults to after sleep. Sets your posture up right for the day.'},
-    {id:'m_tr',name:'Thoracic Rotations',type:'reps',target:'1x10 each side',sets:1,tag:'Mobility',muscles:{primary:'Thoracic Spine',secondary:'Obliques, Lats'},
-      steps:['Stand or sit tall with arms crossed over your chest or hands at your temples.','Rotate your upper body slowly to the right as far as comfortable.','Pause briefly at the end range, then rotate back through center to the left.','Keep hips and lower body as still as possible — the rotation comes from the mid-back.'],
-      tip:'Most people have stiff thoracic spines from sitting and slouching. This wakes up the segment between your neck and lower back where rotation should actually come from.'},
+    {id:'m_dh',name:'Dead Hang',type:'time',target:'1-2x20-30s',sets:2,tag:'Spine',muscles:{primary:'Lats',secondary:'Shoulders, Forearms'},
+      steps:['Jump or step up and grip the pull-up bar, hands shoulder-width apart.','Let your body hang completely relaxed — no pulling, no tension.','Breathe steadily and let gravity decompress your spine.','Do 1–2 sets of 20–30 seconds. Adjust based on how your body feels.'],
+      tip:'Your spine compresses overnight due to fluid imbibition in the discs. Gentle axial distraction in the morning is appropriate for that hydrated state and non-fatiguing at this prescription (Urban & Roberts, 2003). Do this before going to the rooftop.'},
+    {id:'m_nr',name:'Lateral Neck Flexion + Chin-to-Chest Rotation',type:'time',target:'1x15s each side / 15s',sets:1,tag:'Mobility',muscles:{primary:'Neck',secondary:'Upper Traps'},
+      steps:['Stand tall. Slowly tilt your head to the right, bringing your ear toward your shoulder. Hold 15 seconds. Switch sides.','Then bring your chin slowly toward your chest. Hold 15 seconds.','Keep all movements slow and within a comfortable range — no forcing.','Full circumduction (rolling the head in circles) is not used here — avoid it.'],
+      tip:'Full circumduction applies compressive load to cervical facet joints and has been flagged for vertebral artery stress (Puentedura et al., 2012). Lateral flexion and rotation achieve the same cervical mobility goal without the compression risk.'},
+    {id:'m_xbs',name:'Cross-body Stretch',type:'time',target:'1x15-20s each side',sets:1,tag:'Mobility',muscles:{primary:'Posterior Deltoid',secondary:'Rotator Cuff, Upper Back'},
+      steps:['Bring your right arm across your body at shoulder height.','Use your left forearm or hand to gently press it closer to your chest.','Hold 15–20 seconds — you should feel the stretch in the back of your right shoulder.','Switch sides.'],
+      tip:'Passive hold — get into position and let the weight of your arm and gravity do the work. No bouncing.'},
+    {id:'m_co',name:'Chest Opener',type:'time',target:'1x20-30s',sets:1,tag:'Mobility',muscles:{primary:'Chest',secondary:'Front Delts, Biceps'},
+      steps:['Stand tall and interlace your fingers behind your back.','Squeeze your shoulder blades together and lift your hands slightly away from your body.','Open your chest forward and upward — feel the stretch across the front.','Hold 20–30 seconds, breathing steadily.'],
+      tip:'Reverses the hunched position your upper body defaults to after sleep. Passive hold — no movement required once you\'re in position.'},
     {id:'m_ss',name:'Standing Side Stretch',type:'time',target:'1x15s each side',sets:1,tag:'Mobility',muscles:{primary:'Obliques',secondary:'Lats, Intercostals'},
       steps:['Stand tall with feet hip-width apart.','Raise your right arm overhead and lean to the left, reaching your hand across.','Keep both feet planted and hips square — do not let the hip pop out.','Hold 15 seconds, then switch sides.'],
-      tip:'Lengthens the lateral line — the side of your torso that gets compressed sitting. Breathe into the stretch.'},
-    {id:'m_hc',name:'Hip Circles',type:'reps',target:'1x5 each direction',sets:1,tag:'Mobility',muscles:{primary:'Hip Flexors',secondary:'Glutes, Lower Back'},
-      steps:['Stand with hands on hips, feet shoulder-width apart.','Draw large, slow circles with your hips — 5 reps clockwise.','Then 5 reps counter-clockwise.','Keep your upper body relatively still and make the circles as wide as comfortable.'],
-      tip:'Hips lock up overnight. Five deliberate circles each direction is enough to restore the range you need for the day.'},
+      tip:'Passive hold. Breathe into the stretch — the inhale creates space between your ribs and lengthens the lateral line further.'},
     {id:'m_hfs',name:'Standing Hip Flexor Stretch',type:'time',target:'1x30s each side',sets:1,tag:'Mobility',muscles:{primary:'Hip Flexors',secondary:'Quads, Lower Back'},
       steps:['Step one foot forward into a lunge position, back knee on or just above the floor.','Keep your torso upright and push your hips gently forward and down.','You should feel a deep stretch at the front of the back leg\'s hip.','Hold 30 seconds, then switch sides.'],
-      tip:'Hip flexors are chronically shortened from sitting and sleeping in a curled position. This is one of the most important stretches in the routine.'},
+      tip:'Hip flexors are chronically shortened from sitting and sleeping. Passive hold — sink into position and stay there.'},
     {id:'m_ff',name:'Standing Forward Fold',type:'time',target:'1x20-30s',sets:1,tag:'Mobility',muscles:{primary:'Hamstrings',secondary:'Lower Back, Calves'},
       steps:['Stand with feet hip-width apart, slight bend in the knees.','Hinge at the hips and let your upper body hang down toward the floor.','Let your head, neck, and arms hang completely — no tension.','Breathe slowly and let gravity do the work. Do not bounce.'],
-      tip:'Decompresses the lower spine and wakes up the posterior chain. Bend the knees as much as needed — the goal is to let go, not to touch your toes.'},
-    {id:'m_cs',name:'Calf Stretch',type:'time',target:'1x20s each side',sets:1,tag:'Mobility',muscles:{primary:'Calves',secondary:'Achilles, Plantar Fascia'},
-      steps:['Face a wall and place both hands against it for support.','Step one foot back, keeping that heel firmly on the ground and leg straight.','Lean your body gently forward until you feel the stretch through the calf.','Hold 20 seconds, then switch sides.'],
-      tip:'Calves and the plantar fascia tighten significantly overnight — especially if you walk a lot. This prevents morning foot and ankle stiffness.'},
+      tip:'Passive hold — let gravity do the work. Bend the knees as much as needed, the goal is to release, not to touch your toes.'},
   ],
   d1:[
     {id:'d1_fdp',name:'Floor DB Press',type:'weighted',target:'3x12',sets:3,tag:'Compound',rest:'2-3 min',muscles:{primary:'Chest',secondary:'Triceps, Front Delts'},
@@ -730,7 +732,7 @@ var EX={
 };
 
 var WARMUPS={
-  morning:['Dead hang first — decompresses the spine before anything else','Flow through each stretch slowly — this is mobility, not a workout','Hold each stretch the full duration — do not rush','No rest needed between items — move straight through'],
+  morning:['Dead hang first on the doorway bar — before going to the rooftop','The 3-flight stair climb warms up your tissue before any stretching begins','All stretches are passive holds — get into position and stay there','No counting, no active sequencing — just breathe through each hold'],
   d1:['Arm circles forward and back — 30 sec each','Band pull-aparts — 15 reps','Scapular push-ups — 10 reps (hands on floor, retract and protract shoulder blades)','Wall slides — 10 reps (arms against wall, slide up and down)','Dead hang — 30 sec','1 light warm-up set of your first exercise at 50% effort'],
   d2:['Thoracic rotations — 10 each side (on all fours, thread one arm under and rotate)','Band face pulls — 15 reps','Dead hang — 30 sec','Cat-cow into thread the needle — 8 each side','1 light warm-up set of your first exercise at 50% effort'],
   d3:['Hip circles — 30 sec each direction','Leg swings front and back — 10 each leg','Leg swings side to side — 10 each leg','Glute bridges — 15 reps','Hip flexor stretch (kneeling lunge) — 30 sec each side','Bodyweight squats — 10 slow reps (groove the pattern, not a workout)','1 light warm-up set of your first exercise at 50% effort'],
@@ -1830,7 +1832,7 @@ var mCooldown=[];
 var mWarmupOpen=false;
 var mCooldownOpen=false;
 // Session time
-var mStartHHMM='',mStartConfirmed=false,mPrevNotes='';
+var mStartHHMM='',mEndHHMM='',mStartConfirmed=false,mPrevNotes='';
 
 // Navigation
 function go(name,btn){
@@ -3045,6 +3047,16 @@ function openModal(type,key){
     mStartHHMM='';
     mStartConfirmed=false;
   }
+  // Restore end time — derive from startTime + duration if not saved directly
+  mEndHHMM='';
+  if(existing&&existing.endTime){
+    mEndHHMM=existing.endTime;
+  }else if(existing&&existing.startTime&&existing.duration){
+    var sp=existing.startTime.split(':');
+    var startMins=parseInt(sp[0])*60+parseInt(sp[1]);
+    var endMins=(startMins+existing.duration)%1440;
+    mEndHHMM=(Math.floor(endMins/60)<10?'0':'')+Math.floor(endMins/60)+':'+(endMins%60<10?'0':'')+(endMins%60);
+  }
   var wuItems=type==='morning'?[]:WARMUPS[pd]||[];
   var cdItems=type==='morning'?[]:COOLDOWNS[pd]||[];
   var exWu=(existing&&existing.warmup&&existing.warmup.items)||[];
@@ -3118,6 +3130,7 @@ function buildModal(exList,type){
     howToEx.steps.forEach(function(s){h+='<li>'+s+'</li>';});
     h+='</ul>';
     if(howToEx.tip)h+='<div class="lex-tip">'+howToEx.tip+'</div>';
+    h+='<div class="ex-vid-wrap" id="vid_'+ex.id+'"><div class="ex-vid-ph" onclick="fetchExVideo(\''+ex.id+'\',\''+ex.name.replace(/'/g,"\\'")+'\')" style="cursor:pointer">▶ Load video guide</div></div>';
     h+='</div>';
     var dl=isDeloadWeek();
     h+='<button class="autofill-btn" onclick="fillRec(\''+ex.id+'\')">'+(dl?'⚠️ Auto-fill (Deload 60%)':'✨ Auto-fill Recommendation')+'</button>';
@@ -3192,7 +3205,7 @@ function buildModal(exList,type){
   // ── Session time inputs ──
   h+='<div class="session-time-row">';
   h+='<div class="stime-group"><div class="stime-lbl">Started</div><input class="stime-inp" type="time" id="stimeStart" value="'+mStartHHMM+'" onchange="mStartConfirmed=true;calcManualDuration()"></div>';
-  h+='<div class="stime-group"><div class="stime-lbl">Ended</div><input class="stime-inp" type="time" id="stimeEnd" onchange="mStartConfirmed=true;calcManualDuration()"></div>';
+  h+='<div class="stime-group"><div class="stime-lbl">Ended</div><input class="stime-inp" type="time" id="stimeEnd" value="'+mEndHHMM+'" onchange="mStartConfirmed=true;calcManualDuration()"></div>';
   h+='</div>';
   h+='<div class="stime-calc" id="stimeDur"></div>';
   h+='<button class="save-btn" onclick="saveSession()">Save Session &#10003;</button>';
@@ -3206,6 +3219,35 @@ function updNotesCount(){
 function togSubModal(exId){
   var panel=document.getElementById('submodal_'+exId);
   if(panel)panel.classList.toggle('open');
+}
+var _vidCache={};
+function fetchExVideo(exId,exName){
+  var wrap=document.getElementById('vid_'+exId);
+  if(!wrap)return;
+  if(_vidCache[exId]){
+    wrap.innerHTML='<iframe class="ex-vid-iframe" src="https://www.youtube.com/embed/'+_vidCache[exId]+'?rel=0&modestbranding=1" allowfullscreen></iframe>';
+    return;
+  }
+  wrap.innerHTML='<div class="ex-vid-ph">⏳ Loading...</div>';
+  if(!YOUTUBE_API_KEY||YOUTUBE_API_KEY==='YOUR_YOUTUBE_API_KEY_HERE'){
+    wrap.innerHTML='<div class="ex-vid-ph">Add your YouTube API key in the config to enable video guides.</div>';
+    return;
+  }
+  var q=encodeURIComponent(exName+' proper form technique');
+  fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q='+q+'&key='+YOUTUBE_API_KEY)
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.items&&d.items.length){
+        var vid=d.items[0].id.videoId;
+        _vidCache[exId]=vid;
+        wrap.innerHTML='<iframe class="ex-vid-iframe" src="https://www.youtube.com/embed/'+vid+'?rel=0&modestbranding=1" allowfullscreen></iframe>';
+      } else {
+        wrap.innerHTML='<div class="ex-vid-ph">No video found for this exercise.</div>';
+      }
+    })
+    .catch(function(){
+      wrap.innerHTML='<div class="ex-vid-ph" onclick="fetchExVideo(\''+exId+'\',\''+exName.replace(/'/g,"\\'")+'\')">Failed to load — tap to retry</div>';
+    });
 }
 function togInfo(exId,btn){
   var panel=document.getElementById('info_'+exId);
@@ -3264,6 +3306,7 @@ function saveSession(){
   }
   data.logs[mKey][mType].notes=mNotes;
   if(stEl&&stEl.value&&mStartConfirmed)data.logs[mKey][mType].startTime=stEl.value;
+  if(etEl&&etEl.value)data.logs[mKey][mType].endTime=etEl.value;
   if(duration>0)data.logs[mKey][mType].duration=duration;
   // Save warmup/cooldown
   if(mWarmup.length){data.logs[mKey][mType].warmup={items:mWarmup.slice(),done:mWarmup.every(function(x){return x;})};}
@@ -3421,7 +3464,7 @@ function setReason(key,reason){
 }
 function closeModal(){
   document.getElementById('overlay').classList.remove('open');
-  mType=null;mKey=null;mState={};mNotes='';mPrevNotes='';mStartHHMM='';mStartConfirmed=false;
+  mType=null;mKey=null;mState={};mNotes='';mPrevNotes='';mStartHHMM='';mEndHHMM='';mStartConfirmed=false;
   stopRestTimer();
   mWarmup=[];mCooldown=[];mWarmupOpen=false;mCooldownOpen=false;
   // Don't clear swaps here - keep them for session
