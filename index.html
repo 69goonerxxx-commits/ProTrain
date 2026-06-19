@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>ProTrain Program v3.0</title>
+<title>ProTrain Program v3.5</title>
 <link rel="manifest" href="manifest.json"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -516,7 +516,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 <!-- ONBOARDING -->
 <div class="ob-overlay" id="obOverlay">
   <div class="ob-logo">⚡</div>
-  <div class="ob-title">ProTrain Program <span style="font-size:14px;opacity:.6">v3.0</span></div>
+  <div class="ob-title">ProTrain Program <span style="font-size:14px;opacity:.6">v3.5</span></div>
   <div class="ob-sub">Your personal PPL workout tracker.<br>Built around your home gym setup.</div>
   <div class="ob-section">
     <div class="ob-section-title">What is PPL?</div>
@@ -541,11 +541,6 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
       <div class="ob-day"><div class="ob-day-dot" style="background:#22d3ee"></div><strong>Sat</strong> — Pull + Core</div>
       <div class="ob-day"><div class="ob-day-dot" style="background:#818cf8"></div><strong>Sun</strong> — Rest</div>
     </div>
-  </div>
-  <div class="ob-section">
-    <div class="ob-section-title">Set Your Program Start Date</div>
-    <div class="ob-section-body">Your first 2 weeks (June 1–14) use a lighter 4-day schedule. The full 5-day program begins June 15 automatically.</div>
-    <input class="ob-start-input" type="date" id="obStartDate" value="2026-06-01">
   </div>
   <div class="ob-section">
     <div class="ob-section-title">Equipment Used</div>
@@ -2756,7 +2751,7 @@ function rProg(){
   h+='<div style="font-size:11px;color:var(--muted);margin-top:8px">Used for video guides in exercise info panels. Never shared or sent anywhere except YouTube\'s API.</div>';
   h+='</div>';
   h+='<div class="sec-title">Data</div>';
-  h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v3.0</span></div>';
+  h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v3.5</span></div>';
   h+='<div style="display:flex;gap:10px;padding:0 20px">';
   h+='<button onclick="exportData()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">&#11014; Export</button>';
   h+='<button onclick="document.getElementById(\'importFile\').click()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">&#11015; Import</button>';
@@ -3615,7 +3610,7 @@ function exportData(){
   var bands={};
   for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith('band_'))bands[k]=localStorage.getItem(k);}
   data._meta={
-    version:'v3.0',
+    version:'v3.5',
     prCount:localStorage.getItem('ppl_pr_count4'),
     theme:localStorage.getItem('ppl_theme'),
     font:localStorage.getItem('ppl_font'),
@@ -3659,7 +3654,7 @@ function importData(e){
       }
       save(existing);
       var fileVer=parsed._meta&&parsed._meta.version;
-      var curVer='v3.0';
+      var curVer='v3.5';
       var themeChanged=parsed._meta&&parsed._meta.theme&&parsed._meta.theme!==localStorage.getItem('ppl_theme');
       var fontChanged=parsed._meta&&parsed._meta.font&&parsed._meta.font!==localStorage.getItem('ppl_font');
       var msg=document.getElementById('dataMsg');
@@ -3687,8 +3682,7 @@ function checkOnboarding(){
   }
 }
 function finishOnboarding(){
-  var d=document.getElementById('obStartDate');
-  if(d&&d.value)localStorage.setItem('pt_program_start',d.value);
+  localStorage.setItem('pt_program_start','2026-06-01');
   localStorage.setItem('pt_onboarded','1');
   document.getElementById('obOverlay').classList.remove('show');
   rToday();
