@@ -1051,8 +1051,17 @@ function saveChecks(c){
 // Date helpers
 var now=function(){return new Date()};
 var toKey=function(d){var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;};
-var isRest=function(d){return getCurrentSchedule()[d.getDay()]===null};
-var pplDay=function(d){return getCurrentSchedule()[d.getDay()]};
+function getScheduleForDate(d){
+  var start=localStorage.getItem('pt_program_start');
+  if(!start)return SCHED_FULL;
+  var startDate=new Date(start+'T00:00:00');
+  var checkDate=new Date(d);
+  checkDate.setHours(0,0,0,0);
+  var diffDays=Math.floor((checkDate-startDate)/(1000*60*60*24));
+  return diffDays<14?SCHED_REENTRY:SCHED_FULL;
+}
+var isRest=function(d){return getScheduleForDate(d)[d.getDay()]===null};
+var pplDay=function(d){return getScheduleForDate(d)[d.getDay()]};
 var fmtShort=function(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})};
 var fmtLong=function(d){return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})};
 
