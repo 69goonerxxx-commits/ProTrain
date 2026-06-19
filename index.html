@@ -1133,11 +1133,12 @@ function bestLabel(exId,ex){
 function checkNewPR(exId,sets){
   var b=getBest(exId);
   return sets.some(function(s){
-    return (s.weight&&+s.weight>b.weight)||(s.reps&&!s.weight&&+s.reps>b.reps)||(s.time&&+s.time>b.time);
+    return (s.weight&&+s.weight>b.weight)||(s.reps&&!s.weight&&+s.reps>b.reps)||(s.reps&&s.weight&&+s.reps>b.reps)||(s.time&&+s.time>b.time);
   });
 }
 function getProgHint(exId,ex){
   if(ex.type!=='weighted')return null;
+  if(isDeloadWeek())return null;
   var isMorn=exId.startsWith('m_');
   var weights=[];
   Object.entries(load().logs).sort().forEach(function(e){
@@ -1456,7 +1457,7 @@ function clearAllData(){
   var ssKeys=[];
   for(var j=0;j<sessionStorage.length;j++){
     var sk=sessionStorage.key(j);
-    if(sk&&(sk.startsWith('pt_swap_')||sk.startsWith('pt_gswap_')||sk==='pt_wo'))ssKeys.push(sk);
+    if(sk&&(sk.startsWith('pt_gswap_')||sk==='pt_wo'))ssKeys.push(sk);
   }
   ssKeys.forEach(function(k){sessionStorage.removeItem(k);});
   showToast('✓ All data cleared. Starting fresh!','var(--success)');
@@ -1466,6 +1467,7 @@ function loadCustomExercises(){
   try{return JSON.parse(localStorage.getItem('pt_custom_ex')||'[]');}catch(e){return[];}
 }
 function saveCustomExercises(arr){localStorage.setItem('pt_custom_ex',JSON.stringify(arr));}
+function rebuildALLEX(){ALL_EX=Object.values(EX).flat().concat(loadCustomExercises());}
 function getSwappedExercise(exId){
   try{return JSON.parse(localStorage.getItem('pt_swap_'+exId)||'null');}catch(e){return null;}
 }
@@ -1474,6 +1476,7 @@ function clearSwaps(){
 }
 function resetSwapToOriginal(exId){
   localStorage.removeItem('pt_swap_'+exId);
+  delete _vidCache[exId];
   if(mKey&&mType){
     var date=new Date(mKey+'T00:00:00'),pd=pplDay(date);
     var baseList=mType==='morning'?EX.morning:(EX[pd]||[]);
@@ -1484,6 +1487,7 @@ function resetSwapToOriginal(exId){
 function swapExercise(exId,subOrIdx){
   var sub=typeof subOrIdx==='number'?SUBS[exId][subOrIdx]:subOrIdx;
   localStorage.setItem('pt_swap_'+exId,JSON.stringify(sub));
+  delete _vidCache[exId];
   if(mKey&&mType){
     var date=new Date(mKey+'T00:00:00'),pd=pplDay(date);
     var baseList=mType==='morning'?EX.morning:(EX[pd]||[]);
@@ -1497,6 +1501,7 @@ function swapExercise(exId,subOrIdx){
 function saveAltPref(exId,altIdx){
   if(altIdx===null)localStorage.removeItem('alt_'+exId);
   else localStorage.setItem('alt_'+exId,altIdx);
+  delete _vidCache[exId];
 }
 function loadAltPref(exId){
   var v=localStorage.getItem('alt_'+exId);
@@ -1682,11 +1687,12 @@ function updateRestDisplay(){
   }
 }
 function tickRest(){
-  restRemaining--;
+  restRemaining=Math.max(0,Math.ceil((restEndTimestamp-Date.now())/1000));
   updateRestDisplay();
   if(restRemaining<=0){
     clearInterval(restInterval);restInterval=null;
     playBeep();
+    if(navigator.vibrate)navigator.vibrate([400,100,400,100,400]);
     var btn=restExId!=null&&restSetIdx!=null?document.getElementById('restbtn_'+restExId+'_'+restSetIdx):null;
     if(btn){btn.classList.remove('active');btn.innerHTML='&#9203;';}
     var old=restExId;var oldsi=restSetIdx;
@@ -1706,6 +1712,9 @@ function startRestTimer(exId,setIdx,secs){
     if(oldBtn){oldBtn.classList.remove('active');oldBtn.innerHTML='&#9203;';}
   }
   restExId=exId;restSetIdx=setIdx;restRemaining=secs;
+  restEndTimestamp=Date.now()+secs*1000;
+  if(navigator.vibrate)navigator.vibrate(200);
+  scheduleRestNotification(restEndTimestamp);
   var btn=document.getElementById('restbtn_'+exId+'_'+setIdx);
   if(btn)btn.classList.add('active');
   updateRestDisplay();
@@ -1714,6 +1723,7 @@ function startRestTimer(exId,setIdx,secs){
 function stopRestTimer(){
   if(restInterval){clearInterval(restInterval);restInterval=null;}
   stopBeep();
+  cancelRestNotification();
   if(restExId!=null&&restSetIdx!=null){
     var btn=document.getElementById('restbtn_'+restExId+'_'+restSetIdx);
     if(btn){btn.classList.remove('active');btn.innerHTML='&#9203;';}
@@ -1729,6 +1739,32 @@ function togRestBtn(exId,setIdx,secs){
     startRestTimer(exId,setIdx,secs);
   }
 }
+function scheduleRestNotification(endTimestamp){
+  cancelRestNotification();
+  if(!('Notification' in window))return;
+  if(Notification.permission==='default'){
+    Notification.requestPermission().then(function(perm){
+      if(perm==='granted'&&restInterval)scheduleRestNotification(endTimestamp);
+    });
+    return;
+  }
+  if(Notification.permission!=='granted')return;
+  var delay=endTimestamp-Date.now();
+  if(delay<=0)return;
+  restNotifTimeout=setTimeout(function(){
+    restNotifTimeout=null;
+    // Only show if the app is actually backgrounded — the in-app beep/vibrate covers foreground
+    if(document.visibilityState==='hidden'){
+      try{new Notification('Rest complete',{body:'Time for your next set.',tag:'pt-rest',renotify:true});}catch(e){}
+    }
+  },delay);
+}
+function cancelRestNotification(){
+  if(restNotifTimeout){clearTimeout(restNotifTimeout);restNotifTimeout=null;}
+}
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='visible'&&restInterval)tickRest();
+});
 
 // ── SESSION TIME ───────────────────────────────────────────────
 function copyLastSession(){
@@ -1763,6 +1799,7 @@ function copyLastSession(){
   showToast('Copied sets from last session — adjust as needed.','var(--success)');
 }
 function calcManualDuration(){
+  var s=document.getElementById('stimeStart');
   var e=document.getElementById('stimeEnd');
   var d=document.getElementById('stimeDur');
   if(!s||!e||!d)return;
@@ -1808,7 +1845,6 @@ function togCdItem(i){
 // State
 var curScreen='today';
 var weekOffset=parseInt(sessionStorage.getItem('pt_wo')||'0');
-var mStartTime=0;
 var guideSearchTerm='';
 var currentSubEx=null;
 var calDate=new Date();
@@ -1819,9 +1855,11 @@ var openCards={};
 // Rest timer
 var restInterval=null;
 var restRemaining=0;
+var restEndTimestamp=0;
 var restExId=null;
 var restSetIdx=null;
 var beepAlarm=null; // tracks repeating alarm
+var restNotifTimeout=null;
 // Warm-up / Cool-down modal state
 var mWarmup=[];
 var mCooldown=[];
@@ -1879,7 +1917,12 @@ function _rToday(){
     h+='<div class="phase-progress"><div class="phase-fill" style="width:'+ph.pct+'%"></div></div>';
     h+='</div>';
   }
-  if(isDeloadWeek()){h+='<div class="deload-banner"><div style="font-size:24px">⚠️</div><div><div class="deload-text">Deload Week — Week 11</div><div class="deload-sub">Drop to ~60% weight this week. Your body will thank you next cycle.</div></div></div>';}
+  if(isDeloadWeek()){
+    var _dlWkLabel='Deload Week';
+    var _dlStart=localStorage.getItem('pt_program_start');
+    if(_dlStart){var _dlSd=new Date(_dlStart+'T00:00:00');var _dlTd=new Date();_dlTd.setHours(0,0,0,0);var _dlWk=Math.floor((_dlTd-_dlSd)/(7*24*60*60*1000))+1;_dlWkLabel='Deload Week \u2014 Week '+_dlWk;}
+    h+='<div class="deload-banner"><div style="font-size:24px">\u26a0\ufe0f</div><div><div class="deload-text">'+_dlWkLabel+'</div><div class="deload-sub">Drop to ~60% weight this week. Your body will thank you next cycle.</div></div></div>';
+  }
   var cs=calcConsistency();
   var totalDaysLogged=Object.keys(load().logs).length;
   var csC=cs>=80?'var(--success)':cs>=50?'var(--morning)':'var(--danger)';
@@ -1919,8 +1962,11 @@ function _rToday(){
     h+='<div class="rcard"><div class="rcard-icon">😴</div>';
     h+='<div class="rcard-title">Rest Day</div>';
     h+='<div class="rcard-sub">Recovery is part of the program.<br>Just do your morning routine and rest up.</div></div>';
-    // Show PPL option on rest day
-    var restPplDay=dow===0?'d5':(dow===4?'d2':null);
+    // Find the nearest previous PPL day from the actual current schedule
+    var _rsched=getCurrentSchedule();
+    var restPplDay=null;
+    for(var _ri=1;_ri<=7;_ri++){var _rd=(dow-_ri+7)%7;if(_rsched[_rd]){restPplDay=_rsched[_rd];break;}}
+
     if(restPplDay){var ri=PPL[restPplDay];h+='<button class="rest-swap-btn" onclick="openModal(\'ppl\',\''+key+'\')">📝 Log '+ri.name+' Anyway</button>';}
     h+='<div class="recovery-card"><div class="recovery-hdr">Active Recovery Ideas</div>';
     RECOVERY_TIPS.forEach(function(tip){h+='<div class="recovery-item"><span style="font-size:18px">'+tip.icon+'</span>'+tip.text+'</div>';});
@@ -2136,7 +2182,7 @@ function calGoToDay(key){
   var todayMon=getMondayOf(today);
   var dateMon=getMondayOf(date);
   var diff=Math.round((dateMon-todayMon)/(7*86400000));
-  weekOffset=diff;
+  weekOffset=Math.min(diff,1);
   var dow=date.getDay();
   selWDay=dow===0?6:dow-1;
   go('week',document.querySelectorAll('.nbtn')[1]);
@@ -2214,7 +2260,6 @@ function rCal(){
   var startDow=first.getDay();
   var offset=startDow===0?6:startDow-1;
   var todKey=toKey(now());
-  var showSummary=calDate.getMonth()<now().getMonth()||calDate.getFullYear()<now().getFullYear();
   var h='<div class="cal-nav">';
   h+='<button class="cal-nav-btn" onclick="chMo(-1)">&#8249;</button>';
   h+='<div class="cal-month">'+monthLabel+'</div>';
@@ -2333,6 +2378,12 @@ function rProg(){
     EX[g.key].forEach(function(ex){h+='<option value="'+ex.id+'">'+ex.name+'</option>';});
     h+='</optgroup>';
   });
+  var _custEx=loadCustomExercises();
+  if(_custEx.length){
+    h+='<optgroup label="\u2014 Custom \u2014">';
+    _custEx.forEach(function(ex){h+='<option value="'+ex.id+'">'+ex.name+'</option>';});
+    h+='</optgroup>';
+  }
   // Legacy exercises — IDs in logs but no longer in ALL_EX
   (function(){
     var activeIds=ALL_EX.map(function(e){return e.id;});
@@ -2988,6 +3039,7 @@ function useGuideSwap(exId,subIdx){
   var sub=SUBS[exId]?SUBS[exId][subIdx]:null;
   if(!sub)return;
   sessionStorage.setItem('pt_gswap_'+exId,JSON.stringify(sub));
+  delete _vidCache[exId];
   rGuide();
 }
 function restoreGuideEx(exId){
@@ -3068,7 +3120,6 @@ function openModal(type,key){
   mCooldown=cdItems.map(function(_,i){return !!(exCd[i]);});
   mWarmupOpen=mWarmup.some(function(x){return x;});
   mCooldownOpen=mCooldown.some(function(x){return x;});
-  if(!existing||!existing.done)mStartTime=Date.now();
   buildModal(exList,type);
   document.getElementById('overlay').classList.add('open');
 }
@@ -3133,7 +3184,7 @@ function buildModal(exList,type){
     howToEx.steps.forEach(function(s){h+='<li>'+s+'</li>';});
     h+='</ul>';
     if(howToEx.tip)h+='<div class="lex-tip">'+howToEx.tip+'</div>';
-    h+='<div class="ex-vid-wrap" id="vid_'+ex.id+'" data-exid="'+ex.id+'" data-exname="'+encodeURIComponent(ex.name)+'"></div>';
+    h+='<div class="ex-vid-wrap" id="vid_'+ex.id+'" data-exid="'+ex.id+'" data-exname="'+encodeURIComponent(displayEx.name)+'"></div>';
     h+='</div>';
     var dl=isDeloadWeek();
     h+='<button class="autofill-btn" onclick="fillRec(\''+ex.id+'\')">'+(dl?'⚠️ Auto-fill (Deload 60%)':'✨ Auto-fill Recommendation')+'</button>';
@@ -3239,6 +3290,11 @@ function fetchExVideo(exId,exName){
   fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q='+q+'&key='+key)
     .then(function(r){return r.json();})
     .then(function(d){
+      if(d.error){
+        var reason=d.error.code===403?'YouTube quota exceeded or invalid key — check your API key in Settings.':'YouTube API error ('+d.error.code+') — tap to retry';
+        wrap.innerHTML='<div class="ex-vid-ph" style="cursor:pointer" onclick="fetchExVideo(\''+exId+'\',decodeURIComponent(\''+encodeURIComponent(exName)+'\'))">\u26a0\ufe0f '+reason+'</div>';
+        return;
+      }
       if(d.items&&d.items.length){
         var vid=d.items[0].id.videoId;
         _vidCache[exId]=vid;
@@ -3305,8 +3361,8 @@ function saveSession(){
     var ex=ALL_EX.find(function(x){return x.id===e[0];});
     if(ex&&checkNewPR(e[0],e[1].sets))prNames.push(ex.name);
   });
-  var duration=mStartTime?Math.round((Date.now()-mStartTime)/60000):0;
-  // Override with manual time inputs if both are set
+  var duration=0;
+  // Compute from manual time inputs if both are set
   var stEl=document.getElementById('stimeStart');
   var etEl=document.getElementById('stimeEnd');
   if(stEl&&etEl&&stEl.value&&etEl.value){
@@ -3327,7 +3383,6 @@ function saveSession(){
   save(data);
   closeModal();
   try{render(curScreen);}catch(re){console.warn('render error',re);}
-  checkBackupReminder();
   if(prNames.length){
     var prCount=parseInt(localStorage.getItem('ppl_pr_count4')||'0')+prNames.length;
     localStorage.setItem('ppl_pr_count4',prCount);
@@ -3538,9 +3593,12 @@ function addCustomEx(){
   var target=document.getElementById('cexTarget');
   if(!name||!name.value.trim()){showToast('Enter an exercise name','var(--danger)');return;}
   var arr=loadCustomExercises();
-  var newEx={id:'custom_'+Date.now(),name:name.value.trim(),type:type.value,day:day.value,target:target.value||'3x10',sets:parseInt((target.value||'3x10').split('x')[0])||3,tag:'Custom',steps:['Perform the exercise with proper form and controlled movement.'],tip:'Custom exercise added by you.'};
+  var isBand=type.value==='band';
+  var exType=isBand?'reps':type.value;
+  var newEx={id:'custom_'+Date.now(),name:name.value.trim(),type:exType,day:day.value,target:target.value||'3x10',sets:parseInt((target.value||'3x10').split('x')[0])||3,tag:'Custom',isBand:isBand,steps:['Perform the exercise with proper form and controlled movement.'],tip:'Custom exercise added by you.'};
   arr.push(newEx);
   saveCustomExercises(arr);
+  rebuildALLEX();
   name.value='';target.value='';
   showToast('✅ '+newEx.name+' added!','var(--success)');
   rProg();
@@ -3549,6 +3607,7 @@ function deleteCustomEx(idx){
   var arr=loadCustomExercises();
   arr.splice(idx,1);
   saveCustomExercises(arr);
+  rebuildALLEX();
   rProg();
 }
 function exportData(){
@@ -3562,7 +3621,8 @@ function exportData(){
     font:localStorage.getItem('ppl_font'),
     bestStreak:localStorage.getItem('ppl_best4'),
     customEx:localStorage.getItem('pt_custom_ex')||'[]',
-    bands:bands
+    bands:bands,
+    programStart:localStorage.getItem('pt_program_start')
   };
   localStorage.setItem('pt_last_backup_session',getMilestoneStats().sessions);
   var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
@@ -3594,6 +3654,7 @@ function importData(e){
         if(parsed._meta.font){localStorage.setItem('ppl_font',parsed._meta.font);applyFont(parsed._meta.font);}
         if(parsed._meta.customEx)localStorage.setItem('pt_custom_ex',parsed._meta.customEx);
         if(parsed._meta.bands){Object.entries(parsed._meta.bands).forEach(function(e){localStorage.setItem(e[0],e[1]);});}
+        if(parsed._meta.programStart)localStorage.setItem('pt_program_start',parsed._meta.programStart);
         delete existing._meta;
       }
       save(existing);
@@ -3668,6 +3729,7 @@ function setProgramStart(val){
   window._showSummary=false;
 })();
 rToday();
+rebuildALLEX();
 checkOnboarding();
 // One-time migration: backfill exercise names into existing logs
 (function migrateExNames(){
