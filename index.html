@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>ProTrain Program v3.5</title>
+<title>ProTrain v4.0</title>
 <link rel="manifest" href="manifest.json"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -218,7 +218,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .gcard-meta{display:flex;gap:8px;margin-top:2px;flex-wrap:wrap}
 .gtag{font-size:10px;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:2px;text-transform:uppercase;color:var(--day-color,var(--morning));font-weight:700}
 .grest{font-size:10px;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
-.gsets{font-family:\'Barlow Condensed\',sans-serif;font-size:19px;font-weight:800;color:var(--day-color,var(--morning));flex-shrink:0;transition:color .2s}
+.gsets{font-family:\'Barlow Condensed\',sans-serif;font-size:19px;font-weight:800;color:var(--day-color,var(--morning));flex-shrink:0;transition:color .2s;max-width:92px;white-space:normal;text-align:right;line-height:1.15}
 .gcard.checked .gsets{color:var(--muted)}
 .garr{font-size:11px;color:var(--muted);flex-shrink:0;transition:transform .25s}
 .gcard.open .garr{transform:rotate(180deg)}
@@ -516,7 +516,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 <!-- ONBOARDING -->
 <div class="ob-overlay" id="obOverlay">
   <div class="ob-logo">⚡</div>
-  <div class="ob-title">ProTrain Program <span style="font-size:14px;opacity:.6">v3.5</span></div>
+  <div class="ob-title">ProTrain Program <span style="font-size:14px;opacity:.6">v3.0</span></div>
   <div class="ob-sub">Your personal PPL workout tracker.<br>Built around your home gym setup.</div>
   <div class="ob-section">
     <div class="ob-section-title">What is PPL?</div>
@@ -541,6 +541,11 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
       <div class="ob-day"><div class="ob-day-dot" style="background:#22d3ee"></div><strong>Sat</strong> — Pull + Core</div>
       <div class="ob-day"><div class="ob-day-dot" style="background:#818cf8"></div><strong>Sun</strong> — Rest</div>
     </div>
+  </div>
+  <div class="ob-section">
+    <div class="ob-section-title">Set Your Program Start Date</div>
+    <div class="ob-section-body">Your first 2 weeks (June 1–14) use a lighter 4-day schedule. The full 5-day program begins June 15 automatically.</div>
+    <input class="ob-start-input" type="date" id="obStartDate" value="2026-06-01">
   </div>
   <div class="ob-section">
     <div class="ob-section-title">Equipment Used</div>
@@ -601,7 +606,7 @@ var EX={
     {id:'m_dh',name:'Dead Hang',type:'time',target:'1-2x20-30s',sets:2,tag:'Spine',muscles:{primary:'Lats',secondary:'Shoulders, Forearms'},
       steps:['Jump or step up and grip the pull-up bar, hands shoulder-width apart.','Let your body hang completely relaxed — no pulling, no tension.','Breathe steadily and let gravity decompress your spine.','Do 1–2 sets of 20–30 seconds. Adjust based on how your body feels.'],
       tip:'Your spine compresses overnight due to fluid imbibition in the discs. Gentle axial distraction in the morning is appropriate for that hydrated state and non-fatiguing at this prescription (Urban & Roberts, 2003). Do this before going to the rooftop.'},
-    {id:'m_nr',name:'Lateral Neck Flexion + Chin-to-Chest Rotation',type:'time',target:'1x15s each side / 15s',sets:1,tag:'Mobility',muscles:{primary:'Neck',secondary:'Upper Traps'},
+    {id:'m_lnf',name:'Lateral Neck Flexion + Chin-to-Chest Rotation',type:'time',target:'1x15s each side / 15s',sets:1,tag:'Mobility',muscles:{primary:'Neck',secondary:'Upper Traps'},
       steps:['Stand tall. Slowly tilt your head to the right, bringing your ear toward your shoulder. Hold 15 seconds. Switch sides.','Then bring your chin slowly toward your chest. Hold 15 seconds.','Keep all movements slow and within a comfortable range — no forcing.','Full circumduction (rolling the head in circles) is not used here — avoid it.'],
       tip:'Full circumduction applies compressive load to cervical facet joints and has been flagged for vertebral artery stress (Puentedura et al., 2012). Lateral flexion and rotation achieve the same cervical mobility goal without the compression risk.'},
     {id:'m_xbs',name:'Cross-body Stretch',type:'time',target:'1x15-20s each side',sets:1,tag:'Mobility',muscles:{primary:'Posterior Deltoid',secondary:'Rotator Cuff, Upper Back'},
@@ -805,7 +810,10 @@ var SUBS={
       tip:'Use this as a regression if feet-elevated is too hard, or if no elevated surface is available.'},
     {name:'Slow Eccentric Push-ups',muscles:'Chest, Triceps, Front Delts',
       steps:['Standard push-up position, body in a straight line.','Lower yourself to the floor over 3 to 4 full seconds — very slow.','Push back up at normal speed.','The slow descent is the entire point — do not rush it.'],
-      tip:'Slowing the descent dramatically increases chest tension without adding weight. Use this progression when standard feet-elevated push-ups feel easy.'}
+      tip:'Slowing the descent dramatically increases chest tension without adding weight. Use this progression when standard feet-elevated push-ups feel easy.'},
+    {name:'Decline Push-ups',muscles:'Chest (Upper), Front Delts, Triceps',
+      steps:['Place feet on an elevated surface higher than Feet-Elevated Push-ups, hands on the floor.','Lower chest toward the floor, elbows at about 45 degrees.','Push back up to start, keeping core tight and body in a straight line.','The steeper the incline, the more emphasis shifts to the upper chest and front delts.'],
+      tip:'A direct progression from Feet-Elevated Push-ups once those feel too easy — same movement, steeper angle, more load on the upper chest.'}
   ],
   d1_bcf:[
     {name:'DB Floor Fly',muscles:'Chest (Inner), Front Delts',
@@ -1031,6 +1039,41 @@ var SUBS={
       steps:['Set up in a side plank position. Place top foot on a chair or elevated surface.','Bottom leg can hang or rest on floor.','Lift hips into side plank position and hold.','Complete all time on one side before switching.'],
       tip:'Adds inner thigh and adductor activation on top of lateral core stability. More advanced than standard side plank.'}
   ],
+  m_dh:[
+    {name:'Banded Lat Stretch',muscles:'Lats, Shoulders',
+      steps:['Loop a band around a fixed anchor point above head height.','Grip the band with both hands, step back until arm is extended overhead.','Hinge slightly at the hips and let the lats stretch, knees soft.','Hold the stretch, breathing into the side of your ribcage.'],
+      tip:'Same lat-decompression intent as a dead hang, but usable anywhere with a band and no pull-up bar.'}
+  ],
+  m_lnf:[
+    {name:'Shoulder Shrug + Roll',muscles:'Upper Traps, Neck',
+      steps:['Stand tall, arms relaxed at sides.','Shrug both shoulders straight up toward your ears, hold briefly.','Roll shoulders back and down in a slow circle.','Repeat for the full duration, keeping the neck relaxed throughout.'],
+      tip:'Targets the same upper-trap tension as the neck flexion stretch, with less direct load through the neck joint itself.'}
+  ],
+  m_xbs:[
+    {name:'Sleeper Stretch',muscles:'Posterior Deltoid, Rotator Cuff',
+      steps:['Lie on your side, bottom arm out in front, elbow bent 90 degrees.','Use your top hand to gently press the bottom forearm down toward the floor.','Stop at a comfortable stretch — this targets the rear shoulder capsule directly.','Hold, then switch sides.'],
+      tip:'More isolated on the rotator cuff than the cross-body version. Go gently — this joint has a smaller safe range.'}
+  ],
+  m_co:[
+    {name:'Doorway Chest Stretch',muscles:'Chest, Front Delts, Biceps',
+      steps:['Stand in a doorway, forearm braced against the frame at shoulder height.','Step forward through the doorway until you feel a stretch across the chest.','Keep your torso upright — do not lean from the hips.','Hold, then switch sides.'],
+      tip:'Same target as Chest Opener but the fixed anchor lets you control depth more precisely.'}
+  ],
+  m_ss:[
+    {name:'Standing Spinal Twist',muscles:'Obliques, Lats',
+      steps:['Stand with feet hip-width apart, arms relaxed.','Rotate your torso to one side as far as comfortable, letting arms swing naturally.','Keep hips facing forward — the rotation comes from the spine, not the legs.','Return to center and rotate to the other side.'],
+      tip:'Same oblique/lat region as the side stretch, but rotational rather than lateral — a useful change of stimulus.'}
+  ],
+  m_hfs:[
+    {name:'Kneeling Hip Flexor Stretch',muscles:'Hip Flexors, Quads',
+      steps:['Kneel on one knee, other foot planted in front at 90 degrees.','Squeeze the glute of the kneeling leg and shift hips forward slightly.','Keep torso upright — avoid arching the lower back to compensate.','Hold, then switch sides.'],
+      tip:'Same hip flexor target as the standing version, but the half-kneeling position lets you go deeper and more stable.'}
+  ],
+  m_ff:[
+    {name:'Seated Forward Fold',muscles:'Hamstrings, Lower Back, Calves',
+      steps:['Sit on the floor with legs extended straight in front of you.','Hinge forward from the hips, reaching toward your feet.','Keep your back as straight as possible rather than rounding to reach further.','Hold at the first point of tension and breathe.'],
+      tip:'Same posterior chain target as the standing fold, minus the balance demand — useful if standing forward fold ever feels unstable.'}
+  ],
 };
 
 var DAYS_SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -1051,17 +1094,8 @@ function saveChecks(c){
 // Date helpers
 var now=function(){return new Date()};
 var toKey=function(d){var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;};
-function getScheduleForDate(d){
-  var start=localStorage.getItem('pt_program_start');
-  if(!start)return SCHED_FULL;
-  var startDate=new Date(start+'T00:00:00');
-  var checkDate=new Date(d);
-  checkDate.setHours(0,0,0,0);
-  var diffDays=Math.floor((checkDate-startDate)/(1000*60*60*24));
-  return diffDays<14?SCHED_REENTRY:SCHED_FULL;
-}
-var isRest=function(d){return getScheduleForDate(d)[d.getDay()]===null};
-var pplDay=function(d){return getScheduleForDate(d)[d.getDay()]};
+var isRest=function(d){return getCurrentSchedule()[d.getDay()]===null};
+var pplDay=function(d){return getCurrentSchedule()[d.getDay()]};
 var fmtShort=function(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})};
 var fmtLong=function(d){return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})};
 
@@ -1113,16 +1147,25 @@ function calcStreak(){
 }
 
 // ── PR & PROGRESSION ──────────────────────────────────────────
+var EX_GROUPS={
+  d2_pul:['d2_pul','d5_pul'],d5_pul:['d2_pul','d5_pul'],
+  d2_bfp:['d2_bfp','d5_bfp'],d5_bfp:['d2_bfp','d5_bfp']
+};
+function groupIdsFor(exId){return EX_GROUPS[exId]||[exId];}
 function getBest(exId){
   var best={reps:0,weight:0,time:0};
   var isMorn=exId.startsWith('m_');
+  var ids=groupIdsFor(exId);
   Object.values(load().logs).forEach(function(log){
     var src=isMorn?log.morning:log.ppl;
-    if(!src||!src.exercises||!src.exercises[exId])return;
-    src.exercises[exId].sets.forEach(function(s){
-      if(s.weight&&+s.weight>best.weight)best.weight=+s.weight;
-      if(s.reps&&+s.reps>best.reps)best.reps=+s.reps;
-      if(s.time&&+s.time>best.time)best.time=+s.time;
+    if(!src||!src.exercises)return;
+    ids.forEach(function(gid){
+      if(!src.exercises[gid])return;
+      src.exercises[gid].sets.forEach(function(s){
+        if(s.weight&&+s.weight>best.weight)best.weight=+s.weight;
+        if(s.reps&&+s.reps>best.reps)best.reps=+s.reps;
+        if(s.time&&+s.time>best.time)best.time=+s.time;
+      });
     });
   });
   return best;
@@ -1144,12 +1187,16 @@ function getProgHint(exId,ex){
   if(ex.type!=='weighted')return null;
   if(isDeloadWeek())return null;
   var isMorn=exId.startsWith('m_');
+  var ids=groupIdsFor(exId);
   var weights=[];
   Object.entries(load().logs).sort().forEach(function(e){
     var src=isMorn?e[1].morning:e[1].ppl;
-    if(!src||!src.exercises||!src.exercises[exId])return;
+    if(!src||!src.exercises)return;
     var maxW=0;
-    src.exercises[exId].sets.forEach(function(s){if(s.weight)maxW=Math.max(maxW,+s.weight);});
+    ids.forEach(function(gid){
+      if(!src.exercises[gid])return;
+      src.exercises[gid].sets.forEach(function(s){if(s.weight)maxW=Math.max(maxW,+s.weight);});
+    });
     if(maxW>0)weights.push(maxW);
   });
   if(weights.length>=2&&weights[weights.length-1]===weights[weights.length-2])
@@ -1176,20 +1223,8 @@ function isDeloadWeek(){
   return cnt>=4;
 }
 function getPullupBest(){
-  // Returns the best single-set rep count logged for pull-ups (d2_pul or d5_pul)
-  var best=0;
-  Object.values(load().logs).forEach(function(log){
-    var src=log.ppl;
-    if(!src||!src.exercises)return;
-    ['d2_pul','d5_pul'].forEach(function(id){
-      if(src.exercises[id]&&src.exercises[id].sets){
-        src.exercises[id].sets.forEach(function(s){
-          if(s.reps&&+s.reps>best)best=+s.reps;
-        });
-      }
-    });
-  });
-  return best;
+  // Pull-ups are trained Tue (d2_pul) and Sat (d5_pul) — getBest already groups these as one exercise
+  return getBest('d2_pul').reps;
 }
 function getRec(exId,ex,mode){
   var isMorn=exId.startsWith('m_');
@@ -1437,15 +1472,20 @@ function getMuscle4WeekFreq(){
           if(!ms||ms==='—')return;
           ms.split(',').forEach(function(m){
             var mk=m.trim();
-            if(!result[mk])result[mk]={name:mk,sets:0,sessions:0};
+            if(!result[mk])result[mk]={name:mk,sets:0,sessions:0,_days:{}};
             result[mk].sets+=done*(idx===0?1:0.5);
+            result[mk]._days[key]=true;
           });
         });
       });
     });
   }
-  // Average over 4 weeks
-  Object.keys(result).forEach(function(k){result[k].setsPerWeek=Math.round(result[k].sets/4*10)/10;});
+  // Average over 4 weeks, and finalize times-hit count from distinct training days
+  Object.keys(result).forEach(function(k){
+    result[k].setsPerWeek=Math.round(result[k].sets/4*10)/10;
+    result[k].sessions=Object.keys(result[k]._days).length;
+    delete result[k]._days;
+  });
   return result;
 }
 function clearAllData(){
@@ -1481,57 +1521,16 @@ function clearSwaps(){
 function resetSwapToOriginal(exId){
   localStorage.removeItem('pt_swap_'+exId);
   delete _vidCache[exId];
-  if(mKey&&mType){
-    var date=new Date(mKey+'T00:00:00'),pd=pplDay(date);
-    var baseList=mType==='morning'?EX.morning:(EX[pd]||[]);
-    var customForDay=loadCustomExercises().filter(function(ex){return ex.day===(mType==='morning'?'morning':pd);});
-    buildModal(baseList.concat(customForDay),mType);
-  }
+  refreshSubContext();
 }
 function swapExercise(exId,subOrIdx){
   var sub=typeof subOrIdx==='number'?SUBS[exId][subOrIdx]:subOrIdx;
   localStorage.setItem('pt_swap_'+exId,JSON.stringify(sub));
   delete _vidCache[exId];
-  if(mKey&&mType){
-    var date=new Date(mKey+'T00:00:00'),pd=pplDay(date);
-    var baseList=mType==='morning'?EX.morning:(EX[pd]||[]);
-    var customForDay=loadCustomExercises().filter(function(ex){return ex.day===(mType==='morning'?'morning':pd);});
-    var exList=baseList.concat(customForDay);
-    buildModal(exList,mType);
-  }
+  refreshSubContext();
 }
 
 // ── TOAST ──────────────────────────────────────────────────────
-function saveAltPref(exId,altIdx){
-  if(altIdx===null)localStorage.removeItem('alt_'+exId);
-  else localStorage.setItem('alt_'+exId,altIdx);
-  delete _vidCache[exId];
-}
-function loadAltPref(exId){
-  var v=localStorage.getItem('alt_'+exId);
-  return v===null?null:parseInt(v);
-}
-function getActiveExercise(ex){
-  var pref=loadAltPref(ex.id);
-  if(pref===null||!SUBS[ex.id]||!SUBS[ex.id][pref])return ex;
-  var alt=SUBS[ex.id][pref];
-  return{id:ex.id,name:alt.name,muscles:ex.muscles,steps:alt.steps||ex.steps,tip:alt.tip||ex.tip,type:ex.type,target:ex.target,sets:ex.sets,tag:ex.tag,rest:ex.rest,isBand:ex.isBand,_isAlt:true,_altName:alt.name};
-}
-function renderSubButtons(ex,context){
-  var pref=loadAltPref(ex.id);
-  var subs=SUBS[ex.id];
-  if(!subs)return'';
-  var html='';
-  var refreshCall=context==='modal'?'refreshSubContext()':'rGuide()';
-  if(pref!==null){
-    html+='<button class="miss-btn sel" onclick="saveAltPref(\''+ex.id+'\',null);'+refreshCall+'">↩ Reset to Original</button>';
-  }
-  subs.forEach(function(s,i){
-    var active=pref===i?' sel':'';
-    html+='<button class="miss-btn'+active+'" onclick="saveAltPref(\''+ex.id+'\','+i+');'+refreshCall+'">'+s.name+'</button>';
-  });
-  return html;
-}
 function refreshSubContext(){
   if(document.getElementById('overlay').classList.contains('open')&&mType&&mKey){
     var date=new Date(mKey+'T00:00:00'),pd=pplDay(date);
@@ -2675,7 +2674,7 @@ function rProg(){
     mfkeys.slice(0,12).forEach(function(k){
       var pct=Math.round(mfreq[k].setsPerWeek/maxSets*100);
       var col=mfreq[k].setsPerWeek>=10?'var(--success)':mfreq[k].setsPerWeek>=6?'var(--morning)':'var(--danger)';
-      h+='<div class="mvol-row"><div class="mvol-name">'+mfreq[k].name+'</div>';
+      h+='<div class="mvol-row"><div class="mvol-name">'+mfreq[k].name+'<span style="color:var(--muted);font-weight:400"> · hit '+mfreq[k].sessions+'x</span></div>';
       h+='<div class="mvol-bg"><div class="mvol-fill" style="width:'+pct+'%;background:'+col+'"></div></div>';
       h+='<div class="mvol-num">'+mfreq[k].setsPerWeek+'</div></div>';
     });
@@ -2760,7 +2759,7 @@ function rProg(){
   h+='<div style="font-size:11px;color:var(--muted);margin-top:8px">Used for video guides in exercise info panels. Never shared or sent anywhere except YouTube\'s API.</div>';
   h+='</div>';
   h+='<div class="sec-title">Data</div>';
-  h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v3.5</span></div>';
+  h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v3.0</span></div>';
   h+='<div style="display:flex;gap:10px;padding:0 20px">';
   h+='<button onclick="exportData()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">&#11014; Export</button>';
   h+='<button onclick="document.getElementById(\'importFile\').click()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">&#11015; Import</button>';
@@ -2824,6 +2823,7 @@ function rExChart(){
 
 // ── GUIDE ──────────────────────────────────────────────────────
 function rGuide(){
+  var pendingVideoFetches=[];
   var dayKeys=['morning','d1','d2','d3','d4','d5'];
   var color=DAY_COLORS[guideDay]||'#fbbf24';
   document.documentElement.style.setProperty('--day-color',color);
@@ -2870,12 +2870,13 @@ function rGuide(){
     exList.forEach(function(ex,i){
       var isOpen=!!openCards[guideDay+'_'+i];
       var isChecked=!!checks[guideDay+'_exercises_'+i];
+      var gswap=getSwappedExercise(ex.id);
+      var displayExG=gswap||ex;
       h+='<div class="gcard'+(isChecked?' checked':'')+(isOpen?' open':'')+'  " id="gc_'+i+'">';
       h+='<div class="gcard-hdr" onclick="toggleGCard('+i+')">';
       h+='<button class="gchk'+(isChecked?' done':'')+'" onclick="event.stopPropagation();toggleGCheck('+i+',this)">&#10003;</button>';
       h+='<div class="gcard-info"><div class="gcard-name">'+ex.name+'</div>';
-      var gswapBadge=getGuideSwap(ex.id);
-      if(gswapBadge)h+='<div style="font-size:10px;color:var(--legs);font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px;margin-bottom:2px">🔄 '+gswapBadge.name+'</div>';
+      if(gswap)h+='<div style="font-size:10px;color:var(--legs);font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px;margin-bottom:2px">🔄 '+gswap.name+'</div>';
       // Pull-up progression hint
       if(ex.id==='d2_pul'||ex.id==='d5_pul'){
         var pulBest=getPullupBest();
@@ -2889,46 +2890,42 @@ function rGuide(){
       if(ex.muscles)h+='<div style="margin-top:4px;font-size:11px;color:var(--muted)"><span style="color:var(--day-color,var(--morning))">&#9679;</span> '+ex.muscles.primary+'<span style="color:var(--border)"> · </span>'+ex.muscles.secondary+'</div>';
       h+='</div>';
       h+='<div class="gsets">'+ex.target+'</div>';
-      if(SUBS[ex.id]&&!getGuideSwap(ex.id)){h+='<button class="sub-btn" onclick="event.stopPropagation();togSub(\'guide_'+ex.id+'\')" title="Alternatives">🔄</button>';}
-      if(getGuideSwap(ex.id)){h+='<button class="sub-btn" style="border-color:var(--legs);color:var(--legs)" onclick="event.stopPropagation();restoreGuideEx(\''+ex.id+'\')" title="Restore">↩</button>';}
+      if(SUBS[ex.id]&&!gswap){h+='<button class="sub-btn" onclick="event.stopPropagation();togSub(\'guide_'+ex.id+'\')" title="Alternatives">🔄</button>';}
+      if(gswap){h+='<button class="sub-btn" style="border-color:var(--legs);color:var(--legs)" onclick="event.stopPropagation();resetSwapToOriginal(\''+ex.id+'\')" title="Restore">↩</button>';}
       h+='<div class="garr">&#9660;</div></div>';
-      // Check for guide swap
-      var gswap=getGuideSwap(ex.id);
       h+='<div class="gdetail"><div class="gdetail-inner">';
       if(gswap){
         h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
         h+='<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--legs)">Swapped Exercise</div>';
-        h+='<button onclick="event.stopPropagation();restoreGuideEx(\''+ex.id+'\');" style="font-size:10px;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">Restore Original</button>';
+        h+='<button onclick="event.stopPropagation();resetSwapToOriginal(\''+ex.id+'\');" style="font-size:10px;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">Restore Original</button>';
         h+='</div>';
         h+='<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px">'+gswap.name+'</div>';
         h+='<div style="font-size:11px;color:var(--muted);margin-bottom:12px">Targets: '+gswap.muscles+'</div>';
         h+='<div class="gdetail-lbl">How to do it</div>';
         h+='<ul class="gsteps">';
-        h+='<li>Set up for '+gswap.name+' targeting your '+gswap.muscles+'.</li>';
-        h+='<li>Perform with full range of motion, controlled on the way down.</li>';
-        h+='<li>Keep the same sets and rep target as the original exercise.</li>';
-        h+='<li>If this is your first time doing this variation, use a lighter starting weight.</li>';
+        (gswap.steps||[]).forEach(function(s){h+='<li>'+s+'</li>';});
         h+='</ul>';
-        h+='<div class="gtip">Alternative selected from your swap list. Detailed cues coming in future update.</div>';
+        if(gswap.tip)h+='<div class="gtip">'+gswap.tip+'</div>';
       } else {
-        var activeExGuide=getActiveExercise(ex);
-        h+='<div class="gdetail-lbl">How to do it'+(activeExGuide._isAlt?' <span style="font-size:10px;color:var(--accent);font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px">— '+activeExGuide.name+'</span>':'')+'</div>';
+        h+='<div class="gdetail-lbl">How to do it</div>';
         h+='<ul class="gsteps">';
-        activeExGuide.steps.forEach(function(s){h+='<li>'+s+'</li>';});
+        (ex.steps||[]).forEach(function(s){h+='<li>'+s+'</li>';});
         h+='</ul>';
-        if(activeExGuide.tip)h+='<div class="gtip">'+activeExGuide.tip+'</div>';
+        if(ex.tip)h+='<div class="gtip">'+ex.tip+'</div>';
+      }
+      if(isOpen){
+        h+='<div class="ex-vid-wrap" id="vidg_'+ex.id+'"></div>';
+        pendingVideoFetches.push({id:ex.id,name:displayExG.name});
       }
       h+='</div></div>';
       // Sub panel
       if(SUBS[ex.id]&&!gswap){
         h+='<div class="sub-panel" id="guide_'+ex.id+'">';
         h+='<div class="sub-panel-title">Alternative Exercises</div>';
-        var subBtns=renderSubButtons(ex,'guide');
-        if(subBtns)h+='<div class="miss-btns">'+subBtns+'</div>';
         SUBS[ex.id].forEach(function(s,si){
           h+='<div class="sub-item">';
           h+='<div><div style="font-size:13px">'+s.name+'</div><div style="font-size:10px;color:var(--muted)">'+s.muscles+'</div></div>';
-          h+='<button class="sub-use-btn" onclick="event.stopPropagation();useGuideSwap(\''+ex.id+'\','+si+')">Use</button>';
+          h+='<button class="sub-use-btn" onclick="event.stopPropagation();swapExercise(\''+ex.id+'\','+si+')">Use</button>';
           h+='</div>';
         });
         h+='</div>';
@@ -2998,6 +2995,9 @@ function rGuide(){
   h+='<button class="reset-btn" onclick="resetGuideChecks()">&#8635; Reset Session Checks</button>';
 
   document.getElementById('sc-guide').innerHTML=h;
+  pendingVideoFetches.forEach(function(item){
+    fetchExVideo(item.id,item.name,'vidg_'+item.id);
+  });
 }
 function guideSearch(val){
   guideSearchTerm=val;
@@ -3035,25 +3035,6 @@ function toggleSimpleCheck(sec,i,btn){
 function togSub(panelId){
   var panel=document.getElementById(panelId);
   if(panel)panel.classList.toggle('open');
-}
-function getGuideSwap(exId){
-  try{return JSON.parse(sessionStorage.getItem('pt_gswap_'+exId)||'null');}catch(e){return null;}
-}
-function useGuideSwap(exId,subIdx){
-  var sub=SUBS[exId]?SUBS[exId][subIdx]:null;
-  if(!sub)return;
-  sessionStorage.setItem('pt_gswap_'+exId,JSON.stringify(sub));
-  delete _vidCache[exId];
-  rGuide();
-}
-function restoreGuideEx(exId){
-  sessionStorage.removeItem('pt_gswap_'+exId);
-  rGuide();
-}
-function clearGuideSwaps(){
-  Object.keys(sessionStorage).forEach(function(k){
-    if(k.startsWith('pt_gswap_'))sessionStorage.removeItem(k);
-  });
 }
 function resetGuideChecks(){
   var checks=loadChecks();
@@ -3181,8 +3162,7 @@ function buildModal(exList,type){
     h+='</div>';
     if(warmW>0&&mType!=='morning')h+='<div class="warmup-hint">🔥 Warm-up set: '+warmW+'kg × 10 reps before working sets</div>';
     if(swapped)h+='<div style="font-size:10px;padding:0 20px 6px;color:var(--legs)">🔄 Swapped from: '+ex.name+'</div>';
-    var howToEx=swapped?{steps:swapped.steps||[],tip:swapped.tip||null}:getActiveExercise(ex);
-    if(!swapped&&howToEx._isAlt)h+='<div style="font-size:10px;padding:0 20px 4px;color:var(--accent);font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px">📋 How-to: '+howToEx.name+'</div>';
+    var howToEx=swapped||ex;
     h+='<div class="lex-howto" id="info_'+ex.id+'">';
     h+='<ul class="lex-steps">';
     howToEx.steps.forEach(function(s){h+='<li>'+s+'</li>';});
@@ -3279,8 +3259,9 @@ function togSubModal(exId){
   if(panel)panel.classList.toggle('open');
 }
 var _vidCache={};
-function fetchExVideo(exId,exName){
-  var wrap=document.getElementById('vid_'+exId);
+function fetchExVideo(exId,exName,wrapId){
+  wrapId=wrapId||('vid_'+exId);
+  var wrap=document.getElementById(wrapId);
   if(!wrap)return;
   if(_vidCache[exId]==='none'){wrap.innerHTML='<div class="ex-vid-ph">No video found for this exercise.</div>';return;}
   if(_vidCache[exId]){
@@ -3296,7 +3277,7 @@ function fetchExVideo(exId,exName){
     .then(function(d){
       if(d.error){
         var reason=d.error.code===403?'YouTube quota exceeded or invalid key — check your API key in Settings.':'YouTube API error ('+d.error.code+') — tap to retry';
-        wrap.innerHTML='<div class="ex-vid-ph" style="cursor:pointer" onclick="fetchExVideo(\''+exId+'\',decodeURIComponent(\''+encodeURIComponent(exName)+'\'))">\u26a0\ufe0f '+reason+'</div>';
+        wrap.innerHTML='<div class="ex-vid-ph" style="cursor:pointer" onclick="fetchExVideo(\''+exId+'\',decodeURIComponent(\''+encodeURIComponent(exName)+'\'),\''+wrapId+'\')">\u26a0\ufe0f '+reason+'</div>';
         return;
       }
       if(d.items&&d.items.length){
@@ -3309,7 +3290,7 @@ function fetchExVideo(exId,exName){
       }
     })
     .catch(function(){
-      wrap.innerHTML='<div class="ex-vid-ph" style="cursor:pointer" onclick="fetchExVideo(\''+exId+'\',decodeURIComponent(\''+encodeURIComponent(exName)+'\'))">⚠️ Failed to load — tap to retry</div>';
+      wrap.innerHTML='<div class="ex-vid-ph" style="cursor:pointer" onclick="fetchExVideo(\''+exId+'\',decodeURIComponent(\''+encodeURIComponent(exName)+'\'),\''+wrapId+'\')">⚠️ Failed to load — tap to retry</div>';
     });
 }
 function togInfo(exId,btn){
@@ -3321,9 +3302,9 @@ function togInfo(exId,btn){
     var wrap=document.getElementById('vid_'+exId);
     if(wrap&&!wrap.querySelector('iframe')&&!_vidCache[exId]){
       var exName=wrap.dataset.exname?decodeURIComponent(wrap.dataset.exname):exId;
-      fetchExVideo(exId,exName);
+      fetchExVideo(exId,exName,'vid_'+exId);
     } else if(wrap&&_vidCache[exId]&&!wrap.querySelector('iframe')){
-      fetchExVideo(exId,wrap.dataset.exname?decodeURIComponent(wrap.dataset.exname):exId);
+      fetchExVideo(exId,wrap.dataset.exname?decodeURIComponent(wrap.dataset.exname):exId,'vid_'+exId);
     }
   }
 }
@@ -3355,7 +3336,8 @@ function saveSession(){
   var exData={};
   Object.entries(mState).forEach(function(entry){
     var ex=ALL_EX.find(function(x){return x.id===entry[0];});
-    exData[entry[0]]={done:entry[1].done,sets:entry[1].sets,name:ex?ex.name:entry[0]};
+    var swap=getSwappedExercise(entry[0]);
+    exData[entry[0]]={done:entry[1].done,sets:entry[1].sets,name:swap?swap.name:(ex?ex.name:entry[0])};
   });
   var allDone=Object.values(mState).every(function(st){return !!st.done;});
   data.logs[mKey][mType]={done:allDone,exercises:exData};
@@ -3619,7 +3601,7 @@ function exportData(){
   var bands={};
   for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith('band_'))bands[k]=localStorage.getItem(k);}
   data._meta={
-    version:'v3.5',
+    version:'v3.0',
     prCount:localStorage.getItem('ppl_pr_count4'),
     theme:localStorage.getItem('ppl_theme'),
     font:localStorage.getItem('ppl_font'),
@@ -3663,7 +3645,7 @@ function importData(e){
       }
       save(existing);
       var fileVer=parsed._meta&&parsed._meta.version;
-      var curVer='v3.5';
+      var curVer='v3.0';
       var themeChanged=parsed._meta&&parsed._meta.theme&&parsed._meta.theme!==localStorage.getItem('ppl_theme');
       var fontChanged=parsed._meta&&parsed._meta.font&&parsed._meta.font!==localStorage.getItem('ppl_font');
       var msg=document.getElementById('dataMsg');
@@ -3691,7 +3673,8 @@ function checkOnboarding(){
   }
 }
 function finishOnboarding(){
-  localStorage.setItem('pt_program_start','2026-06-01');
+  var d=document.getElementById('obStartDate');
+  if(d&&d.value)localStorage.setItem('pt_program_start',d.value);
   localStorage.setItem('pt_onboarded','1');
   document.getElementById('obOverlay').classList.remove('show');
   rToday();
