@@ -279,6 +279,12 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .recovery-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:#ccc}
 .recovery-item:last-child{border-bottom:none}
 .autofill-btn{display:block;margin:0 20px 8px;width:calc(100% - 40px);padding:8px;border-radius:7px;border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.hist-ref{margin:0 20px 6px;padding:6px 10px;border-radius:7px;background:var(--surface2);font-size:11px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px}
+.hist-panel{max-height:0;overflow:hidden;transition:max-height .2s ease;margin:0 20px}
+.hist-panel.open{max-height:200px;margin-bottom:8px}
+.hist-row{display:flex;justify-content:space-between;padding:5px 10px;font-size:11px;border-bottom:1px solid var(--border)}
+.hist-date{color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;flex-shrink:0;margin-right:10px}
+.hist-sets{color:var(--text);text-align:right}
 .deload-hint{font-size:10px;color:#facc15;padding:0 20px 6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px}
 .fill-opts{display:flex;gap:5px;padding:0 20px 10px;flex-wrap:wrap}
 .fill-btn{flex:1;min-width:60px;padding:7px 6px;border-radius:7px;border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;text-align:center}
@@ -666,21 +672,21 @@ var EX={
       tip:'Rotate from your core, not just your arms. You should feel it in your obliques. Start light — this is harder than it looks.'},
   ],
   d3:[
-    {id:'d3_gbs',name:'Goblet Squats',type:'weighted',target:'3x12',sets:3,tag:'Compound',rest:'2-3 min',muscles:{primary:'Quads',secondary:'Glutes, Core'},
-      steps:['Hold a dumbbell vertically at chest height, feet shoulder-width apart, toes slightly out.','Sit back and down into a squat, keeping chest tall and elbows inside your knees.','Go as deep as you can — ideally thighs parallel or below.','Drive through heels to stand, squeezing glutes at the top.'],
-      tip:'The DB counterbalance makes this feel more natural than a regular squat. Great movement to re-groove after a break.'},
-    {id:'d3_rdl',name:'DB Romanian Deadlifts',type:'weighted',target:'3x12',sets:3,tag:'Compound',rest:'2-3 min',muscles:{primary:'Hamstrings',secondary:'Glutes, Lower Back'},
+    {id:'d3_rdl',name:'DB Romanian Deadlifts',type:'weighted',target:'4x10',sets:4,tag:'Compound',rest:'2-3 min',muscles:{primary:'Hamstrings',secondary:'Glutes, Lower Back'},
       steps:['Stand holding DBs in front of thighs, feet hip-width apart, soft bend in knees.','Hinge at hips — push your butt backward as DBs slide down your thighs.','Lower until you feel a deep stretch in your hamstrings, usually mid-shin level.','Drive hips forward to return to standing. Keep DBs close to legs the whole time.'],
-      tip:'This is a hip hinge, NOT a squat. Knees barely bend. Feel the stretch in the back of your legs.'},
+      tip:'This is a hip hinge, NOT a squat. Knees barely bend. Feel the stretch in the back of your legs. Now your first leg movement — cycling is quad-dominant and does very little for hamstrings, so this gets trained first while you\'re freshest.'},
+    {id:'d3_bgl',isBand:true,name:'Band Glute Bridges',type:'reps',target:'3x20',sets:3,tag:'Isolation',rest:'60-90 sec',muscles:{primary:'Glutes',secondary:'Hamstrings'},
+      steps:['Lie on back, knees bent, feet flat. Place resistance band across your hips.','Press feet into floor and drive hips up toward ceiling.','Squeeze glutes hard at the top for 1-2 seconds.','Lower back down slowly without fully relaxing at the bottom.'],
+      tip:'Drive knees slightly outward against the band at the top for even more glute activation. Higher reps now — glute extension under a full squeeze is something pedaling doesn\'t really give you.'},
     {id:'d3_rlu',name:'DB Reverse Lunges',type:'weighted',target:'3x10',sets:3,tag:'Compound',rest:'2-3 min',muscles:{primary:'Quads, Glutes',secondary:'Hamstrings, Calves'},
       steps:['Stand with DBs at your sides. Step one foot back and lower back knee toward floor.','Front shin stays vertical, front thigh roughly parallel to ground.','Push through heel of front foot to return to standing.','Alternate legs each rep or complete all reps on one side before switching.'],
-      tip:'Reverse lunges are easier on the knees than forward lunges — better for getting back into training.'},
-    {id:'d3_bgl',isBand:true,name:'Band Glute Bridges',type:'reps',target:'3x15',sets:3,tag:'Isolation',rest:'60-90 sec',muscles:{primary:'Glutes',secondary:'Hamstrings'},
-      steps:['Lie on back, knees bent, feet flat. Place resistance band across your hips.','Press feet into floor and drive hips up toward ceiling.','Squeeze glutes hard at the top for 1-2 seconds.','Lower back down slowly without fully relaxing at the bottom.'],
-      tip:'Drive knees slightly outward against the band at the top for even more glute activation.'},
-    {id:'d3_dcr',name:'DB Calf Raises',type:'weighted',target:'3x20',sets:3,tag:'Isolation',rest:'60-90 sec',muscles:{primary:'Calves (Gastrocnemius)',secondary:'Soleus'},
+      tip:'Drive through the front heel and think "push the floor away" rather than "straighten the knee" — that shifts more of the work onto the glute than the quad. Also a single-leg movement, which cycling never trains — your legs work independently here, not in sync.'},
+    {id:'d3_gbs',name:'Goblet Squats',type:'weighted',target:'2x12',sets:2,tag:'Compound',rest:'2-3 min',muscles:{primary:'Quads',secondary:'Glutes, Core'},
+      steps:['Hold a dumbbell vertically at chest height, feet shoulder-width apart, toes slightly out.','Sit back and down into a squat, keeping chest tall and elbows inside your knees.','Go as deep as you can — ideally thighs parallel or below.','Drive through heels to stand, squeezing glutes at the top.'],
+      tip:'Dropped to 2 sets — your cycling already covers quad volume most days, so this is now just maintaining the squat pattern and full range of motion, not the main quad driver anymore.'},
+    {id:'d3_dcr',name:'DB Calf Raises',type:'weighted',target:'4x15',sets:4,tag:'Isolation',rest:'60-90 sec',muscles:{primary:'Calves (Gastrocnemius)',secondary:'Soleus'},
       steps:['Stand holding DBs at your sides, feet hip-width apart, toes pointing forward.','Rise up onto your toes as high as possible.','Hold for 1 second at the top, then lower heels all the way back down.','For extra range, stand with balls of feet on a step or book.'],
-      tip:'Calves respond better to high reps and full range. Pause at the bottom and stretch.'},
+      tip:'Bumped to 4 sets — cycling barely loads the calf through a full range since pedaling keeps ankle motion small and mostly concentric. This is where you actually build calf strength and ankle stability, not the bike.'},
     {id:'d3_plk',name:'Plank',type:'time',target:'3x45s',sets:3,tag:'Core',rest:'60 sec',muscles:{primary:'Core (Transverse Abs)',secondary:'Shoulders, Glutes'},
       steps:['Forearms on floor, elbows under shoulders. Toes on floor. Body in a straight line.','Brace core like you are about to take a punch. Squeeze glutes too.','Hold without letting hips sag or rise. Breathe steadily.','Add 5 seconds per week when the current time feels comfortable.'],
       tip:'Quality over duration. A 20-second perfect plank beats a 60-second saggy one. Progress by adding time, not by compromising form.'},
@@ -789,12 +795,37 @@ var RECOVERY_TIPS=[
   {icon:'💧',text:'Stay hydrated — aim for 2-3L today'},
   {icon:'😴',text:'Sleep is when muscles actually grow — prioritize 7-9 hrs tonight'},
 ];
-var PHASES=[
-  {name:'Re-entry',weeks:2,desc:'Rebuild movement patterns. Form over weight. No failure.',color:'var(--rest)'},
-  {name:'Base Building',weeks:4,desc:'Higher reps, moderate weight. Build the foundation.',color:'var(--pull)'},
-  {name:'Strength',weeks:4,desc:'Lower reps, heavier weight. Push your limits.',color:'var(--push)'},
-  {name:'Deload',weeks:1,desc:'Back off to 60%. Let your body recover and grow.',color:'#facc15'},
+// 10-week program cycle: 4wk Build -> Deload -> Repeat(wk4) -> Climb -> Repeat(wk7) -> Climb -> Deload -> loops
+var CYCLE_LENGTH=10;
+var WEEK_PLAN=[
+  {type:'build',name:'Build',desc:'Progressive weeks. Add weight/reps as you hit targets.',color:'var(--pull)'},
+  {type:'build',name:'Build',desc:'Progressive weeks. Add weight/reps as you hit targets.',color:'var(--pull)'},
+  {type:'build',name:'Build',desc:'Progressive weeks. Add weight/reps as you hit targets.',color:'var(--pull)'},
+  {type:'build',name:'Build',desc:'Progressive weeks. Add weight/reps as you hit targets.',color:'var(--pull)'},
+  {type:'deload',name:'Deload',desc:'Back off to ~60%. Let your body recover and grow.',color:'#facc15'},
+  {type:'repeat',name:'Consolidate',desc:'Repeat Week 4 exactly — same weight, same reps. No new PRs this week.',color:'var(--rest)',sourceOffset:2},
+  {type:'climb',name:'Climb',desc:'New peak. Push past your last high point.',color:'var(--push)'},
+  {type:'repeat',name:'Consolidate',desc:'Repeat Week 7 exactly — same weight, same reps. No new PRs this week.',color:'var(--rest)',sourceOffset:1},
+  {type:'climb',name:'Climb',desc:'New peak. Push past your last high point.',color:'var(--push)'},
+  {type:'deload',name:'Deload',desc:'Back off to ~60%. Let your body recover and grow.',color:'#facc15'},
 ];
+function getCycleWeekInfo(d){
+  var start=localStorage.getItem('pt_program_start');
+  if(!start){
+    var keys=Object.keys(load().logs).sort();
+    if(!keys.length)return null;
+    start=keys[0];
+  }
+  var sd=new Date(start+'T00:00:00');var td=new Date(d);td.setHours(0,0,0,0);
+  var days=Math.floor((td-sd)/(24*60*60*1000));
+  if(days<0)return null;
+  var totalWeek=Math.floor(days/7);
+  var cycleIdx=totalWeek%CYCLE_LENGTH;
+  var cycleNum=Math.floor(totalWeek/CYCLE_LENGTH);
+  var plan=WEEK_PLAN[cycleIdx];
+  return{weekNum:cycleIdx+1,cycleIdx:cycleIdx,cycleNum:cycleNum,totalWeek:totalWeek,type:plan.type,sourceOffset:plan.sourceOffset||null,plan:plan,startDate:start};
+}
+var PHASES=WEEK_PLAN;
 var SUBS={
   d1_fdp:[
     {name:'DB Squeeze Press',muscles:'Chest (Inner), Triceps',
@@ -1045,9 +1076,9 @@ var SUBS={
       tip:'Same lat-decompression intent as a dead hang, but usable anywhere with a band and no pull-up bar.'}
   ],
   m_lnf:[
-    {name:'Shoulder Shrug + Roll',muscles:'Upper Traps, Neck',
-      steps:['Stand tall, arms relaxed at sides.','Shrug both shoulders straight up toward your ears, hold briefly.','Roll shoulders back and down in a slow circle.','Repeat for the full duration, keeping the neck relaxed throughout.'],
-      tip:'Targets the same upper-trap tension as the neck flexion stretch, with less direct load through the neck joint itself.'}
+    {name:'Ear-to-Shoulder Stretch',muscles:'Neck, Upper Traps',
+      steps:['Stand or sit tall, shoulders relaxed and level.','Gently pull your head sideways with your hand until your ear moves toward your shoulder.','Hold without shrugging the opposite shoulder up.','Return to center, then switch sides.'],
+      tip:'Same neck/upper-trap target as the original stretch, held passively rather than moved through — no equipment, rooftop-friendly.'}
   ],
   m_xbs:[
     {name:'Sleeper Stretch',muscles:'Posterior Deltoid, Rotator Cuff',
@@ -1055,9 +1086,9 @@ var SUBS={
       tip:'More isolated on the rotator cuff than the cross-body version. Go gently — this joint has a smaller safe range.'}
   ],
   m_co:[
-    {name:'Doorway Chest Stretch',muscles:'Chest, Front Delts, Biceps',
-      steps:['Stand in a doorway, forearm braced against the frame at shoulder height.','Step forward through the doorway until you feel a stretch across the chest.','Keep your torso upright — do not lean from the hips.','Hold, then switch sides.'],
-      tip:'Same target as Chest Opener but the fixed anchor lets you control depth more precisely.'}
+    {name:'Clasped-Hands Chest Stretch',muscles:'Chest, Front Delts, Biceps',
+      steps:['Stand tall, interlace your fingers behind your back.','Straighten your arms and lift them slightly away from your body.','Squeeze your shoulder blades together as your chest opens.','Hold, breathing steadily.'],
+      tip:'Same chest-opening target as Chest Opener, no wall or doorway needed — works anywhere including the rooftop.'}
   ],
   m_ss:[
     {name:'Standing Spinal Twist',muscles:'Obliques, Lats',
@@ -1213,18 +1244,27 @@ function isDeloadWeek(){
     for(var d=0;d<7;d++){var dt=new Date(ws);dt.setDate(ws.getDate()+d);if(dt>t)break;if(dayComplete(toKey(dt),dt))done++;}
     if(done>=4)cnt++;
   }
-  // Week-based override: deload at week 11 (every 11th week from program start)
-  var start=localStorage.getItem('pt_program_start');
-  if(start){
-    var sd=new Date(start+'T00:00:00');var td=new Date();td.setHours(0,0,0,0);
-    var wk=Math.floor((td-sd)/(7*24*60*60*1000));
-    if(wk>=0&&(wk%11)===10)return true;
-  }
+  // Week-based override: deload at weeks 5 and 10 of the 10-week cycle
+  var info=getCycleWeekInfo(t);
+  if(info)return info.type==='deload';
   return cnt>=4;
 }
 function getPullupBest(){
   // Pull-ups are trained Tue (d2_pul) and Sat (d5_pul) — getBest already groups these as one exercise
   return getBest('d2_pul').reps;
+}
+function getSetsForAbsoluteWeek(exId,isMorn,startDateStr,totalWeek){
+  var sd=new Date(startDateStr+'T00:00:00');
+  var ws=new Date(sd);ws.setDate(sd.getDate()+totalWeek*7);
+  var we=new Date(ws);we.setDate(ws.getDate()+6);
+  var found=null;
+  Object.entries(load().logs).forEach(function(e){
+    var dt=new Date(e[0]+'T00:00:00');
+    if(dt<ws||dt>we)return;
+    var src=isMorn?e[1].morning:e[1].ppl;
+    if(src&&src.exercises&&src.exercises[exId]&&src.exercises[exId].sets)found=src.exercises[exId].sets;
+  });
+  return found;
 }
 function getRec(exId,ex,mode){
   var isMorn=exId.startsWith('m_');
@@ -1258,6 +1298,27 @@ function getRec(exId,ex,mode){
     return Array.from({length:n},function(){return{reps:targetReps,weight:dw,done:false};});
   }
   // smart default
+  var weekInfo=getCycleWeekInfo(now());
+  if(weekInfo&&weekInfo.type==='repeat'&&weekInfo.sourceOffset){
+    var srcSets=getSetsForAbsoluteWeek(exId,isMorn,weekInfo.startDate,weekInfo.totalWeek-weekInfo.sourceOffset);
+    if(srcSets&&srcSets.length){
+      return Array.from({length:n},function(_,i){
+        var s=srcSets[i]||srcSets[srcSets.length-1];
+        return{reps:+(s.reps||targetReps),weight:+(s.weight||sk),done:false};
+      });
+    }
+  }
+  if(weekInfo&&weekInfo.type==='build'&&weekInfo.cycleIdx===0&&weekInfo.cycleNum>=1){
+    var climbSets=getSetsForAbsoluteWeek(exId,isMorn,weekInfo.startDate,weekInfo.totalWeek-2);
+    if(climbSets&&climbSets.length){
+      var climbMaxW=0;
+      climbSets.forEach(function(s){if(s.weight)climbMaxW=Math.max(climbMaxW,+s.weight);});
+      if(climbMaxW>0){
+        var startW=Math.max(Math.round(climbMaxW*0.925/2.5)*2.5,2.5);
+        return Array.from({length:n},function(){return{reps:targetReps,weight:startW,done:false};});
+      }
+    }
+  }
   var sugW=isDeloadWeek()?Math.max(Math.round(maxW*0.6/2.5)*2.5,2.5):(allHit&&maxW>0?maxW+2.5:maxW||sk);
   return Array.from({length:n},function(){return{reps:targetReps,weight:sugW,done:false};});
 }
@@ -1352,19 +1413,9 @@ function renderMuscleMap(dayKey){
 // ── PROTRAIN HELPERS ───────────────────────────────────────────
 function getCurrentPhase(){
   try{
-  var startKey=localStorage.getItem('pt_program_start');
-  var data=load(),keys=Object.keys(data.logs).sort();
-  var firstStr=startKey||(keys.length?keys[0]:null);
-  if(!firstStr)return null;
-  var first=new Date(firstStr+'T00:00:00'),today=new Date();today.setHours(0,0,0,0);
-  if(isNaN(first.getTime()))return null;
-  var weeks=Math.floor((today-first)/(7*24*60*60*1000));
-  if(weeks<0)weeks=0;
-  var cycle=weeks%11; // 11-week program: 2 re-entry + 4 base + 4 strength + 1 deload
-  if(cycle<2)return Object.assign({},PHASES[0],{week:cycle+1,pct:Math.round((cycle+1)/2*100)});
-  if(cycle<6)return Object.assign({},PHASES[1],{week:cycle-1,pct:Math.round((cycle-1)/4*100)});
-  if(cycle<10)return Object.assign({},PHASES[2],{week:cycle-5,pct:Math.round((cycle-5)/4*100)});
-  return Object.assign({},PHASES[3],{week:1,pct:100});
+  var info=getCycleWeekInfo(new Date());
+  if(!info)return null;
+  return Object.assign({},info.plan,{week:info.weekNum,pct:Math.round(info.weekNum/CYCLE_LENGTH*100),cycleNum:info.cycleNum});
   }catch(e){return null;}
 }
 function calc1RM(weight,reps){
@@ -1452,6 +1503,16 @@ function getLastWeight(exId){
     src.exercises[exId].sets.forEach(function(s){if(s.weight)last=Math.max(last,+s.weight);});
   });
   return last;
+}
+function getRecentSessions(exId,n){
+  var isMorn=exId.startsWith('m_'),out=[];
+  Object.entries(load().logs).sort().forEach(function(e){
+    var src=isMorn?e[1].morning:e[1].ppl;
+    if(!src||!src.exercises||!src.exercises[exId]||!src.exercises[exId].sets)return;
+    var sets=src.exercises[exId].sets.filter(function(s){return s.weight||s.reps||s.time;});
+    if(sets.length)out.push({date:e[0],sets:sets});
+  });
+  return out.slice(-n).reverse();
 }
 function checkBackupReminder(){
   // Handled by persistent backup banner in rToday
@@ -1916,14 +1977,14 @@ function _rToday(){
     h+='<div class="phase-card" style="--phase-color:'+ph.color+'">';
     h+='<div class="phase-tag">Training Phase</div>';
     h+='<div class="phase-name">'+ph.name+'</div>';
-    h+='<div class="phase-desc">Week '+ph.week+' of '+ph.weeks+' - '+ph.desc+'</div>';
+    h+='<div class="phase-desc">Week '+ph.week+' of '+CYCLE_LENGTH+(ph.cycleNum>0?' · Cycle '+(ph.cycleNum+1):'')+' - '+ph.desc+'</div>';
     h+='<div class="phase-progress"><div class="phase-fill" style="width:'+ph.pct+'%"></div></div>';
     h+='</div>';
   }
   if(isDeloadWeek()){
     var _dlWkLabel='Deload Week';
-    var _dlStart=localStorage.getItem('pt_program_start');
-    if(_dlStart){var _dlSd=new Date(_dlStart+'T00:00:00');var _dlTd=new Date();_dlTd.setHours(0,0,0,0);var _dlWk=Math.floor((_dlTd-_dlSd)/(7*24*60*60*1000))+1;_dlWkLabel='Deload Week \u2014 Week '+_dlWk;}
+    var _dlInfo=getCycleWeekInfo(now());
+    if(_dlInfo)_dlWkLabel='Deload Week \u2014 Week '+_dlInfo.weekNum+' of '+CYCLE_LENGTH;
     h+='<div class="deload-banner"><div style="font-size:24px">\u26a0\ufe0f</div><div><div class="deload-text">'+_dlWkLabel+'</div><div class="deload-sub">Drop to ~60% weight this week. Your body will thank you next cycle.</div></div></div>';
   }
   var cs=calcConsistency();
@@ -3171,6 +3232,30 @@ function buildModal(exList,type){
     h+='<div class="ex-vid-wrap" id="vid_'+ex.id+'" data-exid="'+ex.id+'" data-exname="'+encodeURIComponent(displayEx.name)+'"></div>';
     h+='</div>';
     var dl=isDeloadWeek();
+    if(ex.type==='weighted'||ex.type==='reps'||ex.type==='time'){
+      var recentSess=getRecentSessions(ex.id,3);
+      if(recentSess.length){
+        var lastSess=recentSess[0];
+        var lastSummary=lastSess.sets.map(function(s){
+          if(ex.type==='weighted')return (s.weight||'?')+'kg×'+(s.reps||'?');
+          if(ex.type==='time')return (s.time||'?')+'s';
+          return (s.reps||'?')+'r';
+        }).join(', ');
+        var lastDateShort=new Date(lastSess.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+        h+='<div class="hist-ref" onclick="togHist(\''+ex.id+'\')">📊 Last: '+lastSummary+' <span style="opacity:.6">('+lastDateShort+')</span> <span id="histArrow_'+ex.id+'" style="opacity:.5">▾</span></div>';
+        h+='<div class="hist-panel" id="hist_'+ex.id+'">';
+        recentSess.forEach(function(sess){
+          var d=new Date(sess.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+          var setStrs=sess.sets.map(function(s){
+            if(ex.type==='weighted')return (s.weight||'?')+'kg×'+(s.reps||'?');
+            if(ex.type==='time')return (s.time||'?')+'s';
+            return (s.reps||'?')+'r';
+          });
+          h+='<div class="hist-row"><span class="hist-date">'+d+'</span><span class="hist-sets">'+setStrs.join(' · ')+'</span></div>';
+        });
+        h+='</div>';
+      }
+    }
     h+='<button class="autofill-btn" onclick="fillRec(\''+ex.id+'\')">'+(dl?'⚠️ Auto-fill (Deload 60%)':'✨ Auto-fill Recommendation')+'</button>';
     h+='<div class="set-inputs">';
     st.sets.forEach(function(s,si){
@@ -3292,6 +3377,13 @@ function fetchExVideo(exId,exName,wrapId){
     .catch(function(){
       wrap.innerHTML='<div class="ex-vid-ph" style="cursor:pointer" onclick="fetchExVideo(\''+exId+'\',decodeURIComponent(\''+encodeURIComponent(exName)+'\'),\''+wrapId+'\')">⚠️ Failed to load — tap to retry</div>';
     });
+}
+function togHist(exId){
+  var panel=document.getElementById('hist_'+exId);
+  var arrow=document.getElementById('histArrow_'+exId);
+  if(!panel)return;
+  var open=panel.classList.toggle('open');
+  if(arrow)arrow.textContent=open?'▴':'▾';
 }
 function togInfo(exId,btn){
   var panel=document.getElementById('info_'+exId);
