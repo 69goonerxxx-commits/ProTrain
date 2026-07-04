@@ -1,4 +1,4 @@
-const CACHE = 'protrain-v3';
+const CACHE = 'protrain-v4.5';
 const STATIC = [
   './manifest.json',
   './icon-192.png',
@@ -29,9 +29,11 @@ self.addEventListener('fetch', e => {
     || url.pathname.endsWith('/');
 
   if (isHTML) {
-    // Network-first for HTML — always get the latest app, cache as fallback
+    // Network-first for HTML — cache:'no-store' forces this past the browser's own
+    // HTTP cache too, not just past this service worker's cache. Without it, a
+    // network-first *strategy* can still silently serve a stale HTTP-cached response.
     e.respondWith(
-      fetch(e.request)
+      fetch(e.request, { cache: 'no-store' })
         .then(res => {
           const clone = res.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));

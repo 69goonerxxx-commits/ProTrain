@@ -486,6 +486,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .rt-stop{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer}
 .rest-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;line-height:1}
 .rest-btn.active{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.extmr-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;line-height:1}
+.extmr-btn.active{border-color:var(--legs);color:var(--legs);background:color-mix(in srgb,var(--legs) 12%,transparent);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px}
 
 /* SESSION TIME */
 .session-time-row{display:flex;gap:10px;padding:16px 20px 0}
@@ -550,8 +552,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
   </div>
   <div class="ob-section">
     <div class="ob-section-title">Set Your Program Start Date</div>
-    <div class="ob-section-body">Your first 2 weeks (June 1–14) use a lighter 4-day schedule. The full 5-day program begins June 15 automatically.</div>
-    <input class="ob-start-input" type="date" id="obStartDate" value="2026-06-01">
+    <div class="ob-section-body">Your program runs on a repeating 10-week cycle: 4 weeks building up, a deload week, then a step-loading block (consolidate, climb, consolidate, climb), and a second deload before the next cycle begins — each cycle starting a little higher than the last. Pick the date you're starting below and the app tracks the rest.</div>
+    <input class="ob-start-input" type="date" id="obStartDate">
   </div>
   <div class="ob-section">
     <div class="ob-section-title">Equipment Used</div>
@@ -609,22 +611,22 @@ var DAY_SUBTITLES={morning:'Daily Activation',d1:'Push — Chest',d2:'Pull — B
 
 var EX={
   morning:[
-    {id:'m_dh',name:'Dead Hang',type:'time',target:'1-2x20-30s',sets:2,tag:'Spine',muscles:{primary:'Lats',secondary:'Shoulders, Forearms'},
-      steps:['Jump or step up and grip the pull-up bar, hands shoulder-width apart.','Let your body hang completely relaxed — no pulling, no tension.','Breathe steadily and let gravity decompress your spine.','Do 1–2 sets of 20–30 seconds. Adjust based on how your body feels.'],
+    {id:'m_dh',name:'Dead Hang',type:'time',target:'1x20-30s',sets:1,tag:'Spine',muscles:{primary:'Lats',secondary:'Shoulders, Forearms'},
+      steps:['Jump or step up and grip the pull-up bar, hands shoulder-width apart.','Let your body hang completely relaxed — no pulling, no tension.','Breathe steadily and let gravity decompress your spine.','Hold for 20–30 seconds.'],
       tip:'Your spine compresses overnight due to fluid imbibition in the discs. Gentle axial distraction in the morning is appropriate for that hydrated state and non-fatiguing at this prescription (Urban & Roberts, 2003). Do this before going to the rooftop.'},
-    {id:'m_lnf',name:'Lateral Neck Flexion + Chin-to-Chest Rotation',type:'time',target:'1x15s each side / 15s',sets:1,tag:'Mobility',muscles:{primary:'Neck',secondary:'Upper Traps'},
+    {id:'m_lnf',name:'Lateral Neck Flexion + Chin-to-Chest Rotation',type:'time',target:'15s each side',sets:2,sides:true,tag:'Mobility',muscles:{primary:'Neck',secondary:'Upper Traps'},
       steps:['Stand tall. Slowly tilt your head to the right, bringing your ear toward your shoulder. Hold 15 seconds. Switch sides.','Then bring your chin slowly toward your chest. Hold 15 seconds.','Keep all movements slow and within a comfortable range — no forcing.','Full circumduction (rolling the head in circles) is not used here — avoid it.'],
       tip:'Full circumduction applies compressive load to cervical facet joints and has been flagged for vertebral artery stress (Puentedura et al., 2012). Lateral flexion and rotation achieve the same cervical mobility goal without the compression risk.'},
-    {id:'m_xbs',name:'Cross-body Stretch',type:'time',target:'1x15-20s each side',sets:1,tag:'Mobility',muscles:{primary:'Posterior Deltoid',secondary:'Rotator Cuff, Upper Back'},
+    {id:'m_xbs',name:'Cross-body Stretch',type:'time',target:'15-20s each side',sets:2,sides:true,tag:'Mobility',muscles:{primary:'Posterior Deltoid',secondary:'Rotator Cuff, Upper Back'},
       steps:['Bring your right arm across your body at shoulder height.','Use your left forearm or hand to gently press it closer to your chest.','Hold 15–20 seconds — you should feel the stretch in the back of your right shoulder.','Switch sides.'],
       tip:'Passive hold — get into position and let the weight of your arm and gravity do the work. No bouncing.'},
     {id:'m_co',name:'Chest Opener',type:'time',target:'1x20-30s',sets:1,tag:'Mobility',muscles:{primary:'Chest',secondary:'Front Delts, Biceps'},
       steps:['Stand tall and interlace your fingers behind your back.','Squeeze your shoulder blades together and lift your hands slightly away from your body.','Open your chest forward and upward — feel the stretch across the front.','Hold 20–30 seconds, breathing steadily.'],
       tip:'Reverses the hunched position your upper body defaults to after sleep. Passive hold — no movement required once you\'re in position.'},
-    {id:'m_ss',name:'Standing Side Stretch',type:'time',target:'1x15s each side',sets:1,tag:'Mobility',muscles:{primary:'Obliques',secondary:'Lats, Intercostals'},
+    {id:'m_ss',name:'Standing Side Stretch',type:'time',target:'15s each side',sets:2,sides:true,tag:'Mobility',muscles:{primary:'Obliques',secondary:'Lats, Intercostals'},
       steps:['Stand tall with feet hip-width apart.','Raise your right arm overhead and lean to the left, reaching your hand across.','Keep both feet planted and hips square — do not let the hip pop out.','Hold 15 seconds, then switch sides.'],
       tip:'Passive hold. Breathe into the stretch — the inhale creates space between your ribs and lengthens the lateral line further.'},
-    {id:'m_hfs',name:'Standing Hip Flexor Stretch',type:'time',target:'1x30s each side',sets:1,tag:'Mobility',muscles:{primary:'Hip Flexors',secondary:'Quads, Lower Back'},
+    {id:'m_hfs',name:'Standing Hip Flexor Stretch',type:'time',target:'30s each side',sets:2,sides:true,tag:'Mobility',muscles:{primary:'Hip Flexors',secondary:'Quads, Lower Back'},
       steps:['Step one foot forward into a lunge position, back knee on or just above the floor.','Keep your torso upright and push your hips gently forward and down.','You should feel a deep stretch at the front of the back leg\'s hip.','Hold 30 seconds, then switch sides.'],
       tip:'Hip flexors are chronically shortened from sitting and sleeping. Passive hold — sink into position and stay there.'},
     {id:'m_ff',name:'Standing Forward Fold',type:'time',target:'1x20-30s',sets:1,tag:'Mobility',muscles:{primary:'Hamstrings',secondary:'Lower Back, Calves'},
@@ -2004,6 +2006,79 @@ function togRestBtn(exId,setIdx,secs){
     stopRestTimer();
   } else {
     startRestTimer(exId,setIdx,secs);
+  }
+}
+// ── EXERCISE TIMER (times the hold itself, not the rest between sets) ──
+var exTmrExId=null,exTmrSetIdx=null,exTmrTarget=0,exTmrRemaining=0,exTmrEnd=0,exTmrInterval=null;
+function parseTargetSecs(targetStr){
+  if(!targetStr)return 30;
+  var nums=targetStr.match(/\d+/g);
+  if(!nums)return 30;
+  return parseInt(nums[nums.length-1]); // last number = upper bound for ranges like "20-30s"
+}
+function updateExTmrDisplay(){
+  if(exTmrExId==null)return;
+  var btn=document.getElementById('extmrbtn_'+exTmrExId+'_'+exTmrSetIdx);
+  if(btn)btn.textContent=exTmrRemaining;
+}
+function tickExTmr(){
+  exTmrRemaining=Math.max(0,Math.ceil((exTmrEnd-Date.now())/1000));
+  updateExTmrDisplay();
+  if(exTmrRemaining<=0){
+    clearInterval(exTmrInterval);exTmrInterval=null;
+    playBeep();
+    if(navigator.vibrate)navigator.vibrate([400,100,400,100,400]);
+    finishExTmr(exTmrTarget);
+  }
+}
+function finishExTmr(secsToLog){
+  var id=exTmrExId,si=exTmrSetIdx;
+  if(id==null)return;
+  var inp=document.getElementById('inp_'+id+'_'+si+'_time');
+  if(inp)inp.value=secsToLog;
+  updSet(id,si,'time',secsToLog);
+  if(mState[id]&&mState[id].sets[si]){
+    mState[id].sets[si].done=true;
+    var chk=document.getElementById('setchk_'+id+'_'+si);
+    if(chk)chk.classList.add('done');
+  }
+  var btn=document.getElementById('extmrbtn_'+id+'_'+si);
+  if(btn){btn.classList.remove('active');btn.innerHTML='&#9654;';}
+  exTmrExId=null;exTmrSetIdx=null;exTmrRemaining=0;
+}
+function startExTmr(exId,setIdx){
+  if(exTmrInterval){clearInterval(exTmrInterval);exTmrInterval=null;}
+  if(exTmrExId!=null){
+    var oldBtn=document.getElementById('extmrbtn_'+exTmrExId+'_'+exTmrSetIdx);
+    if(oldBtn){oldBtn.classList.remove('active');oldBtn.innerHTML='&#9654;';}
+  }
+  var inp=document.getElementById('inp_'+exId+'_'+setIdx+'_time');
+  var curVal=inp&&inp.value?parseInt(inp.value):0;
+  var info=resolveExById(exId);
+  var baseId=info&&info.isAlt?info.baseId:exId;
+  var baseEx=ALL_EX.find(function(e){return e.id===baseId;});
+  var target=curVal>0?curVal:parseTargetSecs(baseEx?baseEx.target:'');
+  if(!target||target<=0)target=30;
+  exTmrExId=exId;exTmrSetIdx=setIdx;exTmrTarget=target;exTmrRemaining=target;
+  exTmrEnd=Date.now()+target*1000;
+  if(navigator.vibrate)navigator.vibrate(200);
+  var btn=document.getElementById('extmrbtn_'+exId+'_'+setIdx);
+  if(btn)btn.classList.add('active');
+  updateExTmrDisplay();
+  exTmrInterval=setInterval(tickExTmr,1000);
+}
+function stopExTmrEarly(){
+  if(exTmrExId==null)return;
+  var elapsed=exTmrTarget-exTmrRemaining;
+  clearInterval(exTmrInterval);exTmrInterval=null;
+  if(navigator.vibrate)navigator.vibrate(150);
+  finishExTmr(elapsed);
+}
+function togExTimer(exId,setIdx){
+  if(exTmrExId===exId&&exTmrSetIdx===setIdx&&exTmrInterval){
+    stopExTmrEarly();
+  } else {
+    startExTmr(exId,setIdx);
   }
 }
 function scheduleRestNotification(endTimestamp){
@@ -3465,11 +3540,12 @@ function buildModal(exList,type){
     h+='<button class="autofill-btn" onclick="fillRec(\''+activeId+'\')">'+(dl?'⚠️ Auto-fill (Deload 60%)':'✨ Auto-fill Recommendation')+'</button>';
     h+='<div class="set-inputs">';
     st.sets.forEach(function(s,si){
-      var lbl=ex.sets>1?'S'+(si+1):'x';
+      var lbl=ex.sides?(si===0?'Left':'Right'):(ex.sets>1?'S'+(si+1):'x');
       h+='<div class="set-row"><button id="setchk_'+activeId+'_'+si+'" class="set-chk'+(st.sets[si].done?' done':'')+'" onclick="togSet(\''+activeId+'\','+si+',this)">&#10003;</button><div class="set-lbl">'+lbl+'</div>';
       if(ex.type==='time'){
         h+='<input id="inp_'+activeId+'_'+si+'_time" class="sinput" type="number" inputmode="numeric" placeholder="sec" value="'+(s.time||'')+'" oninput="updSet(\''+activeId+'\','+si+',\'time\',this.value)">';
         h+='<div class="sinput-lbl">sec</div>';
+        h+='<button id="extmrbtn_'+activeId+'_'+si+'" class="extmr-btn" onclick="togExTimer(\''+activeId+'\','+si+')" title="Time this hold">&#9654;</button>';
       } else if(ex.type==='weighted'){
         h+='<input id="inp_'+activeId+'_'+si+'_reps" class="sinput" type="number" inputmode="decimal" placeholder="reps" value="'+(s.reps||'')+'" oninput="updSet(\''+activeId+'\','+si+',\'reps\',this.value)">';
         h+='<div class="sinput-lbl">reps</div>';
@@ -3970,6 +4046,8 @@ function importData(e){
 function checkOnboarding(){
   if(!localStorage.getItem('pt_onboarded')){
     document.getElementById('obOverlay').classList.add('show');
+    var d=document.getElementById('obStartDate');
+    if(d&&!d.value)d.value=toKey(now());
   }
 }
 function finishOnboarding(){
