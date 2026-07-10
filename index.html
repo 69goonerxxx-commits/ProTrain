@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>ProTrain v4.5</title>
+<title>ProTrain v5.0</title>
 <link rel="manifest" href="manifest.json"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -524,7 +524,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 <!-- ONBOARDING -->
 <div class="ob-overlay" id="obOverlay">
   <div class="ob-logo">⚡</div>
-  <div class="ob-title">ProTrain Program <span style="font-size:14px;opacity:.6">v4.5</span></div>
+  <div class="ob-title">ProTrain Program <span style="font-size:14px;opacity:.6">v5.0</span></div>
   <div class="ob-sub">Your personal PPL workout tracker.<br>Built around your home gym setup.</div>
   <div class="ob-section">
     <div class="ob-section-title">What is PPL?</div>
@@ -614,19 +614,19 @@ var EX={
     {id:'m_dh',name:'Dead Hang',type:'time',target:'1x20-30s',sets:1,tag:'Spine',muscles:{primary:'Lats',secondary:'Shoulders, Forearms'},
       steps:['Jump or step up and grip the pull-up bar, hands shoulder-width apart.','Let your body hang completely relaxed — no pulling, no tension.','Breathe steadily and let gravity decompress your spine.','Hold for 20–30 seconds.'],
       tip:'Your spine compresses overnight due to fluid imbibition in the discs. Gentle axial distraction in the morning is appropriate for that hydrated state and non-fatiguing at this prescription (Urban & Roberts, 2003). Do this before going to the rooftop.'},
-    {id:'m_lnf',name:'Lateral Neck Flexion + Chin-to-Chest Rotation',type:'time',target:'15s each side',sets:2,sides:true,tag:'Mobility',muscles:{primary:'Neck',secondary:'Upper Traps'},
-      steps:['Stand tall. Slowly tilt your head to the right, bringing your ear toward your shoulder. Hold 15 seconds. Switch sides.','Then bring your chin slowly toward your chest. Hold 15 seconds.','Keep all movements slow and within a comfortable range — no forcing.','Full circumduction (rolling the head in circles) is not used here — avoid it.'],
+    {id:'m_lnf',name:'Lateral Neck Flexion + Chin-to-Chest Rotation',type:'time',target:'15s each side + 15s chin tuck',sets:3,sideLabels:['Left','Right','Chin Tuck'],tag:'Mobility',muscles:{primary:'Neck',secondary:'Upper Traps'},
+      steps:['Stand tall. Slowly tilt your head to the right, bringing your ear toward your shoulder. Hold 15 seconds.','Switch sides: tilt your head left, hold 15 seconds.','Then bring your chin slowly toward your chest and hold 15 seconds.','Keep all movements slow and within a comfortable range — no forcing. Full circumduction (rolling the head in circles) is not used here — avoid it.'],
       tip:'Full circumduction applies compressive load to cervical facet joints and has been flagged for vertebral artery stress (Puentedura et al., 2012). Lateral flexion and rotation achieve the same cervical mobility goal without the compression risk.'},
-    {id:'m_xbs',name:'Cross-body Stretch',type:'time',target:'15-20s each side',sets:2,sides:true,tag:'Mobility',muscles:{primary:'Posterior Deltoid',secondary:'Rotator Cuff, Upper Back'},
+    {id:'m_xbs',name:'Cross-body Stretch',type:'time',target:'15-20s each side',sets:2,sideLabels:['Left','Right'],tag:'Mobility',muscles:{primary:'Posterior Deltoid',secondary:'Rotator Cuff, Upper Back'},
       steps:['Bring your right arm across your body at shoulder height.','Use your left forearm or hand to gently press it closer to your chest.','Hold 15–20 seconds — you should feel the stretch in the back of your right shoulder.','Switch sides.'],
       tip:'Passive hold — get into position and let the weight of your arm and gravity do the work. No bouncing.'},
     {id:'m_co',name:'Chest Opener',type:'time',target:'1x20-30s',sets:1,tag:'Mobility',muscles:{primary:'Chest',secondary:'Front Delts, Biceps'},
       steps:['Stand tall and interlace your fingers behind your back.','Squeeze your shoulder blades together and lift your hands slightly away from your body.','Open your chest forward and upward — feel the stretch across the front.','Hold 20–30 seconds, breathing steadily.'],
       tip:'Reverses the hunched position your upper body defaults to after sleep. Passive hold — no movement required once you\'re in position.'},
-    {id:'m_ss',name:'Standing Side Stretch',type:'time',target:'15s each side',sets:2,sides:true,tag:'Mobility',muscles:{primary:'Obliques',secondary:'Lats, Intercostals'},
+    {id:'m_ss',name:'Standing Side Stretch',type:'time',target:'15s each side',sets:2,sideLabels:['Left','Right'],tag:'Mobility',muscles:{primary:'Obliques',secondary:'Lats, Intercostals'},
       steps:['Stand tall with feet hip-width apart.','Raise your right arm overhead and lean to the left, reaching your hand across.','Keep both feet planted and hips square — do not let the hip pop out.','Hold 15 seconds, then switch sides.'],
       tip:'Passive hold. Breathe into the stretch — the inhale creates space between your ribs and lengthens the lateral line further.'},
-    {id:'m_hfs',name:'Standing Hip Flexor Stretch',type:'time',target:'30s each side',sets:2,sides:true,tag:'Mobility',muscles:{primary:'Hip Flexors',secondary:'Quads, Lower Back'},
+    {id:'m_hfs',name:'Standing Hip Flexor Stretch',type:'time',target:'30s each side',sets:2,sideLabels:['Left','Right'],tag:'Mobility',muscles:{primary:'Hip Flexors',secondary:'Quads, Lower Back'},
       steps:['Step one foot forward into a lunge position, back knee on or just above the floor.','Keep your torso upright and push your hips gently forward and down.','You should feel a deep stretch at the front of the back leg\'s hip.','Hold 30 seconds, then switch sides.'],
       tip:'Hip flexors are chronically shortened from sitting and sleeping. Passive hold — sink into position and stay there.'},
     {id:'m_ff',name:'Standing Forward Fold',type:'time',target:'1x20-30s',sets:1,tag:'Mobility',muscles:{primary:'Hamstrings',secondary:'Lower Back, Calves'},
@@ -858,13 +858,13 @@ var SUBS={
       tip:'The more vertical angle shifts the emphasis toward your front delts rather than your chest, closer to an overhead press pattern.'}
   ],
   d1_bcf:[
-    {id:'d1_bcf_alt1',name:'DB Floor Fly',muscles:{primary:'Chest (Inner)',secondary:'Front Delts'},
+    {id:'d1_bcf_alt1',name:'DB Floor Fly',type:'weighted',isBand:false,muscles:{primary:'Chest (Inner)',secondary:'Front Delts'},
       steps:['Lie flat on floor, a DB in each hand, slight bend in elbows.','Open your arms out to the sides in a wide arc until upper arms touch the floor.','Bring both arms back together above your chest in a hugging motion.','Squeeze chest at the top before slowly returning.'],
       tip:'Keep that slight bend in the elbows throughout — straight arms put too much stress on the joint.'},
-    {id:'d1_bcf_alt2',name:'DB Pullover (floor)',muscles:{primary:'Chest',secondary:'Lats'},
+    {id:'d1_bcf_alt2',name:'DB Pullover (floor)',type:'weighted',isBand:false,muscles:{primary:'Chest',secondary:'Lats'},
       steps:['Lie flat on floor, hold one DB with both hands, arms extended straight above your chest.','Keeping a slight bend in elbows, arc the DB back over your head toward the floor.','Stop when you feel a stretch in your chest and lats.','Arc it back to the starting position above your chest.'],
       tip:'Unique exercise that trains chest and lats simultaneously. Keep the movement slow and controlled.'},
-    {id:'d1_bcf_alt3',name:'Incline DB Fly',muscles:{primary:'Chest (Upper)',secondary:'Front Delts'},
+    {id:'d1_bcf_alt3',name:'Incline DB Fly',type:'weighted',isBand:false,muscles:{primary:'Chest (Upper)',secondary:'Front Delts'},
       steps:['Lie on the floor with your upper back propped on a firm cushion or folded blanket to create an incline angle.','Hold DBs above your chest, slight bend in the elbows.','Lower arms out to the sides in a wide arc until you feel a stretch.','Bring DBs back together above your chest, squeezing the chest at the top.'],
       tip:'The incline shifts emphasis to the upper chest fibers, which the flat band fly and floor fly don\'t target as directly.'},
     {id:'d1_bcf_alt4',name:'Standing Band Crossover',muscles:{primary:'Chest',secondary:'Front Delts'},
@@ -872,7 +872,7 @@ var SUBS={
       tip:'Standing removes the floor-fly’s range-of-motion ceiling, and the diagonal band path loads the chest differently than a flat fly.'}
   ],
   d1_dlr:[
-    {id:'d1_dlr_alt1',name:'Band Lateral Raises',muscles:{primary:'Side Delts',secondary:'Side Delts'},
+    {id:'d1_dlr_alt1',name:'Band Lateral Raises',type:'reps',isBand:true,muscles:{primary:'Side Delts',secondary:'Side Delts'},
       steps:['Stand on the resistance band with both feet, hold the other end in each hand.','Raise both arms out to sides until shoulder height, slight bend in elbows.','Lead with elbows, pinky slightly higher than thumb.','Lower slowly against the band tension.'],
       tip:'Bands provide constant tension throughout the movement — different feel from dumbbells. Use Red band.'},
     {id:'d1_dlr_alt2',name:'Prone Incline Lateral Raises',muscles:{primary:'Side Delts (Mid)',secondary:'Side Delts (Mid)'},
@@ -886,21 +886,21 @@ var SUBS={
       tip:'A shoulder-health focused movement combining external rotation with a press — good for keeping the rotator cuff active, not just the delts.'}
   ],
   d1_btp:[
-    {id:'d1_btp_alt1',name:'Diamond Push-ups',muscles:{primary:'Triceps',secondary:'Chest'},
+    {id:'d1_btp_alt1',name:'Diamond Push-ups',isBand:false,muscles:{primary:'Triceps',secondary:'Chest'},
       steps:['Place hands close together under chest, thumbs and index fingers forming a diamond.','Lower chest toward hands, keeping elbows close to body.','Push back up to start.','Keep body in a straight line — do not let hips sag.'],
       tip:'No equipment needed. These hammer the triceps hard.'},
-    {id:'d1_btp_alt2',name:'EZ Bar Skull Crushers',muscles:{primary:'Triceps (All Heads)',secondary:'Triceps (All Heads)'},
+    {id:'d1_btp_alt2',name:'EZ Bar Skull Crushers',type:'weighted',isBand:false,muscles:{primary:'Triceps (All Heads)',secondary:'Triceps (All Heads)'},
       steps:['Lie flat on floor holding EZ bar, arms extended straight up.','Bend elbows and lower bar toward forehead slowly.','Stop just before bar reaches forehead, press back up.','Keep upper arms completely still and vertical.'],
       tip:'Use this as an alternative when you want a weighted tricep movement instead of band pushdowns.'},
-    {id:'d1_btp_alt3',name:'DB Kickbacks',muscles:{primary:'Triceps',secondary:'—'},
+    {id:'d1_btp_alt3',name:'DB Kickbacks',type:'weighted',isBand:false,muscles:{primary:'Triceps',secondary:'—'},
       steps:['Hinge forward at the hips, one hand braced on a chair or bench for support.','Hold a DB in the other hand, upper arm pinned against your side, elbow bent 90 degrees.','Extend your arm straight back, squeezing the triceps at full extension.','Bend the elbow to return to start, keeping your upper arm still throughout.'],
       tip:'Peak contraction happens at full extension behind the body — a different joint angle than pushdowns or skull crushers.'},
-    {id:'d1_btp_alt4',name:'DB Tate Press',muscles:{primary:'Triceps (Lateral Head)',secondary:'Chest'},
+    {id:'d1_btp_alt4',name:'DB Tate Press',type:'weighted',isBand:false,muscles:{primary:'Triceps (Lateral Head)',secondary:'Chest'},
       steps:['Lie on the floor, DBs held above chest with palms facing your feet, elbows flared out to the sides.','Bend elbows to lower the DB heads toward your chest, elbows staying flared throughout.','Press back up by straightening the elbows, keeping them wide.','Keep the movement slow and controlled — this is not a fast press.'],
       tip:'The flared-elbow path hits the triceps’ outer head differently than pushdowns or kickbacks. Start light — this angle is unfamiliar at first.'}
   ],
   d2_pul:[
-    {id:'d2_pul_alt1',name:'Band-Assisted Pull-ups',muscles:{primary:'Lats',secondary:'Upper Back, Biceps'},
+    {id:'d2_pul_alt1',name:'Band-Assisted Pull-ups',isBand:true,muscles:{primary:'Lats',secondary:'Upper Back, Biceps'},
       steps:['Loop Black band over the pull-up bar.','Place one knee or foot in the band loop.','Perform pull-up as normal — band reduces effective bodyweight.','Still focus on full range of motion and slow descent.'],
       tip:'Use this whenever standard pull-ups feel impossible. There is no shame — it builds the same muscles.'},
     {id:'d2_pul_alt2',name:'Negative Pull-ups',muscles:{primary:'Lats',secondary:'Upper Back, Biceps'},
@@ -914,7 +914,7 @@ var SUBS={
       tip:'Isolates the scapular retraction that starts every pull-up, without the arm-pulling component — genuinely useful prep work, not just an easier regression.'}
   ],
   d2_sar:[
-    {id:'d2_sar_alt1',name:'Both-Arms Band Row',muscles:{primary:'Mid Back',secondary:'Biceps, Rear Delts'},
+    {id:'d2_sar_alt1',name:'Both-Arms Band Row',type:'reps',isBand:true,muscles:{primary:'Mid Back',secondary:'Biceps, Rear Delts'},
       steps:['Anchor band at waist height. Hold an end in each hand, palms facing each other.','Step back to create tension, arms extended in front.','Pull both hands toward your torso, driving elbows back.','Squeeze shoulder blades at the end, then slowly release.'],
       tip:'Use Blue band for appropriate resistance. Good alternative when the dumbbell is too heavy or unavailable.'},
     {id:'d2_sar_alt2',name:'Chest-Supported DB Row',muscles:{primary:'Lats',secondary:'Mid Back, Biceps'},
@@ -923,7 +923,7 @@ var SUBS={
     {id:'d2_sar_alt3',name:'Renegade Row',muscles:{primary:'Lats, Upper Back',secondary:'Core'},
       steps:['Start in a push-up plank position, one DB in each hand on the floor.','Row one DB up toward your hip while balancing on the other arm.','Keep hips square — resist the urge to rotate.','Lower with control, then row the other side.'],
       tip:'The plank base adds a real anti-rotation core demand on top of the row. Start light — balance is the limiting factor here, not pulling strength.'},
-    {id:'d2_sar_alt4',name:'Kneeling Single-Arm Band Row',muscles:{primary:'Lats, Upper Back',secondary:'Core'},
+    {id:'d2_sar_alt4',name:'Kneeling Single-Arm Band Row',type:'reps',isBand:true,muscles:{primary:'Lats, Upper Back',secondary:'Core'},
       steps:['Kneel on one knee with a band anchored in front at chest height.','Hold the band in the opposite hand, arm extended.','Row your elbow back, squeezing your shoulder blade.','Return with control to a full stretch.'],
       tip:'The half-kneeling base is less stable than a bench-supported row, adding a genuine balance component without needing any equipment beyond a band.'}
   ],
@@ -931,13 +931,13 @@ var SUBS={
     {id:'d2_bfp_alt1',name:'Band Reverse Fly',muscles:{primary:'Rear Delts',secondary:'Traps, Rhomboids'},
       steps:['Anchor band at chest height. Hold an end in each hand, arms extended forward.','With arms straight and a slight elbow bend, pull the band apart by moving arms out to the sides.','Squeeze shoulder blades together at the end.','Slowly return arms to center.'],
       tip:'Keep arms at chest height throughout. Do not let them drop. Red band recommended.'},
-    {id:'d2_bfp_alt2',name:'Prone DB Rear Delt Raise',muscles:{primary:'Rear Delts',secondary:'Upper Back'},
+    {id:'d2_bfp_alt2',name:'Prone DB Rear Delt Raise',type:'weighted',isBand:false,muscles:{primary:'Rear Delts',secondary:'Upper Back'},
       steps:['Lie face down on a bench, bed edge, or elevated surface, arms hanging down.','Raise both DBs out to your sides until arms are roughly parallel to floor.','Hold briefly at the top, squeezing rear delts.','Lower slowly back down.'],
       tip:'Use very light weight — rear delts are small muscles. Focus on the squeeze at the top.'},
-    {id:'d2_bfp_alt3',name:'Wall Slides',muscles:{primary:'Rear Delts, Lower Traps',secondary:'Upper Back'},
+    {id:'d2_bfp_alt3',name:'Wall Slides',isBand:false,muscles:{primary:'Rear Delts, Lower Traps',secondary:'Upper Back'},
       steps:['Stand with your back against a wall, arms bent in a goalpost position, backs of hands touching the wall.','Slide your arms up overhead, keeping elbows and wrists in contact with the wall as long as possible.','Slide back down to the starting goalpost position.','Keep your lower back flat against the wall throughout.'],
       tip:'A genuinely different movement pattern from pulling exercises — this trains the shoulder blades\' upward rotation directly, good for posture and shoulder health.'},
-    {id:'d2_bfp_alt4',name:'Prone Y-T-W Raises',muscles:{primary:'Rear Delts, Lower Traps',secondary:'Upper Back'},
+    {id:'d2_bfp_alt4',name:'Prone Y-T-W Raises',isBand:false,muscles:{primary:'Rear Delts, Lower Traps',secondary:'Upper Back'},
       steps:['Lie face-down on the floor or an elevated surface, arms hanging down.','Raise your arms into a Y shape overhead, hold briefly, lower.','Raise your arms into a T shape out to the sides, hold, lower.','Raise your arms into a W shape (elbows bent, squeezing shoulder blades), hold, lower — that\'s one full rep.'],
       tip:'Cycles through three arm angles in one movement, hitting the full range of scapular stabilizer muscles rather than just one fixed angle like a face pull.'}
   ],
@@ -945,7 +945,7 @@ var SUBS={
     {id:'d2_ezc_alt1',name:'DB Bicep Curls',muscles:{primary:'Biceps (Long Head)',secondary:'Brachialis'},
       steps:['Stand holding DBs at your sides, palms facing forward.','Keeping elbows pinned at sides, curl both DBs up toward shoulders.','Squeeze at the top, then lower slowly to full extension.','Avoid swinging — no momentum from hips or back.'],
       tip:'Classic alternative if EZ bar is unavailable. Full range of motion matters — open fully at the bottom.'},
-    {id:'d2_ezc_alt2',name:'Band Bicep Curls',muscles:{primary:'Biceps',secondary:'Brachialis'},
+    {id:'d2_ezc_alt2',name:'Band Bicep Curls',type:'reps',isBand:true,muscles:{primary:'Biceps',secondary:'Brachialis'},
       steps:['Stand on the resistance band with both feet, hold the other end in each hand.','Keeping elbows pinned at sides, curl both hands up toward shoulders.','Squeeze at the top, then slowly resist the band back down.','Use Red band for appropriate resistance.'],
       tip:'Bands provide constant tension — the hardest point is at the top, unlike dumbbells. Great variation for bicep peak.'},
     {id:'d2_ezc_alt3',name:'Zottman Curls',muscles:{primary:'Biceps',secondary:'Forearms'},
@@ -956,10 +956,10 @@ var SUBS={
       tip:'Curling across the body changes the pull angle onto the brachialis (the muscle under the biceps), different emphasis than a straight hammer curl.'}
   ],
   d2_bsp:[
-    {id:'d2_bsp_alt1',name:'DB Hammer Curls',muscles:{primary:'Brachialis',secondary:'Biceps, Forearms'},
+    {id:'d2_bsp_alt1',name:'DB Hammer Curls',type:'weighted',isBand:false,muscles:{primary:'Brachialis',secondary:'Biceps, Forearms'},
       steps:['Stand holding DBs at your sides, palms facing each other (neutral grip).','Curl both DBs up keeping the neutral hammer grip throughout.','Squeeze at the top, lower slowly back down.','Do not rotate your wrists during the movement.'],
       tip:'Use this if you want arm thickness work on this day instead of additional lat training.'},
-    {id:'d2_bsp_alt2',name:'Inverted Row',muscles:{primary:'Mid Back',secondary:'Lats, Biceps, Rear Delts'},
+    {id:'d2_bsp_alt2',name:'Inverted Row',isBand:false,muscles:{primary:'Mid Back',secondary:'Lats, Biceps, Rear Delts'},
       steps:['Lie under a sturdy table. Grip the edge with both hands, shoulder-width apart.','Keep body in a straight line, heels on floor.','Pull your chest up toward the table edge by driving elbows back.','Lower slowly back to starting position.'],
       tip:'Bodyweight exercise — your body angle controls difficulty. More horizontal = harder. Great compound back movement.'},
     {id:'d2_bsp_alt3',name:'Standing Band Pullover',muscles:{primary:'Lats',secondary:'Serratus, Chest'},
@@ -984,16 +984,16 @@ var SUBS={
       tip:'More upper-ab dominant than a hanging or lying raise, with a bigger stretch through the hip flexors at the bottom.'}
   ],
   d2_rst:[
-    {id:'d2_rst_alt1',name:'Bicycle Crunches',muscles:{primary:'Obliques',secondary:'Abs'},
+    {id:'d2_rst_alt1',name:'Bicycle Crunches',type:'reps',isBand:false,muscles:{primary:'Obliques',secondary:'Abs'},
       steps:['Lie on back, hands behind head, knees bent and feet off floor.','Bring right elbow toward left knee while extending right leg.','Switch sides in a pedaling motion — left elbow to right knee.','Keep lower back pressed into the floor throughout.'],
       tip:'No equipment needed. Rotate fully from the core — not just the elbow. One of the best oblique exercises.'},
-    {id:'d2_rst_alt2',name:'Band Russian Twists',muscles:{primary:'Obliques',secondary:'Core'},
+    {id:'d2_rst_alt2',name:'Band Russian Twists',type:'reps',isBand:true,muscles:{primary:'Obliques',secondary:'Core'},
       steps:['Anchor band at your side at about chest height. Sit facing perpendicular to the anchor.','Hold both ends of band with both hands, arms extended in front.','Rotate your torso away from the anchor, keeping arms straight.','Slowly rotate back and repeat.'],
       tip:'The band provides resistance on the rotation away from anchor. More challenging than bodyweight version.'},
-    {id:'d2_rst_alt3',name:'Standing Woodchoppers',muscles:{primary:'Obliques',secondary:'Core'},
+    {id:'d2_rst_alt3',name:'Standing Woodchoppers',type:'reps',isBand:true,muscles:{primary:'Obliques',secondary:'Core'},
       steps:['Anchor a band high on one side, stand perpendicular to the anchor holding both ends with straight arms.','Rotate your torso and pull the band diagonally down across your body to the opposite hip.','Keep arms relatively straight — the rotation should come from your core, not your arms.','Return with control and repeat, then switch sides.'],
       tip:'A standing rotational pattern trains obliques the way they\'re actually used in real movement, unlike a seated or lying twist.'},
-    {id:'d2_rst_alt4',name:'Side Plank Hip Dips',muscles:{primary:'Obliques',secondary:'Core'},
+    {id:'d2_rst_alt4',name:'Side Plank Hip Dips',type:'reps',isBand:false,muscles:{primary:'Obliques',secondary:'Core'},
       steps:['Start in a side plank on your forearm, body in a straight line.','Lower your hips down toward the floor, then drive them back up to the starting plank position.','Keep the movement controlled — this isn\'t a bounce.','Complete all reps on one side before switching.'],
       tip:'Blends a static hold with dynamic oblique-driven movement — different stimulus than a pure hold or a pure twist.'}
   ],
@@ -1001,7 +1001,7 @@ var SUBS={
     {id:'d3_gbs_alt1',name:'Bulgarian Split Squat',muscles:{primary:'Quads',secondary:'Glutes, Hamstrings'},
       steps:['Stand facing away from a chair. Place rear foot on the chair, laces down.','Hold a DB in each hand. Lower your back knee toward the floor.','Front shin stays vertical, front thigh roughly parallel to floor.','Drive through heel of front foot to return to standing.'],
       tip:'One of the best single-leg exercises in existence. Start with bodyweight to nail the balance before adding DBs.'},
-    {id:'d3_gbs_alt2',name:'Band Squat',muscles:{primary:'Quads',secondary:'Glutes, Core'},
+    {id:'d3_gbs_alt2',name:'Band Squat',type:'reps',isBand:true,muscles:{primary:'Quads',secondary:'Glutes, Core'},
       steps:['Stand on resistance band with both feet shoulder-width apart.','Hold the band at shoulder level or crossed over chest.','Squat down keeping chest tall and knees tracking over toes.','Drive through heels to stand, squeezing glutes at top.'],
       tip:'Use Black band for significant resistance. Great option when DBs feel too light or awkward for squatting.'},
     {id:'d3_gbs_alt3',name:'DB Sumo Squats',muscles:{primary:'Quads, Adductors',secondary:'Glutes'},
@@ -1015,7 +1015,7 @@ var SUBS={
     {id:'d3_rdl_alt1',name:'Single-Leg RDL',muscles:{primary:'Hamstrings',secondary:'Glutes (Unilateral)'},
       steps:['Stand on one foot, hold a DB in opposite hand.','Hinge at hip, extending free leg behind you as you lower the DB.','Lower until you feel a stretch in the standing leg hamstring.','Drive hip forward to return to standing. Complete all reps before switching.'],
       tip:'Challenges balance and hits each hamstring independently. Start with bodyweight to nail the balance first.'},
-    {id:'d3_rdl_alt2',name:'Band Romanian Deadlift',muscles:{primary:'Hamstrings',secondary:'Glutes'},
+    {id:'d3_rdl_alt2',name:'Band Romanian Deadlift',type:'reps',isBand:true,muscles:{primary:'Hamstrings',secondary:'Glutes'},
       steps:['Stand on resistance band with both feet hip-width apart.','Hold the band in both hands at hip height.','Hinge at hips, pushing butt backward as band tension increases.','Drive hips forward to return to standing.'],
       tip:'Use Black band. Good option when DBs are too light as strength increases.'},
     {id:'d3_rdl_alt3',name:'DB Good Mornings',muscles:{primary:'Hamstrings, Lower Back',secondary:'Glutes'},
@@ -1040,16 +1040,16 @@ var SUBS={
       tip:'A vertical single-leg drive pattern — cycling never trains this movement at all, since pedaling stays purely rotational.'}
   ],
   d3_bgl:[
-    {id:'d3_bgl_alt1',name:'Single-Leg Glute Bridge',muscles:{primary:'Glutes',secondary:'Hamstrings (Unilateral)'},
+    {id:'d3_bgl_alt1',name:'Single-Leg Glute Bridge',isBand:false,muscles:{primary:'Glutes',secondary:'Hamstrings (Unilateral)'},
       steps:['Lie on back, one knee bent with foot flat, other leg extended straight up.','Drive through the bent leg heel and lift hips toward ceiling.','Squeeze glute at top for 1 to 2 seconds.','Lower slowly. Complete all reps before switching legs.'],
       tip:'Doubles the intensity of standard glute bridges. Great for identifying and fixing side-to-side imbalances.'},
-    {id:'d3_bgl_alt2',name:'DB Hip Thrust (floor)',muscles:{primary:'Glutes',secondary:'Hamstrings'},
+    {id:'d3_bgl_alt2',name:'DB Hip Thrust (floor)',type:'weighted',isBand:false,muscles:{primary:'Glutes',secondary:'Hamstrings'},
       steps:['Lie on back, knees bent, feet flat. Place a DB across your hips.','Hold the DB with both hands to keep it stable.','Drive hips up toward ceiling, squeezing glutes hard at the top.','Lower slowly without fully relaxing at the bottom.'],
       tip:'Heavier loading option than band bridges. Use a folded towel under the DB for comfort.'},
-    {id:'d3_bgl_alt3',name:'Frog Pumps',muscles:{primary:'Glutes',secondary:'Adductors'},
+    {id:'d3_bgl_alt3',name:'Frog Pumps',isBand:false,muscles:{primary:'Glutes',secondary:'Adductors'},
       steps:['Lie on your back, soles of your feet together, knees dropped out wide to the sides.','Press through the outer edges of your feet and drive your hips up.','Squeeze your glutes hard at the top.','Lower with control back down.'],
       tip:'The wide-open knee position adds hip external rotation on top of the extension, hitting the glutes at a different angle than a standard bridge.'},
-    {id:'d3_bgl_alt4',name:'Marching Glute Bridge',muscles:{primary:'Glutes',secondary:'Core'},
+    {id:'d3_bgl_alt4',name:'Marching Glute Bridge',isBand:false,muscles:{primary:'Glutes',secondary:'Core'},
       steps:['Lie on your back, knees bent, feet flat, hips lifted into a bridge position.','Holding the bridge, lift one foot off the floor, knee toward your chest.','Place it back down and lift the other foot.','Keep your hips level throughout — don\'t let them dip or rotate.'],
       tip:'Holding the bridge while marching adds a real anti-rotation demand on top of the usual glute extension work.'}
   ],
@@ -1063,7 +1063,7 @@ var SUBS={
     {id:'d3_dcr_alt3',name:'Seated Calf Raises',muscles:{primary:'Calves (Soleus)',secondary:'Ankles'},
       steps:['Sit on a chair or bench, DBs resting on your knees, feet flat on the floor.','Rise up onto your toes as high as you can, lifting your heels.','Hold briefly at the top.','Lower your heels all the way back down.'],
       tip:'With knees bent, the gastrocnemius (the calf muscle standing raises hit) goes slack — this shifts the work onto the soleus underneath, a muscle standing raises can\'t reach as well.'},
-    {id:'d3_dcr_alt4',name:'Pogo Hops',muscles:{primary:'Calves',secondary:'Ankles'},
+    {id:'d3_dcr_alt4',name:'Pogo Hops',type:'reps',isBand:false,muscles:{primary:'Calves',secondary:'Ankles'},
       steps:['Stand with feet hip-width apart, hands on hips or at your sides.','Hop in place using only your ankles — minimal knee bend.','Land on the balls of your feet and immediately spring back up.','Keep hops small and quick, like a jump rope without the rope.'],
       tip:'A reactive, plyometric way to load the calves, different from the slow controlled tension of a standard raise — builds ankle stiffness cycling doesn\'t.'}
   ],
@@ -1074,10 +1074,10 @@ var SUBS={
     {id:'d3_plk_alt2',name:'RKC Plank',muscles:{primary:'Core (Deep)',secondary:'Glutes, Quads'},
       steps:['Get into standard forearm plank position.','Squeeze every single muscle in your body simultaneously — abs, glutes, quads, fists.','Hold that full-body tension for the target time.','This is dramatically harder than a relaxed plank.'],
       tip:'RKC stands for Russian Kettlebell Challenge. A 20-second RKC plank is harder than a 60-second regular plank.'},
-    {id:'d3_plk_alt3',name:'Plank with Shoulder Taps',muscles:{primary:'Core (Anti-Rotation)',secondary:'Shoulders'},
+    {id:'d3_plk_alt3',name:'Plank with Shoulder Taps',type:'reps',isBand:false,muscles:{primary:'Core (Anti-Rotation)',secondary:'Shoulders'},
       steps:['Start in a high plank on your hands, body in a straight line.','Without letting your hips rotate or sag, lift one hand to tap the opposite shoulder.','Return that hand to the floor and repeat with the other side.','Keep your feet a bit wider than usual for more stability if needed.'],
       tip:'Adds an anti-rotation demand on top of the plank\'s usual anti-extension work — your core has to resist twisting every time a hand lifts.'},
-    {id:'d3_plk_alt4',name:'Plank Walkouts',muscles:{primary:'Core',secondary:'Shoulders'},
+    {id:'d3_plk_alt4',name:'Plank Walkouts',type:'reps',isBand:false,muscles:{primary:'Core',secondary:'Shoulders'},
       steps:['Stand tall, then hinge forward and walk your hands out into a plank position.','Hold briefly at the top of the plank.','Walk your hands back in toward your feet, then stand back up.','Keep your legs as straight as comfortable throughout.'],
       tip:'A dynamic load/unload of the plank position instead of a static hold — trains the same anti-extension strength through movement.'}
   ],
@@ -1085,10 +1085,10 @@ var SUBS={
     {id:'d3_dbd_alt1',name:'Bird Dog',muscles:{primary:'Core',secondary:'Glutes, Lower Back'},
       steps:['Start on all fours, wrists under shoulders, knees under hips.','Extend RIGHT arm straight forward and LEFT leg straight back simultaneously.','Hold for 2 seconds, then return to start.','Repeat with LEFT arm and RIGHT leg. That is 1 rep.'],
       tip:'Easier than dead bug but trains the same anti-rotation core stability pattern. Good regression.'},
-    {id:'d3_dbd_alt2',name:'Hollow Body Hold',muscles:{primary:'Deep Core',secondary:'Hip Flexors'},
+    {id:'d3_dbd_alt2',name:'Hollow Body Hold',type:'time',isBand:false,muscles:{primary:'Deep Core',secondary:'Hip Flexors'},
       steps:['Lie on back, arms extended overhead, legs straight.','Press lower back into the floor and lift shoulders and legs off the floor slightly.','Only your lower back and glutes should be touching the floor.','Hold this position — breathe steadily and maintain tension.'],
       tip:'One of the most effective core exercises in gymnastics. Even a 15-second hold is extremely challenging at first.'},
-    {id:'d3_dbd_alt3',name:'Band Dead Bug',muscles:{primary:'Deep Core',secondary:'Hip Flexors'},
+    {id:'d3_dbd_alt3',name:'Band Dead Bug',isBand:true,muscles:{primary:'Deep Core',secondary:'Hip Flexors'},
       steps:['Lie on your back, loop a light band around both hands, arms extended straight up.','Knees bent at 90 degrees in the air, holding tension against the band overhead.','Lower one arm overhead and the opposite leg toward the floor, resisting the band\'s pull.','Return to start and switch sides.'],
       tip:'Adding band resistance overhead is the natural progression once standard bodyweight dead bugs stop being challenging.'},
     {id:'d3_dbd_alt4',name:'Slow Mountain Climbers',muscles:{primary:'Core',secondary:'Hip Flexors'},
@@ -1099,7 +1099,7 @@ var SUBS={
     {id:'d4_dap_alt1',name:'DB Seated Shoulder Press',muscles:{primary:'Front Delts',secondary:'Side Delts, Triceps'},
       steps:['Sit holding DBs at shoulder height, palms facing forward.','Press both DBs overhead until arms are fully extended.','Lower back to shoulder height in a controlled manner.','Keep core braced — avoid arching your lower back.'],
       tip:'Simpler than Arnold Press — use this if the rotation feels awkward or you want heavier loading.'},
-    {id:'d4_dap_alt2',name:'Band Overhead Press',muscles:{primary:'All Delts',secondary:'Triceps'},
+    {id:'d4_dap_alt2',name:'Band Overhead Press',type:'reps',isBand:true,muscles:{primary:'All Delts',secondary:'Triceps'},
       steps:['Stand on resistance band with both feet shoulder-width apart.','Hold band at shoulder level, palms facing forward.','Press hands overhead until arms fully extend.','Lower slowly back to shoulder height.'],
       tip:'Use Blue band for meaningful resistance. Good alternative when DBs are too light for pressing.'},
     {id:'d4_dap_alt3',name:'DB Push Press',muscles:{primary:'Shoulders',secondary:'Triceps, Legs'},
@@ -1110,13 +1110,13 @@ var SUBS={
       tip:'The unilateral load forces your core to resist side-bending — you get shoulder and core work together.'}
   ],
   d4_dlr:[
-    {id:'d4_dlr_alt1',name:'Band Lateral Raises',muscles:{primary:'Side Delts',secondary:'Side Delts'},
+    {id:'d4_dlr_alt1',name:'Band Lateral Raises',type:'reps',isBand:true,muscles:{primary:'Side Delts',secondary:'Side Delts'},
       steps:['Stand on resistance band with both feet, hold ends in each hand.','Raise both arms out to sides until shoulder height, slight bend in elbows.','Lead with elbows, pinky slightly higher than thumb.','Lower slowly against the band tension.'],
       tip:'Different feel from dumbbells — constant tension. Use Red band.'},
     {id:'d4_dlr_alt2',name:'Prone Incline Lateral Raises',muscles:{primary:'Side Delts (Mid)',secondary:'Side Delts (Mid)'},
       steps:['Stand holding DBs, hinge forward at hips about 20 to 30 degrees.','Raise both arms out to your sides until shoulder height.','Lead with elbows.','Lower slowly.'],
       tip:'Forward lean shifts focus to mid-delt. Subtle variation, meaningful difference in feel.'},
-    {id:'d4_dlr_alt3',name:'Band Cross-Body Lateral Raise',muscles:{primary:'Side Delts',secondary:'Rear Delts'},
+    {id:'d4_dlr_alt3',name:'Band Cross-Body Lateral Raise',type:'reps',isBand:true,muscles:{primary:'Side Delts',secondary:'Rear Delts'},
       steps:['Anchor a band at ankle height on one side, stand facing sideways to the anchor.','Grab the band with the far hand, arm crossing in front of your body.','Raise your arm out and up in an arc, away from the anchor.','Lower with control back across your body.'],
       tip:'The diagonal band path loads the delt differently than a straight-up lateral raise — tension builds progressively through the whole arc instead of peaking mid-range.'},
     {id:'d4_dlr_alt4',name:'Cuban Press',muscles:{primary:'Side Delts, Rotator Cuff',secondary:'Shoulders'},
@@ -1124,7 +1124,7 @@ var SUBS={
       tip:'Same shoulder-health-focused movement as the Day 1 version — good for keeping the rotator cuff engaged, not just the delts.'}
   ],
   d4_dfr:[
-    {id:'d4_dfr_alt1',name:'Band Front Raises',muscles:{primary:'Front Delts',secondary:'Upper Chest'},
+    {id:'d4_dfr_alt1',name:'Band Front Raises',type:'reps',isBand:true,muscles:{primary:'Front Delts',secondary:'Upper Chest'},
       steps:['Stand on resistance band, hold ends in each hand at thigh level.','Raise both arms straight forward to shoulder height.','Hold 1 second at top, lower slowly.','Avoid swinging or using momentum.'],
       tip:'Constant tension version of front raises. Use Red band.'},
     {id:'d4_dfr_alt2',name:'Alternating DB Front Raises',muscles:{primary:'Front Delts',secondary:'Front Delts'},
@@ -1144,7 +1144,7 @@ var SUBS={
     {id:'d4_dip_alt2',name:'Bench Dips',muscles:{primary:'Triceps',secondary:'Front Delts'},
       steps:['Sit on edge of a sturdy chair. Place hands on chair edge beside hips.','Slide your body off the chair, keeping hands on edge and feet on floor.','Bend elbows and lower your body toward the floor.','Push back up to start, fully extending elbows.'],
       tip:'Keep your hips close to the chair throughout. The further your feet are from the chair, the harder.'},
-    {id:'d4_dip_alt3',name:'DB Floor Skull Crusher',muscles:{primary:'Triceps',secondary:'—'},
+    {id:'d4_dip_alt3',name:'DB Floor Skull Crusher',type:'weighted',isBand:false,muscles:{primary:'Triceps',secondary:'—'},
       steps:['Lie on the floor, DBs held above your chest, arms extended.','Bend only at the elbows, lowering the DBs toward your forehead/floor.','Keep upper arms stationary — only the forearms move.','Press back up by straightening the elbows.'],
       tip:'A free-weight isolation option once bodyweight push-up variants stop being enough of a challenge — direct overload potential the bodyweight versions can\'t match.'},
     {id:'d4_dip_alt4',name:'Decline Diamond Push-ups',muscles:{primary:'Triceps',secondary:'Chest (Lower)'},
@@ -1155,7 +1155,7 @@ var SUBS={
     {id:'d4_ezs_alt1',name:'Overhead DB Tricep Ext',muscles:{primary:'Triceps (Long Head)',secondary:'Triceps (Long Head)'},
       steps:['Sit or stand holding one DB with both hands, arms extended straight overhead.','Slowly lower the DB behind your head by bending your elbows.','Keep elbows pointing forward — do not let them flare out.','Extend back up to start.'],
       tip:'Original exercise — use when EZ bar is unavailable or you prefer dumbbell variation.'},
-    {id:'d4_ezs_alt2',name:'Band Overhead Tricep Ext',muscles:{primary:'Triceps (Long Head)',secondary:'Triceps (Long Head)'},
+    {id:'d4_ezs_alt2',name:'Band Overhead Tricep Ext',type:'reps',isBand:true,muscles:{primary:'Triceps (Long Head)',secondary:'Triceps (Long Head)'},
       steps:['Anchor band at floor level behind you. Hold band overhead with both hands.','With upper arms still and vertical, extend hands upward against band resistance.','Lower slowly, feeling the stretch in the tricep.','Keep elbows pointing forward throughout.'],
       tip:'Use Blue band. The overhead position stretches the long head of the tricep maximally before each rep.'},
     {id:'d4_ezs_alt3',name:'JM Press',muscles:{primary:'Triceps',secondary:'Chest'},
@@ -1166,7 +1166,7 @@ var SUBS={
       tip:'The neutral (palms-facing) grip is easier on the wrists and elbows than the fixed angle of an EZ bar, while hitting the same triceps target.'}
   ],
   d5_pul:[
-    {id:'d5_pul_alt1',name:'Band-Assisted Pull-ups',muscles:{primary:'Lats',secondary:'Upper Back, Biceps'},
+    {id:'d5_pul_alt1',name:'Band-Assisted Pull-ups',isBand:true,muscles:{primary:'Lats',secondary:'Upper Back, Biceps'},
       steps:['Loop Black band over the pull-up bar.','Place one knee or foot in the band loop.','Perform pull-up as normal — band reduces effective bodyweight.','Still focus on full range of motion and slow descent.'],
       tip:'Use this whenever standard pull-ups feel impossible today. Same muscles, same benefit.'},
     {id:'d5_pul_alt2',name:'Negative Pull-ups',muscles:{primary:'Lats',secondary:'Upper Back, Biceps'},
@@ -1180,10 +1180,10 @@ var SUBS={
       tip:'Isolates the scapular retraction that starts every pull-up, without the arm-pulling component — genuinely useful prep work, not just an easier regression.'}
   ],
   d5_bro:[
-    {id:'d5_bro_alt1',name:'Single-Arm DB Row',muscles:{primary:'Lats',secondary:'Mid Back, Biceps'},
+    {id:'d5_bro_alt1',name:'Single-Arm DB Row',type:'weighted',isBand:false,muscles:{primary:'Lats',secondary:'Mid Back, Biceps'},
       steps:['Place one knee and same-side hand on a sturdy surface.','Hold DB in opposite hand, arm hanging straight down.','Row DB toward your hip — elbow to the ceiling.','Squeeze at top, lower slowly.'],
       tip:'Weighted alternative to band rows. More progressive overload potential.'},
-    {id:'d5_bro_alt2',name:'Inverted Row',muscles:{primary:'Mid Back',secondary:'Lats, Biceps, Rear Delts'},
+    {id:'d5_bro_alt2',name:'Inverted Row',isBand:false,muscles:{primary:'Mid Back',secondary:'Lats, Biceps, Rear Delts'},
       steps:['Lie under a sturdy table. Grip edge with both hands shoulder-width apart.','Keep body in a straight line, heels on floor.','Pull chest up to table edge by driving elbows back.','Lower slowly to start.'],
       tip:'Bodyweight compound back exercise. Body angle controls difficulty — more horizontal equals harder.'},
     {id:'d5_bro_alt3',name:'Chest-Supported Band Row',muscles:{primary:'Lats, Upper Back',secondary:'Rear Delts'},
@@ -1194,24 +1194,24 @@ var SUBS={
       tip:'The wide grip and flared elbows shift emphasis toward the rear delts and upper back, more than a standard close-grip row.'}
   ],
   d5_bfp:[
-    {id:'d5_bfp_alt1',name:'Prone DB Rear Delt Raise',muscles:{primary:'Rear Delts',secondary:'Upper Back'},
+    {id:'d5_bfp_alt1',name:'Prone DB Rear Delt Raise',type:'weighted',isBand:false,muscles:{primary:'Rear Delts',secondary:'Upper Back'},
       steps:['Lie face down on a bench, bed edge, or elevated surface, arms hanging down.','Raise both DBs out to sides until arms are roughly parallel to floor.','Hold briefly at top, squeezing rear delts.','Lower slowly.'],
       tip:'Use very light weight — rear delts fatigue fast. Focus on the squeeze.'},
     {id:'d5_bfp_alt2',name:'Band Reverse Fly',muscles:{primary:'Rear Delts',secondary:'Traps, Rhomboids'},
       steps:['Anchor band at chest height. Hold ends in each hand, arms forward.','Pull band apart by moving arms out to the sides with slight elbow bend.','Squeeze shoulder blades together at the end.','Slowly return arms to center.'],
       tip:'Keep arms at chest height throughout. Red band recommended.'},
-    {id:'d5_bfp_alt3',name:'Wall Slides',muscles:{primary:'Rear Delts, Lower Traps',secondary:'Upper Back'},
+    {id:'d5_bfp_alt3',name:'Wall Slides',isBand:false,muscles:{primary:'Rear Delts, Lower Traps',secondary:'Upper Back'},
       steps:['Stand with your back against a wall, arms bent in a goalpost position, backs of hands touching the wall.','Slide your arms up overhead, keeping elbows and wrists in contact with the wall as long as possible.','Slide back down to the starting goalpost position.','Keep your lower back flat against the wall throughout.'],
       tip:'A genuinely different movement pattern from pulling exercises — this trains the shoulder blades\' upward rotation directly, good for posture and shoulder health.'},
-    {id:'d5_bfp_alt4',name:'Prone Y-T-W Raises',muscles:{primary:'Rear Delts, Lower Traps',secondary:'Upper Back'},
+    {id:'d5_bfp_alt4',name:'Prone Y-T-W Raises',isBand:false,muscles:{primary:'Rear Delts, Lower Traps',secondary:'Upper Back'},
       steps:['Lie face-down on the floor or an elevated surface, arms hanging down.','Raise your arms into a Y shape overhead, hold briefly, lower.','Raise your arms into a T shape out to the sides, hold, lower.','Raise your arms into a W shape (elbows bent, squeezing shoulder blades), hold, lower — that\'s one full rep.'],
       tip:'Cycles through three arm angles in one movement, hitting the full range of scapular stabilizer muscles rather than just one fixed angle like a face pull.'}
   ],
   d5_dcc:[
-    {id:'d5_dcc_alt1',name:'DB Hammer Curls',muscles:{primary:'Brachialis',secondary:'Biceps, Forearms'},
+    {id:'d5_dcc_alt1',name:'DB Hammer Curls',type:'weighted',isBand:false,muscles:{primary:'Brachialis',secondary:'Biceps, Forearms'},
       steps:['Stand holding DBs at sides, palms facing each other (neutral grip).','Curl both DBs up keeping the neutral grip throughout.','Squeeze at top, lower slowly.','Do not rotate wrists.'],
       tip:'Shifts focus to brachialis and forearm thickness. Good variation to alternate with concentration curls.'},
-    {id:'d5_dcc_alt2',name:'Band Bicep Curls',muscles:{primary:'Biceps',secondary:'Brachialis'},
+    {id:'d5_dcc_alt2',name:'Band Bicep Curls',type:'reps',isBand:true,muscles:{primary:'Biceps',secondary:'Brachialis'},
       steps:['Stand on resistance band, hold ends in each hand.','Keeping elbows pinned at sides, curl both hands toward shoulders.','Squeeze at top, lower slowly against band tension.','Use Red band.'],
       tip:'Constant tension alternative. Hardest at the top, unlike dumbbell curls.'},
     {id:'d5_dcc_alt3',name:'Spider Curls',muscles:{primary:'Biceps',secondary:'—'},
@@ -1236,16 +1236,16 @@ var SUBS={
       tip:'An advanced progression that adds rotation on top of the usual flexion — save this for once hanging leg raises feel too easy.'}
   ],
   d5_spl:[
-    {id:'d5_spl_alt1',name:'Hollow Body Hold',muscles:{primary:'Deep Core',secondary:'Hip Flexors, Abs'},
+    {id:'d5_spl_alt1',name:'Hollow Body Hold',type:'time',isBand:false,muscles:{primary:'Deep Core',secondary:'Hip Flexors, Abs'},
       steps:['Lie on back, arms extended overhead, legs straight.','Press lower back into floor and lift shoulders and legs off the floor slightly.','Only lower back and glutes touch the floor.','Hold and breathe steadily while maintaining tension.'],
       tip:'Gymnastic core staple. Even 15 seconds is very hard at first. Progress in 5-second increments.'},
-    {id:'d5_spl_alt2',name:'Copenhagen Plank',muscles:{primary:'Obliques',secondary:'Adductors, Core'},
+    {id:'d5_spl_alt2',name:'Copenhagen Plank',type:'time',isBand:false,muscles:{primary:'Obliques',secondary:'Adductors, Core'},
       steps:['Set up in a side plank position. Place top foot on a chair or elevated surface.','Bottom leg can hang or rest on floor.','Lift hips into side plank position and hold.','Complete all time on one side before switching.'],
       tip:'Adds inner thigh and adductor activation on top of lateral core stability. More advanced than standard side plank.'},
-    {id:'d5_spl_alt3',name:'Standing Band Side Bend',muscles:{primary:'Obliques',secondary:'Core'},
+    {id:'d5_spl_alt3',name:'Standing Band Side Bend',type:'reps',isBand:true,muscles:{primary:'Obliques',secondary:'Core'},
       steps:['Anchor a band at floor level to one side, stand with the band running up along your body.','Hold the band with the far hand at your side.','Bend sideways away from the anchor, then return to standing, resisting the band\'s pull.','Complete all reps on one side before switching.'],
       tip:'A dynamic loaded alternative to an isometric hold — different stimulus entirely for the same oblique target.'},
-    {id:'d5_spl_alt4',name:'Side Plank with Reach-Under',muscles:{primary:'Obliques',secondary:'Core, Shoulders'},
+    {id:'d5_spl_alt4',name:'Side Plank with Reach-Under',type:'reps',isBand:false,muscles:{primary:'Obliques',secondary:'Core, Shoulders'},
       steps:['Start in a side plank, top arm reaching straight up toward the ceiling.','Rotate your torso, reaching your top arm underneath your body.','Return to the starting reached-up position.','Complete all reps on one side before switching.'],
       tip:'Layers dynamic rotation onto the isometric hold — a genuinely different demand than a static side plank.'}
   ],
@@ -1299,7 +1299,10 @@ function resolveExById(id){
   if(base)return base;
   for(var k in SUBS){
     var found=SUBS[k].find(function(a){return a.id===id;});
-    if(found)return Object.assign({},found,{isAlt:true,baseId:k,type:(ALL_EX.find(function(x){return x.id===k;})||{}).type});
+    if(found){
+      var baseEx=ALL_EX.find(function(x){return x.id===k;})||{};
+      return Object.assign({},found,{isAlt:true,baseId:k,type:found.type||baseEx.type});
+    }
   }
   return null;
 }
@@ -1383,7 +1386,19 @@ var EX_GROUPS={
   d2_pul:['d2_pul','d5_pul'],d5_pul:['d2_pul','d5_pul'],
   d2_bfp:['d2_bfp','d5_bfp'],d5_bfp:['d2_bfp','d5_bfp']
 };
-function groupIdsFor(exId){return EX_GROUPS[exId]||[exId];}
+function groupIdsFor(exId){
+  if(EX_GROUPS[exId])return EX_GROUPS[exId];
+  var info=resolveExById(exId);
+  if(info&&info.isAlt&&EX_GROUPS[info.baseId]){
+    var ids=[exId];
+    EX_GROUPS[info.baseId].filter(function(b){return b!==info.baseId;}).forEach(function(partnerBase){
+      var match=(SUBS[partnerBase]||[]).find(function(a){return a.name===info.name;});
+      if(match)ids.push(match.id);
+    });
+    return ids;
+  }
+  return [exId];
+}
 function getBest(exId){
   var best={reps:0,weight:0,time:0};
   var isMorn=exId.startsWith('m_');
@@ -1565,18 +1580,23 @@ function getMuscleWeeklySets(){
   getWeekDays(t).forEach(function(day){
     var key=toKey(day),pd=pplDay(day),log=data.logs[key];
     if(!log||!pd||!log.ppl||!log.ppl.exercises)return;
-    EX[pd].forEach(function(ex){
-      if(!ex.muscles)return;
-      var exLog=log.ppl.exercises[ex.id];
-      var done=exLog&&exLog.sets?exLog.sets.filter(function(s){return!!s.done;}).length:0;
-      if(!done)return;
-      [[ex.muscles.primary,1],[ex.muscles.secondary,0.5]].forEach(function(pair){
-        var ms=pair[0],mul=pair[1];
-        if(!ms||ms==='—')return;
-        ms.split(',').forEach(function(m){
-          var mk=m.trim();
-          if(!result[mk])result[mk]={name:mk,sets:0};
-          result[mk].sets+=done*mul;
+    var _dayExList=EX[pd].concat(loadCustomExercises().filter(function(c){return c.day===pd;}));
+    _dayExList.forEach(function(ex){
+      var family=EX_ALT_MAP[ex.id]||[ex.id];
+      family.forEach(function(fid){
+        var exLog=log.ppl.exercises[fid];
+        var done=exLog&&exLog.sets?exLog.sets.filter(function(s){return!!s.done;}).length:0;
+        if(!done)return;
+        var info=resolveExById(fid);
+        if(!info||!info.muscles)return;
+        [[info.muscles.primary,1],[info.muscles.secondary,0.5]].forEach(function(pair){
+          var ms=pair[0],mul=pair[1];
+          if(!ms||ms==='—')return;
+          ms.split(',').forEach(function(m){
+            var mk=m.trim();
+            if(!result[mk])result[mk]={name:mk,sets:0};
+            result[mk].sets+=done*mul;
+          });
         });
       });
     });
@@ -1707,12 +1727,17 @@ function getLastWeight(exId){
 }
 function getRecentSessions(exId,n){
   var isMorn=exId.startsWith('m_'),out=[];
+  var ids=groupIdsFor(exId);
   Object.entries(load().logs).sort().forEach(function(e){
     var src=isMorn?e[1].morning:e[1].ppl;
-    if(!src||!src.exercises||!src.exercises[exId]||!src.exercises[exId].sets)return;
-    var sets=src.exercises[exId].sets.filter(function(s){return s.weight||s.reps||s.time;});
-    if(sets.length)out.push({date:e[0],sets:sets});
+    if(!src||!src.exercises)return;
+    ids.forEach(function(id){
+      if(!src.exercises[id]||!src.exercises[id].sets)return;
+      var sets=src.exercises[id].sets.filter(function(s){return s.weight||s.reps||s.time;});
+      if(sets.length)out.push({date:e[0],sets:sets});
+    });
   });
+  out.sort(function(a,b){return a.date<b.date?-1:1;});
   return out.slice(-n).reverse();
 }
 function checkBackupReminder(){
@@ -1725,7 +1750,7 @@ function getMuscle4WeekFreq(){
     getWeekDays(ws).forEach(function(day){
       var key=toKey(day),pd=pplDay(day),log=load().logs[key];
       if(!log||!pd||!log.ppl||!log.ppl.exercises)return;
-      EX[pd].forEach(function(ex){
+      EX[pd].concat(loadCustomExercises().filter(function(c){return c.day===pd;})).forEach(function(ex){
         var family=EX_ALT_MAP[ex.id]||[ex.id];
         family.forEach(function(fid){
           var exLog=log.ppl.exercises[fid];
@@ -1784,15 +1809,30 @@ function getSwappedExercise(exId){
 function clearSwaps(){
   Object.keys(localStorage).forEach(function(k){if(k.startsWith('pt_swap_'))localStorage.removeItem(k);});
 }
+function migrateMStateKey(baseExId,oldActiveId){
+  var newActiveId=getActiveId(baseExId);
+  if(newActiveId===oldActiveId)return;
+  if(mState[oldActiveId]){
+    mState[newActiveId]=mState[oldActiveId];
+    if(oldActiveId!==newActiveId)delete mState[oldActiveId];
+  } else {
+    var ex=ALL_EX.find(function(e){return e.id===baseExId;});
+    if(ex)mState[newActiveId]={done:false,sets:Array.from({length:ex.sets||3},function(){return ex.type==='time'?{time:''}:ex.type==='weighted'?{reps:'',weight:''}:{reps:''};}),baseExId:baseExId};
+  }
+}
 function resetSwapToOriginal(exId){
+  var oldActiveId=getActiveId(exId);
   localStorage.removeItem('pt_swap_'+exId);
   delete _vidCache[exId];
+  migrateMStateKey(exId,oldActiveId);
   refreshSubContext();
 }
 function swapExercise(exId,subOrIdx){
+  var oldActiveId=getActiveId(exId);
   var sub=typeof subOrIdx==='number'?SUBS[exId][subOrIdx]:subOrIdx;
   localStorage.setItem('pt_swap_'+exId,JSON.stringify(sub));
   delete _vidCache[exId];
+  migrateMStateKey(exId,oldActiveId);
   refreshSubContext();
 }
 
@@ -1838,19 +1878,27 @@ function loadBandSelection(exId,setIdx){
 function getBandProgressData(){
   var BAND_ORDER=['yellow','red','green','blue','black'];
   var BAND_LABEL={yellow:'Yellow',red:'Red',green:'Green',blue:'Blue',black:'Black'};
-  var bandExs=ALL_EX.filter(function(ex){return ex.isBand;});
   var allLogs=Object.entries(load().logs).sort();
   var result=[];
-  bandExs.forEach(function(ex){
+  ALL_EX.forEach(function(ex){
+    var family=EX_ALT_MAP[ex.id]||[ex.id];
+    var bandIds=family.filter(function(fid){
+      if(fid===ex.id)return !!ex.isBand;
+      var info=resolveExById(fid);
+      return info&&info.isBand;
+    });
+    if(!bandIds.length)return;
     var isMorn=ex.id.startsWith('m_');
     var history=[];
     allLogs.forEach(function(entry){
       var src=isMorn?entry[1].morning:entry[1].ppl;
-      if(!src||!src.exercises||!src.exercises[ex.id])return;
-      var exLog=src.exercises[ex.id];
-      if(!exLog.done)return;
+      if(!src||!src.exercises)return;
       var allBands=[];
-      if(exLog.sets)exLog.sets.forEach(function(s){if(s.bands&&s.bands.length)allBands=allBands.concat(s.bands);});
+      bandIds.forEach(function(bid){
+        var exLog=src.exercises[bid];
+        if(!exLog||!exLog.done||!exLog.sets)return;
+        exLog.sets.forEach(function(s){if(s.bands&&s.bands.length)allBands=allBands.concat(s.bands);});
+      });
       if(allBands.length){
         var highest=allBands.reduce(function(a,b){return BAND_ORDER.indexOf(b)>BAND_ORDER.indexOf(a)?b:a;},allBands[0]);
         history.push({date:entry[0],highest:highest});
@@ -2413,7 +2461,8 @@ function rWeek(){
       var el=slog.ppl.exercises[id];
       if(!el||!el.sets||!el.sets.length)return;
       var curEx=EX[spd].find(function(e){return e.id===id;});
-      var exName=curEx?curEx.name:(el.name?el.name+' (legacy)':id);
+      var resolved=curEx||resolveExById(id);
+      var exName=resolved?resolved.name:(el.name?el.name+' (legacy)':id);
       var sv=el.sets.map(function(s){return s.time?s.time+'s':s.weight?s.reps+'r x '+s.weight+'kg':s.bands&&s.bands.length?((s.reps||'?')+'r '+getBandDisplayText(s.bands)):(s.reps||'?')+'r';}).join(' | ');
       h+='<div class="exlog-row"><span>'+exName+'</span><span style="color:var(--muted);font-size:11px">'+sv+'</span></div>';
     });
@@ -2726,22 +2775,33 @@ function rProg(){
     _custEx.forEach(function(ex){h+='<option value="'+ex.id+'">'+ex.name+'</option>';});
     h+='</optgroup>';
   }
-  // Legacy exercises — IDs in logs but no longer in ALL_EX
+  // Legacy exercises — IDs in logs but no longer resolvable at all (true removals/renames)
+  // Alt exercises — IDs in logs that resolve to a known alt (fully valid, just not a base exercise)
   (function(){
     var activeIds=ALL_EX.map(function(e){return e.id;});
-    var legacyMap={};
+    var legacyMap={},altMap={};
     Object.values(load().logs).forEach(function(log){
       ['morning','ppl'].forEach(function(type){
         var sess=log[type];
         if(!sess||!sess.exercises)return;
         Object.entries(sess.exercises).forEach(function(e){
           var id=e[0];
-          if(activeIds.indexOf(id)<0&&!legacyMap[id]){
+          if(activeIds.indexOf(id)>=0)return;
+          var resolved=resolveExById(id);
+          if(resolved&&resolved.isAlt){
+            if(!altMap[id])altMap[id]=resolved.name;
+          } else if(!legacyMap[id]){
             legacyMap[id]=e[1].name||id;
           }
         });
       });
     });
+    var altKeys=Object.keys(altMap);
+    if(altKeys.length){
+      h+='<optgroup label="— Exercise Alternates —">';
+      altKeys.forEach(function(id){h+='<option value="'+id+'">'+altMap[id]+'</option>';});
+      h+='</optgroup>';
+    }
     var legacyKeys=Object.keys(legacyMap);
     if(legacyKeys.length){
       h+='<optgroup label="— Legacy (removed exercises) —">';
@@ -3081,6 +3141,8 @@ function rProg(){
   h+='<select class="form-sel" id="cexDay"><option value="morning">Morning</option><option value="d1">Day 1 — Push Chest</option><option value="d2">Day 2 — Pull Back</option><option value="d3">Day 3 — Legs</option><option value="d4">Day 4 — Push Shoulders</option><option value="d5">Day 5 — Pull + Core</option></select>';
   h+='<select class="form-sel" id="cexType"><option value="weighted">Weighted (reps + kg)</option><option value="reps">Reps only</option><option value="time">Timed</option><option value="bands">Resistance Bands</option></select>';
   h+='<input class="form-inp" id="cexTarget" placeholder="Target (e.g. 3x12)">';
+  h+='<input class="form-inp" id="cexMuscPrimary" placeholder="Primary muscle (optional, e.g. Chest)">';
+  h+='<input class="form-inp" id="cexMuscSecondary" placeholder="Secondary muscle (optional)">';
   h+='<button class="save-btn" style="margin:0" onclick="addCustomEx()">+ Add Exercise</button>';
   h+='</div></div>';
   } // end if(total>0)
@@ -3098,7 +3160,7 @@ function rProg(){
   h+='<div style="font-size:11px;color:var(--muted);margin-top:8px">Used for video guides in exercise info panels. Never shared or sent anywhere except YouTube\'s API.</div>';
   h+='</div>';
   h+='<div class="sec-title">Data</div>';
-  h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v4.5</span></div>';
+  h+='<div style="padding:0 20px 6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase">ProTrain Program <span style="color:var(--morning)">v5.0</span></div>';
   h+='<div style="display:flex;gap:10px;padding:0 20px">';
   h+='<button onclick="exportData()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">&#11014; Export</button>';
   h+='<button onclick="document.getElementById(\'importFile\').click()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">&#11015; Import</button>';
@@ -3488,12 +3550,15 @@ function buildModal(exList,type){
     var st=mState[activeId];
     var swapped=getSwappedExercise(ex.id);
     var displayEx=swapped||ex;
+    var effType=(swapped&&swapped.type)?swapped.type:ex.type;
+    var effIsBand=(swapped&&swapped.hasOwnProperty('isBand'))?swapped.isBand:ex.isBand;
+    var effEx=Object.assign({},ex,{type:effType});
     var lastW=getLastWeight(activeId);
     var warmW=lastW>0?Math.max(Math.round(lastW*0.5/2.5)*2.5,2.5):0;
     h+='<div class="lex"><div class="lex-hdr">';
     h+='<button id="exchk_'+activeId+'" class="lex-chk'+(st.done?' done':'')+'" onclick="togEx(\''+activeId+'\',this)">&#10003;</button>';
-    var bl=bestLabel(activeId,ex);
-    var ph=getProgHint(activeId,ex);
+    var bl=bestLabel(activeId,effEx);
+    var ph=getProgHint(activeId,effEx);
     h+='<div style="flex:1"><div class="lex-name">'+displayEx.name+'</div>';
     if(ex.muscles)h+='<div style="font-size:10px;color:var(--muted);margin-top:1px"><span style="color:var(--accent)">&#9679;</span> '+ex.muscles.primary+' <span style="opacity:.4">·</span> '+ex.muscles.secondary+'</div>';
     if(bl)h+='<div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px">'+bl+'</div>';
@@ -3540,13 +3605,13 @@ function buildModal(exList,type){
     h+='<button class="autofill-btn" onclick="fillRec(\''+activeId+'\')">'+(dl?'⚠️ Auto-fill (Deload 60%)':'✨ Auto-fill Recommendation')+'</button>';
     h+='<div class="set-inputs">';
     st.sets.forEach(function(s,si){
-      var lbl=ex.sides?(si===0?'Left':'Right'):(ex.sets>1?'S'+(si+1):'x');
+      var lbl=ex.sideLabels?(ex.sideLabels[si]||'S'+(si+1)):(ex.sets>1?'S'+(si+1):'x');
       h+='<div class="set-row"><button id="setchk_'+activeId+'_'+si+'" class="set-chk'+(st.sets[si].done?' done':'')+'" onclick="togSet(\''+activeId+'\','+si+',this)">&#10003;</button><div class="set-lbl">'+lbl+'</div>';
-      if(ex.type==='time'){
+      if(effType==='time'){
         h+='<input id="inp_'+activeId+'_'+si+'_time" class="sinput" type="number" inputmode="numeric" placeholder="sec" value="'+(s.time||'')+'" oninput="updSet(\''+activeId+'\','+si+',\'time\',this.value)">';
         h+='<div class="sinput-lbl">sec</div>';
         h+='<button id="extmrbtn_'+activeId+'_'+si+'" class="extmr-btn" onclick="togExTimer(\''+activeId+'\','+si+')" title="Time this hold">&#9654;</button>';
-      } else if(ex.type==='weighted'){
+      } else if(effType==='weighted'){
         h+='<input id="inp_'+activeId+'_'+si+'_reps" class="sinput" type="number" inputmode="decimal" placeholder="reps" value="'+(s.reps||'')+'" oninput="updSet(\''+activeId+'\','+si+',\'reps\',this.value)">';
         h+='<div class="sinput-lbl">reps</div>';
         h+='<input id="inp_'+activeId+'_'+si+'_weight" class="sinput" type="number" inputmode="decimal" placeholder="kg" value="'+(s.weight||'')+'" oninput="updSet(\''+activeId+'\','+si+',\'weight\',this.value)">';
@@ -3562,8 +3627,10 @@ function buildModal(exList,type){
         h+='<button id="restbtn_'+activeId+'_'+si+'" class="rest-btn" onclick="togRestBtn(\''+activeId+'\','+si+','+rs+')" title="Start '+rs+'s rest timer">&#9203;</button>';
       }
       h+='</div>';
-      if(ex.isBand){
-        h+=renderBandSelector(activeId,si,loadBandSelection(activeId,si));
+      if(effIsBand){
+        var _savedBands=loadBandSelection(activeId,si);
+        if(st.sets[si].bands===undefined)st.sets[si].bands=_savedBands;
+        h+=renderBandSelector(activeId,si,_savedBands);
       }
     });
     if(SUBS[ex.id]){
@@ -3791,7 +3858,8 @@ function fillRec(exId,mode){
   var baseId=exInfo.isAlt?exInfo.baseId:exId;
   var ex=ALL_EX.find(function(e){return e.id===baseId;});
   if(!ex)return;
-  var rec=getRec(exId,ex,mode||'smart');
+  var effEx=exInfo.isAlt?Object.assign({},ex,{type:exInfo.type||ex.type}):ex;
+  var rec=getRec(exId,effEx,mode||'smart');
   mState[exId].sets=rec;
   rec.forEach(function(s,si){
     if(s.time!=null){var el=document.getElementById('inp_'+exId+'_'+si+'_time');if(el){el.value=s.time||'';updSet(exId,si,'time',el.value);}}
@@ -3953,15 +4021,22 @@ function addCustomEx(){
   var day=document.getElementById('cexDay');
   var type=document.getElementById('cexType');
   var target=document.getElementById('cexTarget');
+  var muscPrimary=document.getElementById('cexMuscPrimary');
+  var muscSecondary=document.getElementById('cexMuscSecondary');
   if(!name||!name.value.trim()){showToast('Enter an exercise name','var(--danger)');return;}
   var arr=loadCustomExercises();
-  var isBand=type.value==='band';
+  var isBand=type.value==='bands';
   var exType=isBand?'reps':type.value;
   var newEx={id:'custom_'+Date.now(),name:name.value.trim(),type:exType,day:day.value,target:target.value||'3x10',sets:parseInt((target.value||'3x10').split('x')[0])||3,tag:'Custom',isBand:isBand,steps:['Perform the exercise with proper form and controlled movement.'],tip:'Custom exercise added by you.'};
+  if(muscPrimary&&muscPrimary.value.trim()){
+    newEx.muscles={primary:muscPrimary.value.trim(),secondary:(muscSecondary&&muscSecondary.value.trim())||'—'};
+  }
   arr.push(newEx);
   saveCustomExercises(arr);
   rebuildALLEX();
   name.value='';target.value='';
+  if(muscPrimary)muscPrimary.value='';
+  if(muscSecondary)muscSecondary.value='';
   showToast('✅ '+newEx.name+' added!','var(--success)');
   rProg();
 }
@@ -3977,7 +4052,7 @@ function exportData(){
   var bands={};
   for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith('band_'))bands[k]=localStorage.getItem(k);}
   data._meta={
-    version:'v4.5',
+    version:'v5.0',
     prCount:localStorage.getItem('ppl_pr_count4'),
     theme:localStorage.getItem('ppl_theme'),
     font:localStorage.getItem('ppl_font'),
@@ -4021,7 +4096,7 @@ function importData(e){
       }
       save(existing);
       var fileVer=parsed._meta&&parsed._meta.version;
-      var curVer='v4.5';
+      var curVer='v5.0';
       var themeChanged=parsed._meta&&parsed._meta.theme&&parsed._meta.theme!==localStorage.getItem('ppl_theme');
       var fontChanged=parsed._meta&&parsed._meta.font&&parsed._meta.font!==localStorage.getItem('ppl_font');
       var msg=document.getElementById('dataMsg');
