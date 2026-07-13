@@ -42,6 +42,16 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 
 /* SESSION CARDS */
 .scard{margin:10px 20px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface)}
+.cyc-card{margin:10px 20px 0;border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:12px 14px}
+.cyc-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.cyc-leg{display:flex;align-items:center;gap:10px;padding:6px 0}
+.cyc-leg-lbl{flex:1;font-size:13px}
+.cyc-toggle{width:44px;height:26px;border-radius:13px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;position:relative;flex-shrink:0;transition:all .2s}
+.cyc-toggle.on{background:var(--legs);border-color:var(--legs)}
+.cyc-toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:all .2s}
+.cyc-toggle.on::after{left:20px}
+.cyc-fields{display:flex;gap:6px;margin-left:auto}
+.cyc-fields input{width:52px;padding:5px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;text-align:center}
 .scard-hdr{padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer}
 .scard-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .scard-info{flex:1}
@@ -381,7 +391,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 /* SUB BUTTON */
 .sub-btn{width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
 .sub-btn:hover{border-color:var(--accent);color:var(--accent)}
-.sub-panel{padding:0 20px 12px;display:none}
+.sub-panel{padding:0 20px 12px;display:none;max-height:280px;overflow-y:auto}
 .sub-panel.open{display:block}
 .sub-panel-title{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 .sub-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
@@ -1356,6 +1366,58 @@ var DAYS_FULL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Satu
 function load(){try{return JSON.parse(localStorage.getItem('ppl_v4')||'{"logs":{}}')}catch(e){return{logs:{}}}}
 function save(d){localStorage.setItem('ppl_v4',JSON.stringify(d))}
 function todayCheckKey(){return 'ppl_checks_'+new Date().toISOString().slice(0,10);}
+// ── CYCLING COMMUTE TRACKER ──────────────────────────────────
+function loadCycling(key){
+  var log=load().logs[key];
+  return (log&&log.cycling)||{morning:{done:false,km:'',min:''},afternoon:{done:false,km:'',min:''}};
+}
+function toggleCyclingLeg(key,leg){
+  var data=load();
+  if(!data.logs[key])data.logs[key]={};
+  if(!data.logs[key].cycling)data.logs[key].cycling={morning:{done:false,km:'',min:''},afternoon:{done:false,km:'',min:''}};
+  data.logs[key].cycling[leg].done=!data.logs[key].cycling[leg].done;
+  save(data);
+  rToday();
+}
+function updCyclingField(key,leg,field,val){
+  var data=load();
+  if(!data.logs[key])data.logs[key]={};
+  if(!data.logs[key].cycling)data.logs[key].cycling={morning:{done:false,km:'',min:''},afternoon:{done:false,km:'',min:''}};
+  data.logs[key].cycling[leg][field]=val===''?'':parseFloat(val);
+  save(data);
+}
+function renderCyclingCard(key){
+  var cyc=loadCycling(key);
+  var h='<div class="cyc-card"><div class="cyc-hdr">🚴 Cycling Commute</div>';
+  [['morning','Morning (to school)'],['afternoon','Afternoon (home)']].forEach(function(pair){
+    var leg=pair[0],label=pair[1],data=cyc[leg];
+    h+='<div class="cyc-leg">';
+    h+='<div class="cyc-leg-lbl">'+label+'</div>';
+    if(data.done){
+      h+='<div class="cyc-fields">';
+      h+='<input type="number" inputmode="decimal" placeholder="km" value="'+(data.km||'')+'" onchange="updCyclingField(\''+key+'\',\''+leg+'\',\'km\',this.value)">';
+      h+='<input type="number" inputmode="numeric" placeholder="min" value="'+(data.min||'')+'" onchange="updCyclingField(\''+key+'\',\''+leg+'\',\'min\',this.value)">';
+      h+='</div>';
+    }
+    h+='<button class="cyc-toggle'+(data.done?' on':'')+'" onclick="toggleCyclingLeg(\''+key+'\',\''+leg+'\')"></button>';
+    h+='</div>';
+  });
+  h+='</div>';
+  return h;
+}
+function getCyclingWeekStats(weekStart){
+  var t=now(),ws=weekStart||getMondayOf(t),done=0,total=0,km=0;
+  for(var i=0;i<7;i++){
+    var d=new Date(ws);d.setDate(ws.getDate()+i);
+    if(d>t)break;
+    var cyc=loadCycling(toKey(d));
+    ['morning','afternoon'].forEach(function(leg){
+      total++;
+      if(cyc[leg].done){done++;if(cyc[leg].km)km+=+cyc[leg].km;}
+    });
+  }
+  return {done:done,total:total,km:Math.round(km*10)/10};
+}
 function loadChecks(){try{return JSON.parse(localStorage.getItem(todayCheckKey())||'{}')}catch(e){return{}}}
 function saveChecks(c){
   Object.keys(localStorage).forEach(function(k){
@@ -2414,10 +2476,12 @@ function _rToday(){
   var lwDone=0,lwVol=0;
   for(var lwi=0;lwi<7;lwi++){var lwd=new Date(prevWS);lwd.setDate(prevWS.getDate()+lwi);var lwk=toKey(lwd);var lwlog=load().logs[lwk]||{};if(dayComplete(lwk,lwd))lwDone++;lwVol+=calcSessionVol(lwlog,'ppl');}
   if(lwDone>0){
+    var lwCyc=getCyclingWeekStats(prevWS);
     h+='<div class="week-sum"><div class="week-sum-hdr">Last Week Recap</div><div class="week-sum-stats">';
     h+='<div class="wsstat"><div class="wsstat-val" style="color:var(--success)">'+lwDone+'/7</div><div class="wsstat-lbl">Days Done</div></div>';
     h+='<div class="wsstat"><div class="wsstat-val" style="color:var(--pull)">'+Math.round(lwVol/1000*10)/10+'k</div><div class="wsstat-lbl">kg Vol</div></div>';
     h+='<div class="wsstat"><div class="wsstat-val" style="color:var(--morning)">'+Math.round(lwDone/7*100)+'%</div><div class="wsstat-lbl">Rate</div></div>';
+    h+='<div class="wsstat"><div class="wsstat-val" style="color:var(--legs)">'+lwCyc.done+'/'+lwCyc.total+'</div><div class="wsstat-lbl">🚴 Legs</div></div>';
     h+='</div></div>';
   }
   h+='<div class="streak-banner"><div class="s-flame">🔥</div>';
@@ -2435,6 +2499,8 @@ function _rToday(){
   h+='<div class="scard-icon" style="background:color-mix(in srgb,#fbbf24 15%,transparent)">🌅</div>';
   h+='<div class="scard-info"><div class="scard-name">Morning Routine</div><div class="scard-meta">7 exercises · ~15 min · Every day</div></div>';
   h+='<div class="scard-badge '+(mDone?'done-badge':'log-badge')+'">'+(mDone?'Edit ✓':'Log')+'</div></div></div>';
+  // Cycling commute tracker
+  h+=renderCyclingCard(key);
   if(rest){
     h+='<div class="rcard"><div class="rcard-icon">😴</div>';
     h+='<div class="rcard-title">Rest Day</div>';
@@ -2581,9 +2647,15 @@ function rWeek(){
     h+='</div></div>';
   }
   if(!isFut){
-    // Delete buttons for logged sessions
-    if(slog.morning&&slog.morning.exercises&&Object.keys(slog.morning.exercises).length){h+='<button class="delete-session-btn" onclick="deleteSession(\''+sk+'\',\'morning\')">🗑️ Delete Morning Session</button>';}
-    if(!srest&&slog.ppl&&slog.ppl.exercises&&Object.keys(slog.ppl.exercises).length){h+='<button class="delete-session-btn" style="margin-top:6px" onclick="deleteSession(\''+sk+'\',\'ppl\')">🗑️ Delete PPL Session</button>';}
+    // Delete + refresh-structure buttons for logged sessions
+    if(slog.morning&&slog.morning.exercises&&Object.keys(slog.morning.exercises).length){
+      h+='<button class="delete-session-btn" onclick="deleteSession(\''+sk+'\',\'morning\')">🗑️ Delete Morning Session</button>';
+      h+='<button class="delete-session-btn" style="margin-top:6px;border-color:var(--legs);color:var(--legs)" onclick="resetSessionStructure(\''+sk+'\',\'morning\')">🔄 Refresh Structure (keep values)</button>';
+    }
+    if(!srest&&slog.ppl&&slog.ppl.exercises&&Object.keys(slog.ppl.exercises).length){
+      h+='<button class="delete-session-btn" style="margin-top:6px" onclick="deleteSession(\''+sk+'\',\'ppl\')">🗑️ Delete PPL Session</button>';
+      h+='<button class="delete-session-btn" style="margin-top:6px;border-color:var(--legs);color:var(--legs)" onclick="resetSessionStructure(\''+sk+'\',\'ppl\')">🔄 Refresh Structure (keep values)</button>';
+    }
     var mDoneW=!!(slog.morning&&slog.morning.done);
     h+='<button class="save-btn" style="--accent:var(--morning);margin-top:10px" onclick="openModal(\'morning\',\''+sk+'\')">'+(mDoneW?'✏️ Edit':'📝 Log')+' Morning Routine</button>';
     if(!srest){
@@ -4229,6 +4301,34 @@ function finishOnboarding(){
   localStorage.setItem('pt_onboarded','1');
   document.getElementById('obOverlay').classList.remove('show');
   rToday();
+}
+function resetSessionStructure(key,type){
+  if(!confirm('Reshape this '+(type==='morning'?'Morning Routine':'PPL')+' session to match the current exercise structure? Values that still fit will be kept; anything that no longer applies will be cleared. This cannot be undone.'))return;
+  var data=load();
+  var sess=data.logs[key]&&data.logs[key][type];
+  if(!sess||!sess.exercises){showToast('Nothing to reset.','var(--muted)');return;}
+  var changed=false;
+  Object.keys(sess.exercises).forEach(function(id){
+    var info=resolveExById(id);
+    if(!info)return; // truly unresolvable/legacy id — leave untouched
+    var baseId=info.isAlt?info.baseId:id;
+    var baseEx=ALL_EX.find(function(e){return e.id===baseId;});
+    if(!baseEx)return;
+    var targetLen=baseEx.sets||3;
+    var oldSets=sess.exercises[id].sets||[];
+    if(oldSets.length===targetLen)return; // already matches, nothing to do
+    var newSets=Array.from({length:targetLen},function(_,i){
+      if(oldSets[i])return Object.assign({},oldSets[i]);
+      return baseEx.type==='time'?{time:''}:baseEx.type==='weighted'?{reps:'',weight:''}:{reps:''};
+    });
+    sess.exercises[id].sets=newSets;
+    sess.exercises[id].done=newSets.every(function(s){return !!s.done;});
+    changed=true;
+  });
+  if(!changed){showToast('Already matches the current structure.','var(--muted)');return;}
+  save(data);
+  render(curScreen);
+  showToast('✅ Structure refreshed, values kept where they still fit','var(--success)');
 }
 function deleteSession(key,type){
   if(!confirm('Delete this '+(type==='morning'?'Morning Routine':'PPL')+' session? This cannot be undone.'))return;
